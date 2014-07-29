@@ -11,7 +11,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        208
-Release:        11%{?dist}
+Release:        11%{?dist}.2
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -263,6 +263,8 @@ Patch0229: 0229-Fix-prototype-of-get_process_state.patch
 Patch0230: 0230-core-check-for-return-value-from-get_process_state.patch
 Patch0231: 0231-unit-add-waiting-jobs-to-run-queue-in-unit_coldplug.patch
 Patch0232: 0232-logind-session-save-stopping-flag.patch
+Patch0233: 0233-units-serial-getty-.service-add-Install-section.patch
+Patch0234: 0234-units-order-network-online.target-after-network.targ.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1061,6 +1063,12 @@ getent passwd systemd-journal-gateway >/dev/null 2>&1 || useradd -r -l -u 191 -g
 %{_datadir}/systemd/gatewayd
 
 %changelog
+* Mon Jul 21 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11.2
+- units: order network-online.target after network.target
+
+* Fri Jul 11 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11.1
+- units/serial-getty@.service: add [Install] section
+
 * Wed Apr 02 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11
 - logind-session: save stopping flag (#1082692)
 - unit: add waiting jobs to run queue in unit_coldplug (#1083159)
