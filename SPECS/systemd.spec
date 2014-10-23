@@ -11,7 +11,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        208
-Release:        11%{?dist}.2
+Release:        11%{?dist}.4
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -265,6 +265,8 @@ Patch0231: 0231-unit-add-waiting-jobs-to-run-queue-in-unit_coldplug.patch
 Patch0232: 0232-logind-session-save-stopping-flag.patch
 Patch0233: 0233-units-serial-getty-.service-add-Install-section.patch
 Patch0234: 0234-units-order-network-online.target-after-network.targ.patch
+Patch0235: 0235-util-fix-minimal-race-where-we-might-miss-SIGTERMs-w.patch
+Patch0236: 0236-util-reset-signals-when-we-fork-off-agents.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1063,6 +1065,10 @@ getent passwd systemd-journal-gateway >/dev/null 2>&1 || useradd -r -l -u 191 -g
 %{_datadir}/systemd/gatewayd
 
 %changelog
+* Mon Oct 06 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11.4
+- util: reset signals when we fork off agents
+- util: fix minimal race where we might miss SIGTERMs when forking off an agent
+
 * Mon Jul 21 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11.2
 - units: order network-online.target after network.target
 
