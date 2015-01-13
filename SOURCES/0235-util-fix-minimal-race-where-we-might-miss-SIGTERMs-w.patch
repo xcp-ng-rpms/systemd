@@ -1,4 +1,4 @@
-From c6b6b6f5ce19543e277999395252bde94f0f8d25 Mon Sep 17 00:00:00 2001
+From 3a45f6df7e5d37c1eb0c6e83b74093ef717942e6 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Wed, 27 Aug 2014 21:42:20 +0200
 Subject: [PATCH] util: fix minimal race where we might miss SIGTERMs when

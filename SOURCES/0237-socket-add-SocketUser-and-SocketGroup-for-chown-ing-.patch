@@ -1,4 +1,4 @@
-From 6744ef720b34a87ff69acb8535cf5e83db6f5e8b Mon Sep 17 00:00:00 2001
+From efd4bdec3cd568439eb9b0f0a555b4016da12efe Mon Sep 17 00:00:00 2001
 From: Michal Sekletar <msekleta@redhat.com>
 Date: Tue, 24 Jun 2014 14:50:26 +0200
 Subject: [PATCH] socket: add SocketUser= and SocketGroup= for chown()ing

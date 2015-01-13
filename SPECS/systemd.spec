@@ -11,7 +11,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        208
-Release:        11%{?dist}.5
+Release:        11%{?dist}.6
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -268,6 +268,9 @@ Patch0234: 0234-units-order-network-online.target-after-network.targ.patch
 Patch0235: 0235-util-fix-minimal-race-where-we-might-miss-SIGTERMs-w.patch
 Patch0236: 0236-util-reset-signals-when-we-fork-off-agents.patch
 Patch0237: 0237-socket-add-SocketUser-and-SocketGroup-for-chown-ing-.patch
+Patch0238: 0238-rules-don-t-enable-usb-pm-for-Avocent-devices.patch
+Patch0239: 0239-core-introduce-new-Delegate-yes-no-property-controll.patch
+Patch0240: 0240-core-don-t-migrate-PIDs-for-units-that-may-contain-s.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1066,6 +1069,11 @@ getent passwd systemd-journal-gateway >/dev/null 2>&1 || useradd -r -l -u 191 -g
 %{_datadir}/systemd/gatewayd
 
 %changelog
+* Wed Jan 07 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-11.6
+- rules: don't enable usb pm for Avocent devices (#1176736)
+- core: introduce new Delegate=yes/no property controlling creation of cgroup subhierarchies (#1179715)
+- core: don't migrate PIDs for units that may contain subcgroups, do this only for leaf units (#1179715)
+
 * Fri Dec 05 2014 Michal Sekletar <msekleta@redhat.com> - 208-11.5
 - socket: add SocketUser= and SocketGroup= for chown()ing (#1171054)
 

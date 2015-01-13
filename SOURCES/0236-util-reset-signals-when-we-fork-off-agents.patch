@@ -1,4 +1,4 @@
-From 3035def5df7ee87f7eef4a29ac7e11c136d09aca Mon Sep 17 00:00:00 2001
+From c0e227a9fbb99cc9d437f8ac695c93c72c92e11b Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 26 Aug 2014 21:04:21 +0200
 Subject: [PATCH] util: reset signals when we fork off agents
