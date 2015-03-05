@@ -1,4 +1,4 @@
-From dcfab2c436b48d87cdfd2b9fa525e07816322b96 Mon Sep 17 00:00:00 2001
+From 35b8533914a82d2ee8a667ec2afac0499dcbfb28 Mon Sep 17 00:00:00 2001
 From: Tom Hirst <tom.hirst@ipe-systems.co.uk>
 Date: Wed, 25 Jun 2014 11:57:11 +0000
 Subject: [PATCH] rules: don't enable usb pm for Avocent devices
@@ -8,7 +8,7 @@ management enabled.
 
 (cherry-picked from 52fb538361053f8c4abce0e40cd0bae3d28ceb16)
 
-Resolves: #1176736
+Resolves: #1155370
 ---
  rules/42-usb-hid-pm.rules | 4 ----
  1 file changed, 4 deletions(-)

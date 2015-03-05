@@ -1,4 +1,4 @@
-From c0e227a9fbb99cc9d437f8ac695c93c72c92e11b Mon Sep 17 00:00:00 2001
+From 72be8870f1ab5d8753d966ee6c81f88734053a95 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 26 Aug 2014 21:04:21 +0200
 Subject: [PATCH] util: reset signals when we fork off agents
@@ -21,7 +21,7 @@ Resolves: #1134818
  2 files changed, 19 insertions(+)
 
 diff --git a/src/shared/util.c b/src/shared/util.c
-index 0fcc130..3620c0a 100644
+index fc1f765..e4448ff 100644
 --- a/src/shared/util.c
 +++ b/src/shared/util.c
 @@ -935,6 +935,18 @@ int reset_all_signal_handlers(void) {
@@ -43,7 +43,7 @@ index 0fcc130..3620c0a 100644
  char *strstrip(char *s) {
          char *e;
  
-@@ -5044,6 +5056,12 @@ int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *pa
+@@ -5028,6 +5040,12 @@ int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *pa
          /* Don't leak fds to the agent */
          close_all_fds(except, n_except);
  
@@ -57,10 +57,10 @@ index 0fcc130..3620c0a 100644
          stderr_is_tty = isatty(STDERR_FILENO);
  
 diff --git a/src/shared/util.h b/src/shared/util.h
-index 3a4bc98..cf935ce 100644
+index ec18d2c..5a9bc99 100644
 --- a/src/shared/util.h
 +++ b/src/shared/util.h
-@@ -206,6 +206,7 @@ int readlink_and_make_absolute(const char *p, char **r);
+@@ -207,6 +207,7 @@ int readlink_and_make_absolute(const char *p, char **r);
  int readlink_and_canonicalize(const char *p, char **r);
  
  int reset_all_signal_handlers(void);

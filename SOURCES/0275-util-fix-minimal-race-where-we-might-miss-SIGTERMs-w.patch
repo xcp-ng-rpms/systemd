@@ -1,4 +1,4 @@
-From 3a45f6df7e5d37c1eb0c6e83b74093ef717942e6 Mon Sep 17 00:00:00 2001
+From f0fdbdb003cb3e8d8188c1c01701b510505b5b8b Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Wed, 27 Aug 2014 21:42:20 +0200
 Subject: [PATCH] util: fix minimal race where we might miss SIGTERMs when
@@ -11,14 +11,14 @@ the child will have them blocked, and we won't lose them.
 
 Related: #1134818
 ---
- src/shared/util.c | 29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
+ src/shared/util.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
 diff --git a/src/shared/util.c b/src/shared/util.c
-index 090a204..0fcc130 100644
+index e4448ff..9f25b15 100644
 --- a/src/shared/util.c
 +++ b/src/shared/util.c
-@@ -4991,9 +4991,9 @@ int fd_inc_rcvbuf(int fd, size_t n) {
+@@ -5002,9 +5002,9 @@ int fd_inc_rcvbuf(int fd, size_t n) {
  }
  
  int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *path, ...) {
@@ -30,7 +30,7 @@ index 090a204..0fcc130 100644
          unsigned n, i;
          va_list ap;
          char **l;
-@@ -5001,16 +5001,25 @@ int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *pa
+@@ -5012,16 +5012,25 @@ int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *pa
          assert(pid);
          assert(path);
  
@@ -59,7 +59,7 @@ index 090a204..0fcc130 100644
                  *pid = agent_pid;
                  return 0;
          }
-@@ -5021,8 +5030,14 @@ int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *pa
+@@ -5032,24 +5041,26 @@ int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *pa
          if (prctl(PR_SET_PDEATHSIG, SIGTERM) < 0)
                  _exit(EXIT_FAILURE);
  
@@ -75,7 +75,16 @@ index 090a204..0fcc130 100644
          if (getppid() != parent_pid)
                  _exit(EXIT_SUCCESS);
  
-@@ -5033,6 +5048,8 @@ int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *pa
+         /* Don't leak fds to the agent */
+         close_all_fds(except, n_except);
+ 
+-        /* Make sure we actually can kill the agent, if we need to, in
+-         * case somebody invoked us from a shell script that trapped
+-         * SIGTERM or so... */
+-        reset_all_signal_handlers();
+-        reset_signal_mask();
+-
+         stdout_is_tty = isatty(STDOUT_FILENO);
          stderr_is_tty = isatty(STDERR_FILENO);
  
          if (!stdout_is_tty || !stderr_is_tty) {

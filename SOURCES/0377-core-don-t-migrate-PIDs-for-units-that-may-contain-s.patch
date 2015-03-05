@@ -1,4 +1,4 @@
-From ca891be92be9f82078bd88d041098c34ae35334f Mon Sep 17 00:00:00 2001
+From 4d554c7c1b5373f854cdfd3b8c7d6804225c752e Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Wed, 10 Dec 2014 20:38:24 +0100
 Subject: [PATCH] core: don't migrate PIDs for units that may contain
@@ -9,13 +9,13 @@ fact that it is attached to a subcgroup.
 
 (cherry picked from commit 0cd385d31814c8c1bc0c81d11ef321036b8b0921)
 
-Resolves: #1179715
+Resolves: #1139223
 ---
  src/core/cgroup.c | 11 +++++++++--
  1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/src/core/cgroup.c b/src/core/cgroup.c
-index 764311f..5558b6d 100644
+index 443937b..5163ee4 100644
 --- a/src/core/cgroup.c
 +++ b/src/core/cgroup.c
 @@ -392,11 +392,16 @@ static CGroupControllerMask unit_get_siblings_mask(Unit *u) {

@@ -1,9 +1,9 @@
-From 8ace570670d71d13fe604e7cf9d264de245ac981 Mon Sep 17 00:00:00 2001
+From dda9057e8ee63f2e525333bf7d606f22bce0f7f5 Mon Sep 17 00:00:00 2001
 From: Lukas Nykryn <lnykryn@redhat.com>
 Date: Mon, 21 Jul 2014 15:13:15 +0200
 Subject: [PATCH] units: order network-online.target after network.target
 
-Resolves: #1121650
+Resolves: #1072431
 ---
  units/network-online.target | 1 +
  1 file changed, 1 insertion(+)

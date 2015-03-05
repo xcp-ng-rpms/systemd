@@ -1,4 +1,4 @@
-From 2e1c925693871dfba76845b82bb653dc09b2de97 Mon Sep 17 00:00:00 2001
+From 8ade7cd519f3cdccc81ed8c2fb2f72df48a191d7 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Mon, 24 Feb 2014 08:02:28 -0500
 Subject: [PATCH] units/serial-getty@.service: add [Install] section
@@ -8,7 +8,7 @@ specific gettys, and also mirrors getty@.service.
 
 http://lists.freedesktop.org/archives/systemd-devel/2014-February/017329.html
 
-Resolves: #1118230
+Resolves: #1083936
 ---
  units/serial-getty@.service.m4 | 3 +++
  1 file changed, 3 insertions(+)

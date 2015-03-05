@@ -11,7 +11,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        208
-Release:        11%{?dist}.6
+Release:        20%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -265,12 +265,154 @@ Patch0231: 0231-unit-add-waiting-jobs-to-run-queue-in-unit_coldplug.patch
 Patch0232: 0232-logind-session-save-stopping-flag.patch
 Patch0233: 0233-units-serial-getty-.service-add-Install-section.patch
 Patch0234: 0234-units-order-network-online.target-after-network.targ.patch
-Patch0235: 0235-util-fix-minimal-race-where-we-might-miss-SIGTERMs-w.patch
-Patch0236: 0236-util-reset-signals-when-we-fork-off-agents.patch
-Patch0237: 0237-socket-add-SocketUser-and-SocketGroup-for-chown-ing-.patch
-Patch0238: 0238-rules-don-t-enable-usb-pm-for-Avocent-devices.patch
-Patch0239: 0239-core-introduce-new-Delegate-yes-no-property-controll.patch
-Patch0240: 0240-core-don-t-migrate-PIDs-for-units-that-may-contain-s.patch
+Patch0235: 0235-util-consider-both-fuse.glusterfs-and-glusterfs-netw.patch
+Patch0236: 0236-core-make-StopWhenUnneeded-work-in-conjunction-with-.patch
+Patch0237: 0237-cgroups-agent-down-grade-log-level.patch
+Patch0238: 0238-random-seed-raise-POOL_SIZE_MIN-constant-to-1024.patch
+Patch0239: 0239-delta-do-not-use-unicode-chars-in-C-locale.patch
+Patch0240: 0240-core-print-debug-instead-of-error-message.patch
+Patch0241: 0241-journald-always-add-syslog-facility-for-messages-com.patch
+Patch0242: 0242-Introduce-_cleanup_endmntent_.patch
+Patch0243: 0243-Introduce-_cleanup_fdset_free_.patch
+Patch0244: 0244-Introduce-udev-object-cleanup-functions.patch
+Patch0245: 0245-fsck-modernization.patch
+Patch0246: 0246-fsck-fstab-generator-be-lenient-about-missing-fsck.-.patch
+Patch0247: 0247-rules-60-persistent-storage-add-nvme-pcie-ssd-scsi_i.patch
+Patch0248: 0248-cgls-fix-running-with-M-option.patch
+Patch0249: 0249-units-when-spawning-a-getty-configure-TERM-explicitl.patch
+Patch0250: 0250-getty-Start-getty-on-3270-terminals-available-on-Lin.patch
+Patch0251: 0251-core-Added-support-for-ERRNO-NOTIFY_SOCKET-message-p.patch
+Patch0252: 0252-service-don-t-accept-negative-ERRNO-notification-mes.patch
+Patch0253: 0253-socket-add-SocketUser-and-SocketGroup-for-chown-ing-.patch
+Patch0254: 0254-selinux-Check-access-vector-for-enable-and-disable-p.patch
+Patch0255: 0255-systemctl-show-StatusErrno-value-in-systemctl-status.patch
+Patch0256: 0256-service-flush-status-text-and-errno-values-each-time.patch
+Patch0257: 0257-service-don-t-free-status_text-twice.patch
+Patch0258: 0258-util-add-files_same-helper-function.patch
+Patch0259: 0259-systemctl-for-switch-root-check-if-we-switch-to-a-sy.patch
+Patch0260: 0260-shared-include-root-when-canonicalizing-conf-paths.patch
+Patch0261: 0261-shared-add-root-argument-to-search_and_fopen.patch
+Patch0262: 0262-machine-id-add-root-option-to-operate-on-an-alternat.patch
+Patch0263: 0263-conf-files-fix-when-for-root-logic.patch
+Patch0264: 0264-Make-systemctl-root-look-for-files-in-the-proper-pla.patch
+Patch0265: 0265-tmpfiles-fix-memory-leak-of-exclude_prefixes.patch
+Patch0266: 0266-tmpfiles-add-root-option-to-operate-on-an-alternate-.patch
+Patch0267: 0267-conf-files-include-root-in-returned-file-paths.patch
+Patch0268: 0268-install-make-sure-that-root-mode-doesn-t-make-us-con.patch
+Patch0269: 0269-shared-install-do-not-prefix-created-symlink-with-ro.patch
+Patch0270: 0270-systemctl-fail-in-the-case-that-no-unit-files-were-f.patch
+Patch0271: 0271-units-make-ExecStopPost-action-part-of-ExecStart.patch
+Patch0272: 0272-systemctl-fix-broken-list-unit-files-with-root.patch
+Patch0273: 0273-machine-id-only-look-into-KVM-uuid-when-we-are-not-r.patch
+Patch0274: 0274-util-reset-signals-when-we-fork-off-agents.patch
+Patch0275: 0275-util-fix-minimal-race-where-we-might-miss-SIGTERMs-w.patch
+Patch0276: 0276-udev-do-not-skip-the-execution-of-RUN-when-renaming-.patch
+Patch0277: 0277-man-mention-System-Administrator-s-Guide-in-systemct.patch
+Patch0278: 0278-vconsole-also-copy-character-maps-not-just-fonts-fro.patch
+Patch0279: 0279-vconsole-setup-run-setfont-before-loadkeys.patch
+Patch0280: 0280-vconsole-setup-fix-inverted-error-messages.patch
+Patch0281: 0281-localed-consider-an-unset-model-as-a-wildcard.patch
+Patch0282: 0282-systemd-detect-virt-detect-s390-virtualization.patch
+Patch0283: 0283-systemctl-unbreak-switchroot.patch
+Patch0284: 0284-systemd-detect-virt-fix-detect-s390-virtualization.patch
+Patch0285: 0285-exec-Add-SELinuxContext-configuration-item.patch
+Patch0286: 0286-exec-Ignore-the-setting-SELinuxContext-if-selinux-is.patch
+Patch0287: 0287-exec-Add-support-for-ignoring-errors-on-SELinuxConte.patch
+Patch0288: 0288-core-store-and-expose-SELinuxContext-field-normalize.patch
+Patch0289: 0289-socket-introduce-SELinuxContextFromNet-option.patch
+Patch0290: 0290-sysctl-make-prefix-allow-all-kinds-of-sysctl-paths.patch
+Patch0291: 0291-core-make-sure-to-serialize-jobs-for-all-units.patch
+Patch0292: 0292-man-mention-localectl-in-locale.conf.patch
+Patch0293: 0293-rules-automatically-online-hot-added-CPUs.patch
+Patch0294: 0294-rules-add-rule-for-naming-Dell-iDRAC-USB-Virtual-NIC.patch
+Patch0295: 0295-bash-completion-add-verb-set-property.patch
+Patch0296: 0296-man-update-journald-rate-limit-defaults.patch
+Patch0297: 0297-core-don-t-try-to-connect-to-d-bus-after-switchroot.patch
+Patch0298: 0298-localed-log-locale-keymap-changes-in-detail.patch
+Patch0299: 0299-localed-introduce-helper-function-to-simplify-matchi.patch
+Patch0300: 0300-localed-check-for-partially-matching-converted-keyma.patch
+Patch0301: 0301-fileio-make-parse_env_file-return-number-of-parsed-i.patch
+Patch0302: 0302-localectl-print-warning-when-there-are-options-given.patch
+Patch0303: 0303-dbus-fix-crash-when-appending-selinux-context.patch
+Patch0304: 0304-tmpfiles-minor-modernizations.patch
+Patch0305: 0305-install-when-looking-for-a-unit-file-for-enabling-se.patch
+Patch0306: 0306-install-remove-unused-variable.patch
+Patch0307: 0307-bootctl-typo-fix-in-help-message.patch
+Patch0308: 0308-logind-ignore-failing-close-on-session-devices.patch
+Patch0309: 0309-sysfs-show.c-return-negative-error.patch
+Patch0310: 0310-core-only-send-SIGHUP-when-doing-first-kill-not-when.patch
+Patch0311: 0311-cgroup-make-sure-to-properly-send-SIGCONT-to-all-pro.patch
+Patch0312: 0312-core-don-t-send-duplicate-SIGCONT-when-killing-units.patch
+Patch0313: 0313-efi-fix-Undefined-reference-efi_loader_get_boot_usec.patch
+Patch0314: 0314-macro-better-make-IN_SET-macro-use-const-arrays.patch
+Patch0315: 0315-macro-make-sure-we-can-use-IN_SET-also-with-complex-.patch
+Patch0316: 0316-core-fix-property-changes-in-transient-units.patch
+Patch0317: 0317-load-modules-properly-return-a-failing-error-code-if.patch
+Patch0318: 0318-core-unit-fix-unit_add_target_dependencies-for-units.patch
+Patch0319: 0319-man-there-is-no-ExecStopPre-for-service-units.patch
+Patch0320: 0320-man-document-that-per-interface-sysctl-variables-are.patch
+Patch0321: 0321-journal-downgrade-vaccuum-message-to-debug-level.patch
+Patch0322: 0322-logs-show-fix-corrupt-output-with-empty-messages.patch
+Patch0323: 0323-journalctl-refuse-extra-arguments-with-verify-and-si.patch
+Patch0324: 0324-journal-assume-that-next-entry-is-after-previous-ent.patch
+Patch0325: 0325-journal-forget-file-after-encountering-an-error.patch
+Patch0326: 0326-man-update-link-to-LSB.patch
+Patch0327: 0327-man-systemd-bootchart-fix-spacing-in-command.patch
+Patch0328: 0328-man-add-missing-comma.patch
+Patch0329: 0329-units-Do-not-unescape-instance-name-in-systemd-backl.patch
+Patch0330: 0330-manager-flush-memory-stream-before-using-the-buffer.patch
+Patch0331: 0331-man-multiple-sleep-modes-are-to-be-separated-by-whit.patch
+Patch0332: 0332-man-fix-description-of-systemctl-after-before.patch
+Patch0333: 0333-udev-properly-detect-reference-to-unexisting-part-of.patch
+Patch0334: 0334-gpt-auto-generator-don-t-return-OOM-on-parentless-de.patch
+Patch0335: 0335-man-improve-wording-of-systemctl-s-after-before.patch
+Patch0336: 0336-cgroup-it-s-not-OK-to-invoke-alloca-in-loops.patch
+Patch0337: 0337-core-don-t-try-to-relabel-mounts-before-we-loaded-th.patch
+Patch0338: 0338-systemctl-kill-mode-is-long-long-gone-don-t-mention-.patch
+Patch0339: 0339-ask-password-when-the-user-types-a-overly-long-passw.patch
+Patch0340: 0340-logind-don-t-print-error-if-devices-vanish-during-AC.patch
+Patch0341: 0341-tty-ask-password-agent-return-negative-errno.patch
+Patch0342: 0342-journal-cleanup-up-error-handling-in-update_catalog.patch
+Patch0343: 0343-bash-completion-fix-__get_startable_units.patch
+Patch0344: 0344-core-check-the-right-variable-for-failed-open.patch
+Patch0345: 0345-util-allow-trailing-semicolons-on-define_trivial_cle.patch
+Patch0346: 0346-man-sd_journal_send-does-nothing-when-journald-is-no.patch
+Patch0347: 0347-man-clarify-that-the-ExecReload-command-should-be-sy.patch
+Patch0348: 0348-conf-parser-never-consider-it-an-error-if-we-cannot-.patch
+Patch0349: 0349-socket-properly-handle-if-our-service-vanished-durin.patch
+Patch0350: 0350-Do-not-unescape-unit-names-in-Install-section.patch
+Patch0351: 0351-util-ignore_file-should-not-allow-files-ending-with.patch
+Patch0352: 0352-core-fix-invalid-free-in-killall.patch
+Patch0353: 0353-install-fix-invalid-free-in-unit_file_mask.patch
+Patch0354: 0354-unit-name-fix-detection-of-unit-templates-instances.patch
+Patch0355: 0355-journald-make-MaxFileSec-really-default-to-1month.patch
+Patch0356: 0356-bootchart-it-s-not-OK-to-return-1-from-a-main-progra.patch
+Patch0357: 0357-journald-Fix-off-by-one-error-in-Missed-X-kernel-mes.patch
+Patch0358: 0358-man-drop-references-to-removed-and-obsolete-systemct.patch
+Patch0359: 0359-units-fix-BindsTo-logic-when-applied-relative-to-ser.patch
+Patch0360: 0360-core-don-t-allow-enabling-if-unit-is-masked.patch
+Patch0361: 0361-man-systemctl-document-enable-on-masked-units.patch
+Patch0362: 0362-core-do-not-segfault-if-proc-swaps-cannot-be-opened.patch
+Patch0363: 0363-man-we-don-t-have-Wanted-dependency.patch
+Patch0364: 0364-environment-append-unit_id-to-error-messages-regardi.patch
+Patch0365: 0365-udevd-add-event-timeout-commandline-option.patch
+Patch0366: 0366-selinux-fix-potential-double-free-crash-in-child-pro.patch
+Patch0367: 0367-selinux-pass-flag-to-correct-exec_spawn.patch
+Patch0368: 0368-selinux-set-selinux-context-applied-on-exec-before-c.patch
+Patch0369: 0369-logind-use-correct-who-enum-values-with-KillUnit.patch
+Patch0370: 0370-logind-always-kill-session-when-termination-is-reque.patch
+Patch0371: 0371-udev-net_id-correctly-name-netdevs-based-on-dev_port.patch
+Patch0372: 0372-udev-net_id-dev_port-is-base-10.patch
+Patch0373: 0373-udev-Fix-parsing-of-udev.event-timeout-kernel-parame.patch
+Patch0374: 0374-login-rerun-vconsole-setup-when-switching-from-vgaco.patch
+Patch0375: 0375-cgroups-agent-really-down-grade-log-level.patch
+Patch0376: 0376-core-introduce-new-Delegate-yes-no-property-controll.patch
+Patch0377: 0377-core-don-t-migrate-PIDs-for-units-that-may-contain-s.patch
+Patch0378: 0378-mount-use-libmount-to-enumerate-proc-self-mountinfo.patch
+Patch0379: 0379-mount-monitor-for-utab-changes-with-inotify.patch
+Patch0380: 0380-mount-add-remote-fs-dependencies-if-needed-after-cha.patch
+Patch0381: 0381-mount-check-options-as-well-as-fstype-for-network-mo.patch
+Patch0382: 0382-rules-don-t-enable-usb-pm-for-Avocent-devices.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -302,6 +444,7 @@ BuildRequires:  automake
 BuildRequires:  autoconf
 BuildRequires:  libtool
 BuildRequires:  git
+BuildRequires:  libmount-devel
 
 Requires(post): coreutils
 Requires(post): gawk
@@ -466,6 +609,7 @@ git am \
     --exclude test/.gitignore \
     --exclude units/.gitignore \
     --exclude units/user/.gitignore \
+    --exclude .travis.yml \
     %{patches}
 
 
@@ -1069,23 +1213,131 @@ getent passwd systemd-journal-gateway >/dev/null 2>&1 || useradd -r -l -u 191 -g
 %{_datadir}/systemd/gatewayd
 
 %changelog
-* Wed Jan 07 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-11.6
-- rules: don't enable usb pm for Avocent devices (#1176736)
-- core: introduce new Delegate=yes/no property controlling creation of cgroup subhierarchies (#1179715)
-- core: don't migrate PIDs for units that may contain subcgroups, do this only for leaf units (#1179715)
+* Mon Dec 22 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-20
+- core: introduce new Delegate=yes/no property controlling creation of cgroup subhierarchies (#1139223)
+- core: don't migrate PIDs for units that may contain subcgroups, do this only for leaf units (#1139223)
+- mount: use libmount to enumerate /proc/self/mountinfo (#1161417)
+- mount: monitor for utab changes with inotify (#1161417)
+- mount: add remote-fs dependencies if needed after change (#1161417)
+- mount: check options as well as fstype for network mounts (#1161417)
+- rules: don't enable usb pm for Avocent devices (#1155370)
 
-* Fri Dec 05 2014 Michal Sekletar <msekleta@redhat.com> - 208-11.5
-- socket: add SocketUser= and SocketGroup= for chown()ing (#1171054)
+* Mon Nov 10 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-19
+- cgroups-agent: really down-grade log level (#1044386)
 
-* Mon Oct 06 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11.4
-- util: reset signals when we fork off agents
-- util: fix minimal race where we might miss SIGTERMs when forking off an agent
+* Mon Nov 10 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-18
+- login: rerun vconsole-setup when switching from vgacon to fbcon (#1002450)
 
-* Mon Jul 21 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11.2
-- units: order network-online.target after network.target
+* Fri Nov 07 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-17
+- udev: net_id dev_port is base 10 (#1155996)
+- udev: Fix parsing of udev.event-timeout kernel parameter (#1154778)
 
-* Fri Jul 11 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11.1
-- units/serial-getty@.service: add [Install] section
+* Thu Oct 30 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-16
+- logind: use correct "who" enum values with KillUnit. (#1155502)
+- logind: always kill session when termination is requested (#1155502)
+- udev: net_id - correctly name netdevs based on dev_port when set (#1155996)
+
+* Tue Oct 21 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-15
+- core: do not segfault if /proc/swaps cannot be opened (#1151239)
+- man: we don't have 'Wanted' dependency (#1152487)
+- environment: append unit_id to error messages regarding EnvironmentFile (#1147691)
+- udevd: add --event-timeout commandline option (#1154778)
+
+* Wed Oct 08 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-14
+- core: don't allow enabling if unit is masked (#1149299)
+
+* Tue Oct 07 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-13
+- tmpfiles: minor modernizations (#1147524)
+- install: when looking for a unit file for enabling, search for templates only after traversing all search directories (#1147524)
+- install: remove unused variable (#1147524)
+- bootctl: typo fix in help message (#1147524)
+- logind: ignore failing close() on session-devices (#1147524)
+- sysfs-show.c: return negative error (#1147524)
+- core: only send SIGHUP when doing first kill, not when doing final sigkill (#1147524)
+- cgroup: make sure to properly send SIGCONT to all processes of a cgroup if that's requested (#1147524)
+- core: don't send duplicate SIGCONT when killing units (#1147524)
+- efi: fix Undefined reference efi_loader_get_boot_usec when EFI support is disabled (#1147524)
+- macro: better make IN_SET() macro use const arrays (#1147524)
+- macro: make sure we can use IN_SET() also with complex function calls as first argument (#1147524)
+- core: fix property changes in transient units (#1147524)
+- load-modules: properly return a failing error code if some module fails to load (#1147524)
+- core/unit: fix unit_add_target_dependencies() for units with no dependencies (#1147524)
+- man: there is no ExecStopPre= for service units (#1147524)
+- man: document that per-interface sysctl variables are applied as network interfaces show up (#1147524)
+- journal: downgrade vaccuum message to debug level (#1147524)
+- logs-show: fix corrupt output with empty messages (#1147524)
+- journalctl: refuse extra arguments with --verify and similar (#1147524)
+- journal: assume that next entry is after previous entry (#1147524)
+- journal: forget file after encountering an error (#1147524)
+- man: update link to LSB (#1147524)
+- man: systemd-bootchart - fix spacing in command (#1147524)
+- man: add missing comma (#1147524)
+- units: Do not unescape instance name in systemd-backlight@.service (#1147524)
+- manager: flush memory stream before using the buffer (#1147524)
+- man: multiple sleep modes are to be separated by whitespace, not commas (#1147524)
+- man: fix description of systemctl --after/--before (#1147524)
+- udev: properly detect reference to unexisting part of PROGRAM's result (#1147524)
+- gpt-auto-generator: don't return OOM on parentless devices (#1147524)
+- man: improve wording of systemctl's --after/--before (#1147524)
+- cgroup: it's not OK to invoke alloca() in loops (#1147524)
+- core: don't try to relabel mounts before we loaded the policy (#1147524)
+- systemctl: --kill-mode is long long gone, don't mention it in the man page (#1147524)
+- ask-password: when the user types a overly long password, beep and refuse (#1147524)
+- logind: don't print error if devices vanish during ACL-init (#1147524)
+- tty-ask-password-agent: return negative errno (#1147524)
+- journal: cleanup up error handling in update_catalog() (#1147524)
+- bash completion: fix __get_startable_units (#1147524)
+- core: check the right variable for failed open() (#1147524)
+- man: sd_journal_send does nothing when journald is not available (#1147524)
+- man: clarify that the ExecReload= command should be synchronous (#1147524)
+- conf-parser: never consider it an error if we cannot load a drop-in file because it is missing (#1147524)
+- socket: properly handle if our service vanished during runtime (#1147524)
+- Do not unescape unit names in [Install] section (#1147524)
+- util: ignore_file should not allow files ending with '~' (#1147524)
+- core: fix invalid free() in killall() (#1147524)
+- install: fix invalid free() in unit_file_mask() (#1147524)
+- unit-name: fix detection of unit templates/instances (#1147524)
+- journald: make MaxFileSec really default to 1month (#1147524)
+- bootchart: it's not OK to return -1 from a main program (#1147524)
+- journald: Fix off-by-one error in "Missed X kernel messages" warning (#1147524)
+- man: drop references to removed and obsolete 'systemctl load' command (#1147524)
+- units: fix BindsTo= logic when applied relative to services with Type=oneshot (#1147524)
+
+* Mon Sep 29 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-12
+- units/serial-getty@.service: add [Install] section (#1083936)
+- units: order network-online.target after network.target (#1072431)
+- util: consider both fuse.glusterfs and glusterfs network file systems (#1080229)
+- core: make StopWhenUnneeded work in conjunction with units that fail during their start job (#986949)
+- cgroups-agent: down-grade log level (#1044386)
+- random-seed: raise POOL_SIZE_MIN constant to 1024 (#1066517)
+- delta: do not use unicode chars in C locale (#1088419)
+- core: print debug instead of error message (#1105608)
+- journald: always add syslog facility for messages coming from kmsg (#1113215)
+- fsck,fstab-generator: be lenient about missing fsck.<type> (#1098310)
+- rules/60-persistent-storage: add nvme pcie ssd scsi_id ENV (#1042990)
+- cgls: fix running with -M option (#1085455)
+- getty: Start getty on 3270 terminals available on Linux on System z (#1075729)
+- core: Added support for ERRNO NOTIFY_SOCKET  message parsing (#1106457)
+- socket: add SocketUser= and SocketGroup= for chown()ing sockets in the file system (#1111761)
+- tmpfiles: add --root option to operate on an alternate fs tree (#1111199)
+- units: make ExecStopPost action part of ExecStart (#1036276)
+- machine-id: only look into KVM uuid when we are not running in a container (#1123452)
+- util: reset signals when we fork off agents (#1134818)
+- udev: do not skip the execution of RUN when renaming a network device fails (#1102135)
+- man: mention System Administrator's Guide in systemctl manpage (#978948)
+- vconsole: also copy character maps (not just fonts) from vt1 to vt2, vt3, ... (#1002450)
+- localed: consider an unset model as a wildcard (#903776)
+- systemd-detect-virt: detect s390 virtualization (#1139149)
+- socket: introduce SELinuxContextFromNet option (#1113790)
+- sysctl: make --prefix allow all kinds of sysctl paths (#1138591)
+- man: mention localectl in locale.conf (#1049286)
+- rules: automatically online hot-added CPUs (#968811)
+- rules: add rule for naming Dell iDRAC USB Virtual NIC as 'idrac' (#1054477)
+- bash-completion: add verb set-property (#1064487)
+- man: update journald rate limit defaults (#1145352)
+- core: don't try to connect to d-bus after switchroot (#1083300)
+- localed: check for partially matching converted keymaps (#1109145)
+- fileio: make parse_env_file() return number of parsed items (#1069420)
 
 * Wed Apr 02 2014 Lukáš Nykrýn <lnykryn@redhat.com> - 208-11
 - logind-session: save stopping flag (#1082692)
