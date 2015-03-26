@@ -1,0 +1,36 @@
+From a13006e07ad1c8f3de577b8b64f22a0e044784e7 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Tue, 10 Feb 2015 10:34:20 +0100
+Subject: [PATCH] core: fix enabling units via their absolute paths
+
+In case when client requests enable but gives us full path to unit file we
+should call manager_load_unit with 2nd and 3rd argument swapped because we
+don't want to search for unit file in usual places but rather load it directly.
+
+Related: #1199981
+---
+ src/core/dbus-manager.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/core/dbus-manager.c b/src/core/dbus-manager.c
+index cebc730..f35f23b 100644
+--- a/src/core/dbus-manager.c
++++ b/src/core/dbus-manager.c
+@@ -1603,7 +1603,7 @@ static DBusHandlerResult bus_manager_message_handler(DBusConnection *connection,
+                 STRV_FOREACH(i, l) {
+                         Unit *u;
+ 
+-                        r = manager_load_unit(m, *i, NULL, NULL, &u);
++                        r = path_is_absolute(*i) ? manager_load_unit(m, NULL, *i, NULL, &u) : manager_load_unit(m, *i, NULL, NULL, &u);
+                         if (r < 0) {
+                                 dbus_set_error(&error, BUS_ERROR_NO_SUCH_UNIT, "Unit %s does not exist.", *i);
+                                 return bus_send_error_reply(connection, message, &error, -ENOENT);
+@@ -1681,7 +1681,7 @@ static DBusHandlerResult bus_manager_message_handler(DBusConnection *connection,
+                 STRV_FOREACH(i, l) {
+                         Unit *u;
+ 
+-                        r = manager_load_unit(m, *i, NULL, NULL, &u);
++                        r = path_is_absolute(*i) ? manager_load_unit(m, NULL, *i, NULL, &u) : manager_load_unit(m, *i, NULL, NULL, &u);
+                         if (r < 0) {
+                                 dbus_set_error(&error, BUS_ERROR_NO_SUCH_UNIT, "Unit %s does not exist.", *i);
+                                 return bus_send_error_reply(connection, message, &error, -ENOENT);

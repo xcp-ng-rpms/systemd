@@ -11,7 +11,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        208
-Release:        20%{?dist}
+Release:        20%{?dist}.2
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -413,6 +413,9 @@ Patch0379: 0379-mount-monitor-for-utab-changes-with-inotify.patch
 Patch0380: 0380-mount-add-remote-fs-dependencies-if-needed-after-cha.patch
 Patch0381: 0381-mount-check-options-as-well-as-fstype-for-network-mo.patch
 Patch0382: 0382-rules-don-t-enable-usb-pm-for-Avocent-devices.patch
+Patch0383: 0383-shared-install-avoid-prematurely-rejecting-missing-u.patch
+Patch0384: 0384-core-fix-enabling-units-via-their-absolute-paths.patch
+Patch0385: 0385-Revert-units-fix-BindsTo-logic-when-applied-relative.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1213,6 +1216,13 @@ getent passwd systemd-journal-gateway >/dev/null 2>&1 || useradd -r -l -u 191 -g
 %{_datadir}/systemd/gatewayd
 
 %changelog
+* Thu Mar 19 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-20.2
+- Revert "units: fix BindsTo= logic when applied relative to services with Type=oneshot" (#1203803)
+
+* Mon Mar 09 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-20.1
+- shared/install: avoid prematurely rejecting "missing" units (#1199981)
+- core: fix enabling units via their absolute paths (#1199981)
+
 * Mon Dec 22 2014 Lukas Nykryn <lnykryn@redhat.com> - 208-20
 - core: introduce new Delegate=yes/no property controlling creation of cgroup subhierarchies (#1139223)
 - core: don't migrate PIDs for units that may contain subcgroups, do this only for leaf units (#1139223)
