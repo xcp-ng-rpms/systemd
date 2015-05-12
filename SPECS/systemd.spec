@@ -1,7 +1,4 @@
-# PIE is broken on s390 (#868839, #872148)
-%ifnarch s390 s390x
 %global _hardened_build 1
-%endif
 
 # We ship a .pc file but don't want to have a dep on pkg-config. We
 # strip the automatically generated dep here and instead co-own the
@@ -11,7 +8,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        208
-Release:        20%{?dist}.2
+Release:        20%{?dist}.3
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -1216,6 +1213,9 @@ getent passwd systemd-journal-gateway >/dev/null 2>&1 || useradd -r -l -u 191 -g
 %{_datadir}/systemd/gatewayd
 
 %changelog
+* Wed Apr 08 2015 Lukáš Nykrýn <lnykryn@redhat.com> - 208-20.3
+- Revert "conditionalize hardening away on s390(x)"
+
 * Thu Mar 19 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-20.2
 - Revert "units: fix BindsTo= logic when applied relative to services with Type=oneshot" (#1203803)
 
