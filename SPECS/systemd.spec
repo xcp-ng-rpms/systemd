@@ -8,7 +8,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        208
-Release:        20%{?dist}.3
+Release:        20%{?dist}.5
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -413,6 +413,9 @@ Patch0382: 0382-rules-don-t-enable-usb-pm-for-Avocent-devices.patch
 Patch0383: 0383-shared-install-avoid-prematurely-rejecting-missing-u.patch
 Patch0384: 0384-core-fix-enabling-units-via-their-absolute-paths.patch
 Patch0385: 0385-Revert-units-fix-BindsTo-logic-when-applied-relative.patch
+Patch0386: 0386-run-drop-mistakenly-committed-test-code.patch
+Patch0387: 0387-cgroup-downgrade-log-messages-when-we-cannot-write-t.patch
+Patch0388: 0388-rules-load-sg-module.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1213,6 +1216,13 @@ getent passwd systemd-journal-gateway >/dev/null 2>&1 || useradd -r -l -u 191 -g
 %{_datadir}/systemd/gatewayd
 
 %changelog
+* Thu May 21 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-20.5
+- rules: load sg module (#1223340)
+
+* Mon May 11 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-20.4
+- run: drop mistakenly committed test code (#1220272)
+- cgroup: downgrade log messages when we cannot write to cgroup trees that are mounted read-only (#1220298)
+
 * Wed Apr 08 2015 Lukáš Nykrýn <lnykryn@redhat.com> - 208-20.3
 - Revert "conditionalize hardening away on s390(x)"
 
