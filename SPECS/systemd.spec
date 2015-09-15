@@ -8,7 +8,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        208
-Release:        20%{?dist}.5
+Release:        20%{?dist}.6
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -416,6 +416,7 @@ Patch0385: 0385-Revert-units-fix-BindsTo-logic-when-applied-relative.patch
 Patch0386: 0386-run-drop-mistakenly-committed-test-code.patch
 Patch0387: 0387-cgroup-downgrade-log-messages-when-we-cannot-write-t.patch
 Patch0388: 0388-rules-load-sg-module.patch
+Patch0389: 0389-machined-force-machined-to-dispatch-messages.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1216,6 +1217,9 @@ getent passwd systemd-journal-gateway >/dev/null 2>&1 || useradd -r -l -u 191 -g
 %{_datadir}/systemd/gatewayd
 
 %changelog
+* Thu Jul 16 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-20.6
+- machined: force machined to dispatch messages (#1243401)
+
 * Thu May 21 2015 Lukas Nykryn <lnykryn@redhat.com> - 208-20.5
 - rules: load sg module (#1223340)
 
