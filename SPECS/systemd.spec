@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        19%{?dist}
+Release:        19%{?dist}.4
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -285,6 +285,16 @@ Patch0254: 0254-selinux-fix-regression-of-systemctl-subcommands-when.patch
 Patch0255: 0255-tmpfiles.d-don-t-clean-SAP-lockfiles-and-logs.patch
 Patch0256: 0256-udev-make-naming-for-virtio-devices-opt-in.patch
 Patch0257: 0257-tmpfiles.d-don-t-clean-SAP-sockets-either.patch
+Patch0258: 0258-run-synchronously-wait-until-the-scope-unit-we-creat.patch
+Patch0259: 0259-device-rework-how-we-enter-tentative-state.patch
+Patch0260: 0260-core-Do-not-bind-a-mount-unit-to-a-device-if-it-was-.patch
+Patch0261: 0261-logind-set-RemoveIPC-no-by-default.patch
+Patch0262: 0262-sysv-generator-follow-symlinks-in-etc-rc.d-init.d.patch
+Patch0263: 0263-man-RemoveIPC-is-set-to-no-on-rhel.patch
+Patch0264: 0264-makefile-disable-udev-tests.patch
+Patch0265: 0265-sysv-generator-test-always-log-to-console.patch
+Patch0266: 0266-test-sysv-generator-Check-for-network-online.target.patch
+Patch0267: 0267-Avoid-tmp-being-mounted-as-tmpfs-without-the-user-s-.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -327,6 +337,7 @@ BuildRequires:  autoconf
 BuildRequires:  libtool
 BuildRequires:  git
 BuildRequires:  libmount-devel
+BuildRequires:  tree
 
 Requires(post): coreutils
 Requires(post): gawk
@@ -1243,6 +1254,21 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -l -g systemd-resolv
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Wed Jan 13 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.4
+- Avoid /tmp being mounted as tmpfs without the user's will (#1298109)
+
+* Thu Dec 10 2015 Lukas Nykryn <lnykryn@redhat.com> - 219-19.3
+- sysv-generator: follow symlinks in /etc/rc.d/init.d (#1288005)
+- man: RemoveIPC is set to no on rhel (#1284588)
+
+* Fri Nov 27 2015 Lukas Nykryn <lnykryn@redhat.com> - 219-19.2
+- device: rework how we enter tentative state (#1283579)
+- core: Do not bind a mount unit to a device, if it was from mountinfo (#1283579)
+- logind: set RemoveIPC=no by default (#1284588)
+
+* Wed Nov 18 2015 Lukas Nykryn <lnykryn@redhat.com> - 219-19.1
+- run: synchronously wait until the scope unit we create is started (#1283192)
+
 * Mon Oct 12 2015 Lukas Nykryn <lnykryn@redhat.com> - 219-19
 - udev: make naming for virtio devices opt-in (#1269216)
 - tmpfiles.d: don't clean SAP sockets either (#1186044)
