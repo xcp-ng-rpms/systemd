@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        19%{?dist}.4
+Release:        19%{?dist}.7
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -295,6 +295,12 @@ Patch0264: 0264-makefile-disable-udev-tests.patch
 Patch0265: 0265-sysv-generator-test-always-log-to-console.patch
 Patch0266: 0266-test-sysv-generator-Check-for-network-online.target.patch
 Patch0267: 0267-Avoid-tmp-being-mounted-as-tmpfs-without-the-user-s-.patch
+Patch0268: 0268-udev-fibre-channel-fix-NPIV-support.patch
+Patch0269: 0269-ata_id-unreverse-WWN-identifier.patch
+Patch0270: 0270-Fixup-WWN-bytes-for-big-endian-systems.patch
+Patch0271: 0271-Revert-udev-fibre-channel-fix-NPIV-support.patch
+Patch0272: 0272-udev-path-id-fibre-channel-NPIV-use-fc_vport-s-port_.patch
+Patch0273: 0273-rules-set-SYSTEMD_READY-0-on-DM_UDEV_DISABLE_OTHER_R.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -1254,6 +1260,18 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -l -g systemd-resolv
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Fri Mar 04 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.7
+- Revert "udev: fibre channel: fix NPIV support" (#1266934)
+- udev: path-id: fibre channel NPIV - use fc_vport's port_name (#1266934)
+- rules: set SYSTEMD_READY=0 on DM_UDEV_DISABLE_OTHER_RULES_FLAG=1 only with ADD event (#1312011)
+
+* Thu Feb 25 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.6
+- ata_id: unreverse WWN identifier (#1308795)
+- Fixup WWN bytes for big-endian systems (#1308795)
+
+* Wed Feb 03 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.5
+- udev: fibre channel: fix NPIV support (#1266934)
+
 * Wed Jan 13 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.4
 - Avoid /tmp being mounted as tmpfs without the user's will (#1298109)
 
