@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        19%{?dist}.7
+Release:        19%{?dist}.9
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -301,6 +301,9 @@ Patch0270: 0270-Fixup-WWN-bytes-for-big-endian-systems.patch
 Patch0271: 0271-Revert-udev-fibre-channel-fix-NPIV-support.patch
 Patch0272: 0272-udev-path-id-fibre-channel-NPIV-use-fc_vport-s-port_.patch
 Patch0273: 0273-rules-set-SYSTEMD_READY-0-on-DM_UDEV_DISABLE_OTHER_R.patch
+Patch0274: 0274-Revert-journald-turn-ForwardToSyslog-off-by-default.patch
+Patch0275: 0275-journal-fix-error-handling-when-compressing-journal-.patch
+Patch0276: 0276-journal-irrelevant-coding-style-fixes.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -1260,6 +1263,13 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -l -g systemd-resolv
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Thu Apr 28 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.9
+- journal: fix error handling when compressing journal objects (#1292447)
+- journal: irrelevant coding style fixes (#1292447)
+
+* Wed Apr 20 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.8
+- Revert "journald: turn ForwardToSyslog= off by default" (#1285642)
+
 * Fri Mar 04 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.7
 - Revert "udev: fibre channel: fix NPIV support" (#1266934)
 - udev: path-id: fibre channel NPIV - use fc_vport's port_name (#1266934)
