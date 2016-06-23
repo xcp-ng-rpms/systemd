@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        19%{?dist}.9
+Release:        19%{?dist}.11
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -304,6 +304,7 @@ Patch0273: 0273-rules-set-SYSTEMD_READY-0-on-DM_UDEV_DISABLE_OTHER_R.patch
 Patch0274: 0274-Revert-journald-turn-ForwardToSyslog-off-by-default.patch
 Patch0275: 0275-journal-fix-error-handling-when-compressing-journal-.patch
 Patch0276: 0276-journal-irrelevant-coding-style-fixes.patch
+Patch0277: 0277-fstab-generator-cescape-device-name-in-root-fsck-ser.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -551,6 +552,7 @@ CONFIGURE_OPTS=(
 --enable-gtk-doc
 --enable-compat-libs
 --disable-sysusers
+--disable-ldconfig
 %ifarch s390 s390x ppc %{power64} aarch64
 --disable-lto
 %endif
@@ -1263,6 +1265,12 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -l -g systemd-resolv
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Thu May 26 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.11
+- fstab-generator: cescape device name in root-fsck service (#1306126)
+
+* Tue May 24 2016 Lukáš Nykrýn <lnykryn@redhat.com> - 219-19.10
+- get rid of ldconfig.service (#1338892)
+
 * Thu Apr 28 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.9
 - journal: fix error handling when compressing journal objects (#1292447)
 - journal: irrelevant coding style fixes (#1292447)
