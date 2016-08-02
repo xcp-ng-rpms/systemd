@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        19%{?dist}.11
+Release:        19%{?dist}.12
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -305,6 +305,7 @@ Patch0274: 0274-Revert-journald-turn-ForwardToSyslog-off-by-default.patch
 Patch0275: 0275-journal-fix-error-handling-when-compressing-journal-.patch
 Patch0276: 0276-journal-irrelevant-coding-style-fixes.patch
 Patch0277: 0277-fstab-generator-cescape-device-name-in-root-fsck-ser.patch
+Patch0278: 0278-manager-reduce-complexity-of-unit_gc_sweep-3507.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -1265,6 +1266,9 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -l -g systemd-resolv
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Tue Jun 14 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.12
+- manager: reduce complexity of unit_gc_sweep (#3507) (#1344556)
+
 * Thu May 26 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.11
 - fstab-generator: cescape device name in root-fsck service (#1306126)
 
