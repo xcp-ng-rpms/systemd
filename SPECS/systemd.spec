@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        19%{?dist}.12
+Release:        19%{?dist}.13
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -306,6 +306,12 @@ Patch0275: 0275-journal-fix-error-handling-when-compressing-journal-.patch
 Patch0276: 0276-journal-irrelevant-coding-style-fixes.patch
 Patch0277: 0277-fstab-generator-cescape-device-name-in-root-fsck-ser.patch
 Patch0278: 0278-manager-reduce-complexity-of-unit_gc_sweep-3507.patch
+Patch0279: 0279-core-use-an-AF_UNIX-SOCK_DGRAM-socket-for-cgroup-age.patch
+Patch0280: 0280-logind-process-session-inhibitor-fds-at-higher-prior.patch
+Patch0281: 0281-sd-event-expose-the-event-loop-iteration-counter-via.patch
+Patch0282: 0282-manager-Only-invoke-a-single-sigchld-per-unit-within.patch
+Patch0283: 0283-manager-Fixing-a-debug-printf-formatting-mistake.patch
+Patch0284: 0284-manager-don-t-skip-sigchld-handler-for-main-and-cont.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -1266,6 +1272,14 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -l -g systemd-resolv
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Wed Jul 27 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.13
+- core: use an AF_UNIX/SOCK_DGRAM socket for cgroup agent notification (#1305608)
+- logind: process session/inhibitor fds at higher priority (#1305608)
+- sd-event: expose the event loop iteration counter via sd_event_get_iteration() (#1342173)
+- manager: Only invoke a single sigchld per unit within a cleanup cycle (#1342173)
+- manager: Fixing a debug printf formatting mistake (#1342173)
+- manager: don't skip sigchld handler for main and control pid for services (#3738) (#1342173)
+
 * Tue Jun 14 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-19.12
 - manager: reduce complexity of unit_gc_sweep (#3507) (#1344556)
 
