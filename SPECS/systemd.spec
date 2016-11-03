@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        30%{?dist}
+Release:        30%{?dist}.3
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -442,6 +442,14 @@ Patch0404: 0404-systemctl-core-ignore-masked-units-in-preset-all.patch
 Patch0405: 0405-shared-install-handle-dangling-aliases-as-an-explici.patch
 Patch0406: 0406-shared-install-ignore-unit-symlinks-when-doing-prese.patch
 Patch0407: 0407-40-redhat.rules-don-t-hoplug-memory-on-s390x.patch
+Patch0408: 0408-If-the-notification-message-length-is-0-ignore-the-m.patch
+Patch0409: 0409-systemctl-suppress-errors-with-show-for-nonexistent-.patch
+Patch0410: 0410-40-redhat.rules-disable-auto-online-of-hot-plugged-m.patch
+Patch0411: 0411-pid1-don-t-return-any-error-in-manager_dispatch_noti.patch
+Patch0412: 0412-pid1-process-zero-length-notification-messages-again.patch
+Patch0413: 0413-pid1-more-informative-error-message-for-ignored-noti.patch
+Patch0414: 0414-manager-219-needs-u-id-in-log_unit_debug.patch
+Patch0415: 0415-mtd_probe-add-include-for-stdint.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -699,6 +707,9 @@ CONFIGURE_OPTS=(
 )
 
 
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O0"
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O0"
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O0"
 RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O0"
 %configure "${CONFIGURE_OPTS[@]}"
 make %{?_smp_mflags} GCC_COLORS="" V=1
@@ -1420,6 +1431,20 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -u 193 -l -g systemd
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Fri Oct 07 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-30.3
+- mtd_probe: add include for stdint (#1381573)
+
+* Fri Oct 07 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-30.2
+- manager: 219 needs u->id in log_unit_debug (#1381573)
+
+* Wed Oct 05 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-30.1
+- If the notification message length is 0, ignore the message (#4237) (#1381573)
+- systemctl: suppress errors with "show" for nonexistent units and properties (#1380686)
+- 40-redhat.rules: disable auto-online of hot-plugged memory on IBM z Systems (#1381123)
+- pid1: don't return any error in manager_dispatch_notify_fd() (#4240) (#1381573)
+- pid1: process zero-length notification messages again (#1381573)
+- pid1: more informative error message for ignored notifications (#1381573)
+
 * Tue Sep 13 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-30
 - systemctl,pid1: do not warn about missing install info with "preset" (#1373950)
 - systemctl/core: ignore masked units in preset-all (#1375097)

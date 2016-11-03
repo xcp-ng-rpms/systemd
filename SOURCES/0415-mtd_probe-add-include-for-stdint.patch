@@ -1,0 +1,25 @@
+From 7d78e4a96b47b16330b2d28ff0cc5a51936e9fe9 Mon Sep 17 00:00:00 2001
+From: Lukas Nykryn <lnykryn@redhat.com>
+Date: Fri, 7 Oct 2016 15:17:12 +0200
+Subject: [PATCH] mtd_probe: add include for stdint
+
+The missing include is causing troubles on arm
+
+RHEL-only
+Related: #1381573
+---
+ src/udev/mtd_probe/mtd_probe.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/udev/mtd_probe/mtd_probe.h b/src/udev/mtd_probe/mtd_probe.h
+index d99be9a..cead374 100644
+--- a/src/udev/mtd_probe/mtd_probe.h
++++ b/src/udev/mtd_probe/mtd_probe.h
+@@ -20,6 +20,7 @@
+ #pragma once
+ 
+ #include <mtd/mtd-user.h>
++#include <stdint.h>
+ 
+ /* Full oob structure as written on the flash */
+ struct sm_oob {
