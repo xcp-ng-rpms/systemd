@@ -1,4 +1,4 @@
-From c81de449d57bc563be7b4d4d53d07de28adcaa9b Mon Sep 17 00:00:00 2001
+From 75b183700853e616362cf2f22831e1e9dc8a5515 Mon Sep 17 00:00:00 2001
 From: Harald Hoyer <harald@redhat.com>
 Date: Tue, 24 Nov 2015 09:41:26 +0100
 Subject: [PATCH] core: Do not bind a mount unit to a device, if it was from

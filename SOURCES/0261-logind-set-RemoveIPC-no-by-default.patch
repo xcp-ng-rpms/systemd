@@ -1,4 +1,4 @@
-From b4d12e023a1418e850ec96616739e7be1d71c4f5 Mon Sep 17 00:00:00 2001
+From 07cda5adb4ccecc6208b9fc85f4ea3ed8dece47d Mon Sep 17 00:00:00 2001
 From: Lukas Nykryn <lnykryn@redhat.com>
 Date: Thu, 26 Nov 2015 14:14:55 +0100
 Subject: [PATCH] logind: set RemoveIPC=no by default

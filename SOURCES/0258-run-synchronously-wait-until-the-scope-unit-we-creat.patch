@@ -1,4 +1,4 @@
-From 18d515aeb3a2007fa0a762b9b9658f489d4b403d Mon Sep 17 00:00:00 2001
+From 5532bedf8ef456f02fdec62d46bc1be65cdfde30 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 28 Apr 2015 12:21:31 +0200
 Subject: [PATCH] run: synchronously wait until the scope unit we create is
@@ -11,7 +11,7 @@ short-running (such as an invocation to /bin/true).
 https://bugs.freedesktop.org/show_bug.cgi?id=86520
 
 Cherry-picked from: de158ed22db60e3a6654557fa4aa72f7248550af
-Resolves: #1283192
+Resolves: #1272368
 ---
  src/libsystemd/sd-bus/bus-util.c | 10 ++++++++++
  src/libsystemd/sd-bus/bus-util.h |  1 +
