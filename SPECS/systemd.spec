@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        30%{?dist}.3
+Release:        30%{?dist}.6
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -450,6 +450,7 @@ Patch0412: 0412-pid1-process-zero-length-notification-messages-again.patch
 Patch0413: 0413-pid1-more-informative-error-message-for-ignored-noti.patch
 Patch0414: 0414-manager-219-needs-u-id-in-log_unit_debug.patch
 Patch0415: 0415-mtd_probe-add-include-for-stdint.patch
+Patch0416: 0416-virt-add-possibility-to-skip-the-check-for-chroot.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -706,11 +707,6 @@ CONFIGURE_OPTS=(
 %endif
 )
 
-
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O0"
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O0"
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O0"
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O0"
 %configure "${CONFIGURE_OPTS[@]}"
 make %{?_smp_mflags} GCC_COLORS="" V=1
 
@@ -1124,6 +1120,38 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -u 193 -l -g systemd
 %postun resolved
 %systemd_postun_with_restart systemd-resolved.service
 
+%triggerin -- systemd < 219-21
+. /etc/sysconfig/network-scripts/network-functions
+
+RULES_FILE="/etc/udev/rules.d/90-eno-fix.rules"
+DRACUT_CONFIG="/etc/dracut.conf.d/90-eno-fix.conf"
+
+NEED_REBUILD=
+WROTE_MSG=
+
+for i in /sys/class/net/eno* ; do
+    DEVICE=${i##*/}
+
+    [[ "$DEVICE" =~ eno[0-9]+(d[0-9]+)?$ ]] || continue
+    [ "$(echo $DEVICE | sed -e 's/eno\([0-9]\+\).*/\1/')" -lt "16383" ] && continue
+
+    HWADDR=$(get_hwaddr $DEVICE | tr '[:upper:]' '[:lower:]')
+    [ -z "$HWADDR" ] && continue
+
+    if [ -z "$WROTE_MSG" ]; then
+       echo "# This file was automatically generated on systemd update" > "$RULES_FILE"
+       WROTE_MSG=yes
+    fi
+
+    echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$HWADDR\", NAME=\"$DEVICE\"" >> "$RULES_FILE"
+    NEED_REBUILD=yes
+done
+
+if [ -n "$NEED_REBUILD" ]; then
+    echo "install_items+=\" $RULES_FILE \"" > "$DRACUT_CONFIG"
+    dracut -f
+fi
+
 %files -f %{name}.lang
 %doc %{_docdir}/systemd
 %{!?_licensedir:%global license %%doc}
@@ -1431,6 +1459,15 @@ getent passwd systemd-resolve >/dev/null 2>&1 || useradd -r -u 193 -l -g systemd
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Mon Nov 07 2016 Lukáš Nykrýn <lnykryn@redhat.com> - 219-30.6
+- better version of vmware trigger
+
+* Fri Nov  4 2016 Michal Sekletar <msekleta@redhat.com> - 219-30.5
+- on update from systemd version 219-21 and older generate udev rules that preserve old network interface names on VMware VMs (#1391944)
+
+* Thu Nov 03 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-30.4
+- virt: add possibility to skip the check for chroot (#1379852)
+
 * Fri Oct 07 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-30.3
 - mtd_probe: add include for stdint (#1381573)
 
