@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        30%{?dist}.6
+Release:        30%{?dist}.7
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -451,6 +451,8 @@ Patch0413: 0413-pid1-more-informative-error-message-for-ignored-noti.patch
 Patch0414: 0414-manager-219-needs-u-id-in-log_unit_debug.patch
 Patch0415: 0415-mtd_probe-add-include-for-stdint.patch
 Patch0416: 0416-virt-add-possibility-to-skip-the-check-for-chroot.patch
+Patch0417: 0417-load-fragment-fix-parsing-values-in-bytes-and-preven.patch
+Patch0418: 0418-core-fix-assertion-check.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -1459,6 +1461,10 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Tue Nov 29 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-30.7
+- load-fragment: fix parsing values in bytes and prevent returning -ERANGE incorrectly (#1396277)
+- core: fix assertion check (#1396312)
+
 * Mon Nov 07 2016 Lukáš Nykrýn <lnykryn@redhat.com> - 219-30.6
 - better version of vmware trigger
 
