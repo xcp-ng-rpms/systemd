@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        30%{?dist}.8
+Release:        30%{?dist}.9
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -455,6 +455,9 @@ Patch0417: 0417-load-fragment-fix-parsing-values-in-bytes-and-preven.patch
 Patch0418: 0418-core-fix-assertion-check.patch
 Patch0419: 0419-tmp.mount.hm4-After-swap.target-3087.patch
 Patch0420: 0420-make-sure-all-swap-units-are-ordered-before-the-swap.patch
+Patch0421: 0421-core-reinstate-propagation-of-stop-restart-jobs-via-.patch
+Patch0422: 0422-core-when-propagating-restart-requests-due-to-deps-d.patch
+Patch0423: 0423-core-properly-handle-jobs-that-are-suppressed-to-JOB.patch
 
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
@@ -1463,6 +1466,11 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Fri Apr 21 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-30.9
+- core: reinstate propagation of stop/restart jobs via RequsiteOf dependencies (#1436021)
+- core: when propagating restart requests due to deps, downgrade restart to try-restart (#1436021)
+- core: properly handle jobs that are suppressed to JOB_NOPs when propagating restarts (#1436021)
+
 * Mon Feb 13 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-30.8
 - tmp.mount.hm4: After swap.target (#3087) (#1298355)
 - make sure all swap units are ordered before the swap target (#1298355)
