@@ -1,4 +1,4 @@
-From 7b00eff77b5606ff5563e374020d554a40bca833 Mon Sep 17 00:00:00 2001
+From 93c5087eed9abf8012dc5b0ccd2dd7ead1323899 Mon Sep 17 00:00:00 2001
 From: Franck Bui <fbui@suse.com>
 Date: Thu, 29 Sep 2016 19:44:34 +0200
 Subject: [PATCH] pid1: don't return any error in manager_dispatch_notify_fd()
@@ -10,7 +10,7 @@ service notifications will be disabled entirely leading to a compromised system.
 For example pid1 won't be able to receive the WATCHDOG messages anymore and
 will kill all services supposed to send such messages.
 Cherry-picked from: 9987750e7a4c62e0eb8473603150596ba7c3a015
-Resolves: #1381573
+Resolves: #1380259
 ---
  src/core/manager.c | 13 +++++++++----
  1 file changed, 9 insertions(+), 4 deletions(-)

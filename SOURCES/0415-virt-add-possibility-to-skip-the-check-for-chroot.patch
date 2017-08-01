@@ -1,4 +1,4 @@
-From c13f7b8e88f12f1a7e01e2094d7c648aaffc8c6c Mon Sep 17 00:00:00 2001
+From f3750cbfd21b2e5f6f46077082f60e3a74ee4807 Mon Sep 17 00:00:00 2001
 From: Lukas Nykryn <lnykryn@redhat.com>
 Date: Mon, 17 Oct 2016 08:09:58 +0200
 Subject: [PATCH] virt: add possibility to skip the check for chroot

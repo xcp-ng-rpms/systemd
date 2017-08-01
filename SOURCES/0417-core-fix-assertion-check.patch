@@ -1,4 +1,4 @@
-From 5e5f05f7f8ea6beb1f9fd7ac7586798c33e8ba6f Mon Sep 17 00:00:00 2001
+From efd1250249494b7501578da7de7830659b65c98b Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 16 Feb 2016 13:18:36 +0100
 Subject: [PATCH] core: fix assertion check

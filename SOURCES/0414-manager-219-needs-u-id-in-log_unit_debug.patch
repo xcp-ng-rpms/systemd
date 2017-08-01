@@ -1,10 +1,10 @@
-From f5bf6f4c0d1857ce3c8a68e862e29ab7fb6684ee Mon Sep 17 00:00:00 2001
+From 7dbaab7b61fb25d91178f097cf7474d855d0ae29 Mon Sep 17 00:00:00 2001
 From: Lukas Nykryn <lnykryn@redhat.com>
 Date: Fri, 7 Oct 2016 14:05:40 +0200
 Subject: [PATCH] manager: 219 needs u->id in log_unit_debug
 
 RHEL-only
-Related: #1381573
+Related: #1380259
 ---
  src/core/manager.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

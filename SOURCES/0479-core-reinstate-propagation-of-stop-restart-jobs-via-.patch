@@ -1,4 +1,4 @@
-From c552d788919808b1279bc42c9cd4b9e69878f4da Mon Sep 17 00:00:00 2001
+From 7f72b471bbfd449f4261d12cc7b062f6e7034283 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 19 May 2015 17:40:50 +0200
 Subject: [PATCH] core: reinstate propagation of stop/restart jobs via

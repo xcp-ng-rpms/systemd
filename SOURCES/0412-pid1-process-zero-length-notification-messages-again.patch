@@ -1,4 +1,4 @@
-From 79e0852a6a3f20cba92ac18aa6ac61d24d04d3c7 Mon Sep 17 00:00:00 2001
+From c7bcd6cf1967e401225c3d6057e0ee62cdc29f8c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Thu, 29 Sep 2016 16:06:02 +0200
 Subject: [PATCH] pid1: process zero-length notification messages again
@@ -9,8 +9,11 @@ carefully enough. There are two problems:
 - in principle empty notification messages are valid, and we should
   process them as usual, including logging using log_unit_debug().
 
+Cherry-picked from: 8523bf7dd514a3a2c6114b7b8fb8f308b4f09fc4
+Resolves: #1380259
+
 Cherry-picked from: a86b767
-Resolves: #1381573
+Resolves: #1380259
 ---
  src/core/manager.c | 15 ++++++---------
  1 file changed, 6 insertions(+), 9 deletions(-)

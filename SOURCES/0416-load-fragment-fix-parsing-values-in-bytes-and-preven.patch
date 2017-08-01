@@ -1,4 +1,4 @@
-From d8edaa8a9e542a8bcd92a6a2b2ce9103dc8b9074 Mon Sep 17 00:00:00 2001
+From 38d00b8a0453d38aecb725342ddd89a7c3dcb134 Mon Sep 17 00:00:00 2001
 From: Michal Sekletar <msekleta@redhat.com>
 Date: Fri, 18 Nov 2016 14:00:57 +0100
 Subject: [PATCH] load-fragment: fix parsing values in bytes and prevent

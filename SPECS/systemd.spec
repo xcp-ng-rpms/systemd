@@ -7,12 +7,12 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        30%{?dist}.9
+Release:        42%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
 
-Source0:        http://www.freedesktop.org/software/systemd/%{name}-%{version}.tar.xz
+Source0:        https://github.com/systemd/systemd/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 # Preset policy is in rhel-release package
 # we are just disabling everything
 Source1:        99-default-disable.preset
@@ -26,6 +26,7 @@ Source4:        rc.local
 Source5:        60-alias-kmsg.rules
 # Stop-gap, just to ensure things work fine with rsyslog without having to change the package right-away
 Source6:        listen.conf
+# Generating translations is sometimes broken, let's ship the translated policy files directly in sources
 Source7:        org.freedesktop.hostname1.policy
 Source8:        org.freedesktop.import1.policy
 Source9:        org.freedesktop.locale1.policy
@@ -449,16 +450,90 @@ Patch0411: 0411-pid1-don-t-return-any-error-in-manager_dispatch_noti.patch
 Patch0412: 0412-pid1-process-zero-length-notification-messages-again.patch
 Patch0413: 0413-pid1-more-informative-error-message-for-ignored-noti.patch
 Patch0414: 0414-manager-219-needs-u-id-in-log_unit_debug.patch
-Patch0415: 0415-mtd_probe-add-include-for-stdint.patch
-Patch0416: 0416-virt-add-possibility-to-skip-the-check-for-chroot.patch
-Patch0417: 0417-load-fragment-fix-parsing-values-in-bytes-and-preven.patch
-Patch0418: 0418-core-fix-assertion-check.patch
-Patch0419: 0419-tmp.mount.hm4-After-swap.target-3087.patch
-Patch0420: 0420-make-sure-all-swap-units-are-ordered-before-the-swap.patch
-Patch0421: 0421-core-reinstate-propagation-of-stop-restart-jobs-via-.patch
-Patch0422: 0422-core-when-propagating-restart-requests-due-to-deps-d.patch
-Patch0423: 0423-core-properly-handle-jobs-that-are-suppressed-to-JOB.patch
-
+Patch0415: 0415-virt-add-possibility-to-skip-the-check-for-chroot.patch
+Patch0416: 0416-load-fragment-fix-parsing-values-in-bytes-and-preven.patch
+Patch0417: 0417-core-fix-assertion-check.patch
+Patch0418: 0418-tmp.mount.hm4-After-swap.target-3087.patch
+Patch0419: 0419-make-sure-all-swap-units-are-ordered-before-the-swap.patch
+Patch0420: 0420-Recognise-Lustre-as-a-remote-file-system-4530.patch
+Patch0421: 0421-unit-don-t-add-Requires-for-tmp.mount.patch
+Patch0422: 0422-core-return-0-from-device_serialize.patch
+Patch0423: 0423-mtd_probe-include-stdint.patch
+Patch0424: 0424-tests-fix-failure-of-test-execute-if-dev-mem-is-not-.patch
+Patch0425: 0425-sd-journal-properly-export-has_-persistent-runtime-_.patch
+Patch0426: 0426-core-add-possibility-to-set-action-for-ctrl-alt-del-.patch
+Patch0427: 0427-failure-action-generalize-failure-action-to-emergenc.patch
+Patch0428: 0428-core-use-emergency_action-for-ctr-alt-del-burst.patch
+Patch0429: 0429-udev-path_id-introduce-support-for-NVMe-devices-4169.patch
+Patch0430: 0430-core-fix-CapabilityBoundingSet-merging.patch
+Patch0431: 0431-core-fix-capability-bounding-set-parsing.patch
+Patch0432: 0432-core-make-parsing-of-RLIMIT_NICE-aware-of-actual-nic.patch
+Patch0433: 0433-shared-fix-double-free-in-unmask-5005.patch
+Patch0434: 0434-shared-fix-double-free-in-link.patch
+Patch0435: 0435-shared-check-strdup-NULL.patch
+Patch0436: 0436-core-improve-error-message-when-RefuseManualStart-St.patch
+Patch0437: 0437-systemctl-fix-is-enabled-exit-status-on-failure-when.patch
+Patch0438: 0438-man-document-that-the-automatic-journal-limits-are-c.patch
+Patch0439: 0439-random-seed-raise-POOL_SIZE_MIN-to-1024.patch
+Patch0440: 0440-bash-completion-add-support-for-now-5155.patch
+Patch0441: 0441-basic-fix-touch-creating-files-with-07777-mode.patch
+Patch0442: 0442-udev-net_id-add-support-for-phys_port_name-attribute.patch
+Patch0443: 0443-install-introduce-UnitFileFlags.patch
+Patch0444: 0444-shared-systemctl-teach-is-enabled-to-show-installati.patch
+Patch0445: 0445-udev-fix-crash-with-invalid-udev.log-priority.patch
+Patch0446: 0446-core-make-exec-code-a-bit-more-readable.patch
+Patch0447: 0447-core-Private-Protect-options-with-RootDirectory.patch
+Patch0448: 0448-core-if-the-start-command-vanishes-during-runtime-do.patch
+Patch0449: 0449-systemctl-make-sure-that-now-is-carried-out-5209.patch
+Patch0450: 0450-udev-inform-systemd-how-many-workers-we-can-potentia.patch
+Patch0451: 0451-service-log_unit-consumes-id-of-unit-not-a-unit.patch
+Patch0452: 0452-automount-add-expire-support.patch
+Patch0453: 0453-fstab-generator-fix-memleak.patch
+Patch0454: 0454-remove-bus-proxyd.patch
+Patch0455: 0455-execute-Add-new-PassEnvironment-directive.patch
+Patch0456: 0456-test-execute-Add-tests-for-new-PassEnvironment-direc.patch
+Patch0457: 0457-test-execute-Clarify-interaction-of-PassEnvironment-.patch
+Patch0458: 0458-load-fragment-resolve-specifiers-in-RuntimeDirectory.patch
+Patch0459: 0459-Add-microphone-mute-keymap-for-Dell-Precision.patch
+Patch0460: 0460-hwdb-update-micmute-YCODE-on-device-node-at-DELL-LAT.patch
+Patch0461: 0461-udev-path_id-improve-and-enhance-bus-detection-for-L.patch
+Patch0462: 0462-core-port-config_parse_bounding_set-to-extract_first.patch
+Patch0463: 0463-core-simplify-parsing-of-capability-bounding-set-set.patch
+Patch0464: 0464-test-add-test-for-capability-bounding-set-parsing.patch
+Patch0465: 0465-capabilities-keep-bounding-set-in-non-inverted-forma.patch
+Patch0466: 0466-capabilities-added-support-for-ambient-capabilities.patch
+Patch0467: 0467-man-add-AmbientCapabilities-entry.patch
+Patch0468: 0468-test-capability-rebase-to-upstream-version.patch
+Patch0469: 0469-namespace-don-t-fail-on-masked-mounts.patch
+Patch0470: 0470-sysv-generator-Provides-network-should-also-pull-net.patch
+Patch0471: 0471-Install-correctly-report-symlink-creations.patch
+Patch0472: 0472-rules-40-redhat.rules-rules-should-be-on-one-line.patch
+Patch0473: 0473-tmpfiles-add-new-e-action-which-cleans-up-a-dir-with.patch
+Patch0474: 0474-util-bind_remount_recursive-handle-return-0-of-set_c.patch
+Patch0475: 0475-core-add-support-for-the-pids-cgroup-controller.patch
+Patch0476: 0476-core-add-new-DefaultTasksMax-setting-for-system.conf.patch
+Patch0477: 0477-logind-add-a-new-UserTasksMax-setting-to-logind.conf.patch
+Patch0478: 0478-core-support-percentage-specifications-on-TasksMax.patch
+Patch0479: 0479-core-reinstate-propagation-of-stop-restart-jobs-via-.patch
+Patch0480: 0480-core-when-propagating-restart-requests-due-to-deps-d.patch
+Patch0481: 0481-core-properly-handle-jobs-that-are-suppressed-to-JOB.patch
+Patch0482: 0482-tests-set-tasks_max-to-infinity.patch
+Patch0483: 0483-Avoid-forever-loop-for-journalctl-list-boots-command.patch
+Patch0484: 0484-sd-journal-return-SD_JOURNAL_INVALIDATE-only-if-jour.patch
+Patch0485: 0485-load-fragment-don-t-print-error-about-incorrect-synt.patch
+Patch0486: 0486-core-manager-add-some-missing-dbus-properties.patch
+Patch0487: 0487-core-manager-expose-DefaultLimit-as-properties-on-db.patch
+Patch0488: 0488-fstab-generator-remove-bogus-condition.patch
+Patch0489: 0489-readahead-collect-don-t-print-warning-message-when-h.patch
+Patch0490: 0490-tmpfiles-don-t-recursively-descend-into-journal-dire.patch
+Patch0491: 0491-tmpfiles-also-set-acls-on-var-log-journal.patch
+Patch0492: 0492-tmpfiles-set-acls-on-system.journal-explicitly.patch
+Patch0493: 0493-sysctl-configure-kernel-parameters-in-the-order-they.patch
+Patch0494: 0494-units-drop-explicit-NotifyAccess-setting-from-journa.patch
+Patch0495: 0495-systemd-notify-Always-pass-a-valid-pid-to-sd_pid_not.patch
+Patch0496: 0496-sd_pid_notify_with_fds-fix-computing-msg_controllen.patch
+Patch0497: 0497-rules-move-cpu-hotplug-rule-to-separate-file.patch
+Patch0498: 0498-Revert-rules-move-cpu-hotplug-rule-to-separate-file.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -494,9 +569,6 @@ BuildRequires:  gawk
 BuildRequires:  gtk-doc
 BuildRequires:  python2-devel
 BuildRequires:  python-lxml
-%ifarch x86_64 i686
-#BuildRequires:  libseccomp-devel
-%endif
 BuildRequires:  automake
 BuildRequires:  autoconf
 BuildRequires:  libtool
@@ -515,26 +587,27 @@ Requires:       %{name}-libs = %{version}-%{release}
 Requires:       kmod >= 18-4
 Requires:       redhat-release >= 7.0
 Requires:       diffutils
+
 Provides:       /bin/systemctl
 Provides:       /sbin/shutdown
 Provides:       syslog
 Provides:       systemd-units = %{version}-%{release}
+
+Conflicts:      dracut < 033-499
+Conflicts:      initscripts < 9.49.28-1
+
+#Obsolete packages when we are migrating from rhel6
 Provides:       udev = %{version}
 Obsoletes:      udev < 183
 Obsoletes:      system-setup-keyboard < 0.9
 Provides:       system-setup-keyboard = 0.9
 Obsoletes:      nss-myhostname < 0.4
 Provides:       nss-myhostname = 0.4
-# systemd-analyze got merged in F19, drop at F21
-Obsoletes:      systemd-analyze < 198
-Provides:       systemd-analyze = 198
 Obsoletes:      upstart < 1.2-3
 Obsoletes:      upstart-sysvinit < 1.2-3
 Conflicts:      upstart-sysvinit
 Obsoletes:      hal
 Obsoletes:      ConsoleKit
-Conflicts:      dracut < 033-243
-Conflicts:      initscripts < 9.49.28-1
 
 %description
 systemd is a system and service manager for Linux, compatible with
@@ -550,8 +623,6 @@ work as a drop-in replacement for sysvinit.
 Summary:        systemd libraries
 License:        LGPLv2+ and MIT
 Obsoletes:      libudev < 183
-Obsoletes:      systemd < 185-4
-Conflicts:      systemd < 185-4
 
 %description libs
 Libraries for systemd and udev, as well as the systemd PAM module.
@@ -654,63 +725,25 @@ git add .
 git commit -a -q -m "%{version} baseline."
 
 # Apply all the patches.
-git am \
---exclude .gitignore \
---exclude docs/.gitignore \
---exclude docs/gudev/.gitignore \
---exclude docs/libudev/.gitignore \
---exclude docs/sysvinit/.gitignore \
---exclude docs/var-log/.gitignore \
---exclude hwdb/.gitignore \
---exclude m4/.gitignore \
---exclude man/.gitignore \
---exclude po/.gitignore \
---exclude rules/.gitignore \
---exclude src/.gitignore \
---exclude src/analyze/.gitignore \
---exclude src/core/.gitignore \
---exclude src/gudev/.gitignore \
---exclude src/hostname/.gitignore \
---exclude src/journal/.gitignore \
---exclude src/libsystemd-daemon/.gitignore \
---exclude src/libsystemd-id128/.gitignore \
---exclude src/libudev/.gitignore \
---exclude src/locale/.gitignore \
---exclude src/login/.gitignore \
---exclude src/python-systemd/.gitignore \
---exclude tmpfiles.d/systemd.conf.m4 \
---exclude src/python-systemd/docs/.gitignore \
---exclude src/timedate/.gitignore \
---exclude src/udev/.gitignore \
---exclude src/udev/scsi_id/.gitignore \
---exclude sysctl.d/.gitignore \
---exclude test/.gitignore \
---exclude units/.gitignore \
---exclude units/user/.gitignore \
---exclude src/libsystemd/sd-bus/PORTING-DBUS1 \
---exclude CODING_STYLE \
---exclude src/readahead/Makefile \
---exclude src/libsystemd-terminal/unifont-def.h \
---exclude hwdb/sdio.ids \
-%{patches}
+git am %{patches}
 %endif
 
 %build
-autoreconf -i
+./autogen.sh
 
 CONFIGURE_OPTS=(
---libexecdir=%{_prefix}/lib
---with-sysvinit-path=/etc/rc.d/init.d
---with-rc-local-script-path-start=/etc/rc.d/rc.local
---disable-timesyncd
---disable-kdbus
---disable-terminal
---enable-gtk-doc
---enable-compat-libs
---disable-sysusers
---disable-ldconfig
+    --libexecdir=%{_prefix}/lib
+    --with-sysvinit-path=/etc/rc.d/init.d
+    --with-rc-local-script-path-start=/etc/rc.d/rc.local
+    --disable-timesyncd
+    --disable-kdbus
+    --disable-terminal
+    --enable-gtk-doc
+    --enable-compat-libs
+    --disable-sysusers
+    --disable-ldconfig
 %ifarch s390 s390x ppc %{power64} aarch64
---disable-lto
+    --disable-lto
 %endif
 )
 
@@ -863,6 +896,10 @@ rm -f %{buildroot}%{_prefix}/lib/sysctl.d/50-bridge.conf
 # no networkd in rhel7
 rm -f %{buildroot}%{_prefix}/lib/systemd/network/*
 
+# no sysusers in rhel7
+rm -f %{buildroot}%{_mandir}/man5/sysusers.d.5.gz
+rm -f %{buildroot}%{_mandir}/man8/systemd-sysusers.*
+
 install -m 0644 %{SOURCE5} $RPM_BUILD_ROOT/%{_udevrulesdir}/
 
 %pre
@@ -873,8 +910,6 @@ getent group dialout >/dev/null 2>&1 || groupadd -r -g 18 dialout >/dev/null 2>&
 getent group input >/dev/null 2>&1 || groupadd -r input >/dev/null 2>&1 || :
 getent group floppy >/dev/null 2>&1 || groupadd -r -g 19 floppy >/dev/null 2>&1 || :
 getent group systemd-journal >/dev/null 2>&1 || groupadd -r -g 190 systemd-journal 2>&1 || :
-getent group systemd-bus-proxy >/dev/null 2>&1 || groupadd -r systemd-bus-proxy 2>&1 || :
-getent passwd systemd-bus-proxy >/dev/null 2>&1 || useradd -r -l -g systemd-bus-proxy -d / -s /sbin/nologin -c "systemd Bus Proxy" systemd-bus-proxy >/dev/null 2>&1 || :
 getent group systemd-network >/dev/null 2>&1 || groupadd -r -g 192 systemd-network 2>&1 || :
 getent passwd systemd-network >/dev/null 2>&1 || useradd -r -u 192 -l -g systemd-network -d / -s /sbin/nologin -c "systemd Network Management" systemd-network >/dev/null 2>&1 || :
 
@@ -894,44 +929,44 @@ chgrp systemd-journal /run/log/journal/ /run/log/journal/`cat /etc/machine-id 2>
 chmod g+s /run/log/journal/ /run/log/journal/`cat /etc/machine-id 2> /dev/null` /var/log/journal/ /var/log/journal/`cat /etc/machine-id 2> /dev/null` >/dev/null 2>&1 || :
 
 if [ $1 -eq 1 ] ; then
-# Try to read default runlevel from the old inittab if it exists
-runlevel=$(awk -F ':' '$3 == "initdefault" && $1 !~ "^#" { print $2 }' /etc/inittab 2> /dev/null)
-if [ -z "$runlevel" ] ; then
-target="/usr/lib/systemd/system/graphical.target"
+    # Try to read default runlevel from the old inittab if it exists
+    runlevel=$(awk -F ':' '$3 == "initdefault" && $1 !~ "^#" { print $2 }' /etc/inittab 2> /dev/null)
+    if [ -z "$runlevel" ] ; then
+        target="/usr/lib/systemd/system/graphical.target"
+    else
+        target="/usr/lib/systemd/system/runlevel$runlevel.target"
+    fi
+
+    # And symlink what we found to the new-style default.target
+    ln -sf "$target" /etc/systemd/system/default.target >/dev/null 2>&1 || :
+
+    # Services we install by default, and which are controlled by presets.
+    systemctl preset \
+        remote-fs.target \
+        getty@.service \
+        serial-getty@.service \
+        console-getty.service \
+        console-shell.service \
+        debug-shell.service \
+        systemd-readahead-replay.service \
+        systemd-readahead-collect.service \
+        >/dev/null 2>&1 || :
 else
-target="/usr/lib/systemd/system/runlevel$runlevel.target"
-fi
+    # This systemd service does not exist anymore, we now do it
+    # internally in PID 1
+    rm -f /etc/systemd/system/sysinit.target.wants/hwclock-load.service >/dev/null 2>&1 || :
 
-# And symlink what we found to the new-style default.target
-ln -sf "$target" /etc/systemd/system/default.target >/dev/null 2>&1 || :
+    # This systemd target does not exist anymore. It's been replaced
+    # by ntp-units.d.
+    rm -f /etc/systemd/system/multi-user.target.wants/systemd-timedated-ntp.target >/dev/null 2>&1 || :
 
-# Services we install by default, and which are controlled by presets.
-systemctl preset \
-remote-fs.target \
-getty@.service \
-serial-getty@.service \
-console-getty.service \
-console-shell.service \
-debug-shell.service \
-systemd-readahead-replay.service \
-systemd-readahead-collect.service \
->/dev/null 2>&1 || :
-else
-# This systemd service does not exist anymore, we now do it
-# internally in PID 1
-rm -f /etc/systemd/system/sysinit.target.wants/hwclock-load.service >/dev/null 2>&1 || :
-
-# This systemd target does not exist anymore. It's been replaced
-# by ntp-units.d.
-rm -f /etc/systemd/system/multi-user.target.wants/systemd-timedated-ntp.target >/dev/null 2>&1 || :
-
-# Enable the units recorded by %%pretrans
-if [ -e /var/lib/rpm-state/systemd/ntp-units ] ; then
-while read service; do
-systemctl enable "$service" >/dev/null 2>&1 || :
-done < /var/lib/rpm-state/systemd/ntp-units
-rm -r /var/lib/rpm-state/systemd/ntp-units >/dev/null 2>&1 || :
-fi
+    # Enable the units recorded by %%pretrans
+    if [ -e /var/lib/rpm-state/systemd/ntp-units ] ; then
+        while read service; do
+            systemctl enable "$service" >/dev/null 2>&1 || :
+        done < /var/lib/rpm-state/systemd/ntp-units
+        rm -r /var/lib/rpm-state/systemd/ntp-units >/dev/null 2>&1 || :
+    fi
 fi
 
 # Move old stuff around in /var/lib
@@ -940,78 +975,79 @@ mv %{_localstatedir}/lib/backlight %{_localstatedir}/lib/systemd/backlight >/dev
 
 # Migrate /etc/sysconfig/clock
 if [ ! -L /etc/localtime -a -e /etc/sysconfig/clock ] ; then
-. /etc/sysconfig/clock >/dev/null 2>&1 || :
-if [ -n "$ZONE" -a -e "/usr/share/zoneinfo/$ZONE" ] ; then
-ln -sf "../usr/share/zoneinfo/$ZONE" /etc/localtime >/dev/null 2>&1 || :
-fi
+    . /etc/sysconfig/clock >/dev/null 2>&1 || :
+    if [ -n "$ZONE" -a -e "/usr/share/zoneinfo/$ZONE" ] ; then
+        ln -sf "../usr/share/zoneinfo/$ZONE" /etc/localtime >/dev/null 2>&1 || :
+    fi
 fi
 rm -f /etc/sysconfig/clock >/dev/null 2>&1 || :
 
 # Migrate /etc/sysconfig/i18n
 if [ -e /etc/sysconfig/i18n -a ! -e /etc/locale.conf ]; then
-unset LANG
-unset LC_CTYPE
-unset LC_NUMERIC
-unset LC_TIME
-unset LC_COLLATE
-unset LC_MONETARY
-unset LC_MESSAGES
-unset LC_PAPER
-unset LC_NAME
-unset LC_ADDRESS
-unset LC_TELEPHONE
-unset LC_MEASUREMENT
-unset LC_IDENTIFICATION
-. /etc/sysconfig/i18n >/dev/null 2>&1 || :
-[ -n "$LANG" ] && echo LANG=$LANG > /etc/locale.conf 2>&1 || :
-[ -n "$LC_CTYPE" ] && echo LC_CTYPE=$LC_CTYPE >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_NUMERIC" ] && echo LC_NUMERIC=$LC_NUMERIC >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_TIME" ] && echo LC_TIME=$LC_TIME >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_COLLATE" ] && echo LC_COLLATE=$LC_COLLATE >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_MONETARY" ] && echo LC_MONETARY=$LC_MONETARY >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_MESSAGES" ] && echo LC_MESSAGES=$LC_MESSAGES >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_PAPER" ] && echo LC_PAPER=$LC_PAPER >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_NAME" ] && echo LC_NAME=$LC_NAME >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_ADDRESS" ] && echo LC_ADDRESS=$LC_ADDRESS >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_TELEPHONE" ] && echo LC_TELEPHONE=$LC_TELEPHONE >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_MEASUREMENT" ] && echo LC_MEASUREMENT=$LC_MEASUREMENT >> /etc/locale.conf 2>&1 || :
-[ -n "$LC_IDENTIFICATION" ] && echo LC_IDENTIFICATION=$LC_IDENTIFICATION >> /etc/locale.conf 2>&1 || :
+    unset LANG
+    unset LC_CTYPE
+    unset LC_NUMERIC
+    unset LC_TIME
+    unset LC_COLLATE
+    unset LC_MONETARY
+    unset LC_MESSAGES
+    unset LC_PAPER
+    unset LC_NAME
+    unset LC_ADDRESS
+    unset LC_TELEPHONE
+    unset LC_MEASUREMENT
+    unset LC_IDENTIFICATION
+    . /etc/sysconfig/i18n >/dev/null 2>&1 || :
+    [ -n "$LANG" ] && echo LANG=$LANG > /etc/locale.conf 2>&1 || :
+    [ -n "$LC_CTYPE" ] && echo LC_CTYPE=$LC_CTYPE >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_NUMERIC" ] && echo LC_NUMERIC=$LC_NUMERIC >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_TIME" ] && echo LC_TIME=$LC_TIME >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_COLLATE" ] && echo LC_COLLATE=$LC_COLLATE >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_MONETARY" ] && echo LC_MONETARY=$LC_MONETARY >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_MESSAGES" ] && echo LC_MESSAGES=$LC_MESSAGES >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_PAPER" ] && echo LC_PAPER=$LC_PAPER >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_NAME" ] && echo LC_NAME=$LC_NAME >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_ADDRESS" ] && echo LC_ADDRESS=$LC_ADDRESS >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_TELEPHONE" ] && echo LC_TELEPHONE=$LC_TELEPHONE >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_MEASUREMENT" ] && echo LC_MEASUREMENT=$LC_MEASUREMENT >> /etc/locale.conf 2>&1 || :
+    [ -n "$LC_IDENTIFICATION" ] && echo LC_IDENTIFICATION=$LC_IDENTIFICATION >> /etc/locale.conf 2>&1 || :
 fi
 
 # Migrate /etc/sysconfig/keyboard
 if [ -e /etc/sysconfig/keyboard -a ! -e /etc/vconsole.conf ]; then
-unset SYSFONT
-unset SYSFONTACM
-unset UNIMAP
-unset KEYMAP
-[ -e /etc/sysconfig/i18n ] && . /etc/sysconfig/i18n >/dev/null 2>&1 || :
-. /etc/sysconfig/keyboard >/dev/null 2>&1 || :
-[ -n "$SYSFONT" ] && echo FONT=$SYSFONT > /etc/vconsole.conf 2>&1 || :
-[ -n "$SYSFONTACM" ] && echo FONT_MAP=$SYSFONTACM >> /etc/vconsole.conf 2>&1 || :
-[ -n "$UNIMAP" ] && echo FONT_UNIMAP=$UNIMAP >> /etc/vconsole.conf 2>&1 || :
-[ -n "$KEYTABLE" ] && echo KEYMAP=$KEYTABLE >> /etc/vconsole.conf 2>&1 || :
+    unset SYSFONT
+    unset SYSFONTACM
+    unset UNIMAP
+    unset KEYMAP
+    [ -e /etc/sysconfig/i18n ] && . /etc/sysconfig/i18n >/dev/null 2>&1 || :
+    . /etc/sysconfig/keyboard >/dev/null 2>&1 || :
+    [ -n "$SYSFONT" ] && echo FONT=$SYSFONT > /etc/vconsole.conf 2>&1 || :
+    [ -n "$SYSFONTACM" ] && echo FONT_MAP=$SYSFONTACM >> /etc/vconsole.conf 2>&1 || :
+    [ -n "$UNIMAP" ] && echo FONT_UNIMAP=$UNIMAP >> /etc/vconsole.conf 2>&1 || :
+    [ -n "$KEYTABLE" ] && echo KEYMAP=$KEYTABLE >> /etc/vconsole.conf 2>&1 || :
 fi
 rm -f /etc/sysconfig/i18n >/dev/null 2>&1 || :
 rm -f /etc/sysconfig/keyboard >/dev/null 2>&1 || :
 
 # Migrate HOSTNAME= from /etc/sysconfig/network
 if [ -e /etc/sysconfig/network -a ! -e /etc/hostname ]; then
-unset HOSTNAME
-. /etc/sysconfig/network >/dev/null 2>&1 || :
-[ -n "$HOSTNAME" ] && echo $HOSTNAME > /etc/hostname 2>&1 || :
+    unset HOSTNAME
+    . /etc/sysconfig/network >/dev/null 2>&1 || :
+    [ -n "$HOSTNAME" ] && echo $HOSTNAME > /etc/hostname 2>&1 || :
 fi
 sed -i '/^HOSTNAME=/d' /etc/sysconfig/network >/dev/null 2>&1 || :
 
 # Migrate the old systemd-setup-keyboard X11 configuration fragment
 if [ ! -e /etc/X11/xorg.conf.d/00-keyboard.conf ] ; then
-mv /etc/X11/xorg.conf.d/00-system-setup-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1 || :
+    mv /etc/X11/xorg.conf.d/00-system-setup-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1 || :
 else
-rm -f /etc/X11/xorg.conf.d/00-system-setup-keyboard.conf >/dev/null 2>&1 || :
+    rm -f /etc/X11/xorg.conf.d/00-system-setup-keyboard.conf >/dev/null 2>&1 || :
 fi
 
 # sed-fu to add myhostname to the hosts line of /etc/nsswitch.conf
-if [ -f /etc/nsswitch.conf ] ; then
-sed -i.bak -e '
+# Only do that when installing, not when updating.
+if [ $1 -eq 1 -a -f /etc/nsswitch.conf ] ; then
+    sed -i.bak -e '
 /^hosts:/ !b
 /\<myhostname\>/ b
 s/[[:blank:]]*$/ myhostname/
@@ -1022,57 +1058,57 @@ fi
 # Convert old /etc/sysconfig/desktop settings
 preferred=
 if [ -f /etc/sysconfig/desktop ]; then
-. /etc/sysconfig/desktop
-if [ "$DISPLAYMANAGER" = GNOME ]; then
-preferred=gdm
-elif [ "$DISPLAYMANAGER" = KDE ]; then
-preferred=kdm
-elif [ "$DISPLAYMANAGER" = WDM ]; then
-preferred=wdm
-elif [ "$DISPLAYMANAGER" = XDM ]; then
-preferred=xdm
-elif [ -n "$DISPLAYMANAGER" ]; then
-preferred=${DISPLAYMANAGER##*/}
-fi
+    . /etc/sysconfig/desktop
+    if [ "$DISPLAYMANAGER" = GNOME ]; then
+        preferred=gdm
+    elif [ "$DISPLAYMANAGER" = KDE ]; then
+        preferred=kdm
+    elif [ "$DISPLAYMANAGER" = WDM ]; then
+        preferred=wdm
+    elif [ "$DISPLAYMANAGER" = XDM ]; then
+        preferred=xdm
+    elif [ -n "$DISPLAYMANAGER" ]; then
+        preferred=${DISPLAYMANAGER##*/}
+    fi
 fi
 if [ -z "$preferred" ]; then
-if [ -x /usr/sbin/gdm ]; then
-preferred=gdm
-elif [ -x /usr/bin/kdm ]; then
-preferred=kdm
-fi
+    if [ -x /usr/sbin/gdm ]; then
+        preferred=gdm
+    elif [ -x /usr/bin/kdm ]; then
+        preferred=kdm
+    fi
 fi
 if [ -n "$preferred" -a -r "/usr/lib/systemd/system/$preferred.service" ]; then
-# This is supposed to fail when the symlink already exists
-ln -s "/usr/lib/systemd/system/$preferred.service" /etc/systemd/system/display-manager.service >/dev/null 2>&1 || :
+    # This is supposed to fail when the symlink already exists
+    ln -s "/usr/lib/systemd/system/$preferred.service" /etc/systemd/system/display-manager.service >/dev/null 2>&1 || :
 fi
 
 %postun
 if [ $1 -ge 1 ] ; then
-systemctl daemon-reload > /dev/null 2>&1 || :
+    systemctl daemon-reload > /dev/null 2>&1 || :
 fi
 
 %preun
 if [ $1 -eq 0 ] ; then
-systemctl disable \
-remote-fs.target \
-getty@.service \
-serial-getty@.service \
-console-getty.service \
-console-shell.service \
-debug-shell.service \
-systemd-readahead-replay.service \
-systemd-readahead-collect.service \
->/dev/null 2>&1 || :
+    systemctl disable \
+        remote-fs.target \
+        getty@.service \
+        serial-getty@.service \
+        console-getty.service \
+        console-shell.service \
+        debug-shell.service \
+        systemd-readahead-replay.service \
+        systemd-readahead-collect.service \
+        >/dev/null 2>&1 || :
 
-rm -f /etc/systemd/system/default.target >/dev/null 2>&1 || :
+    rm -f /etc/systemd/system/default.target >/dev/null 2>&1 || :
 
-if [ -f /etc/nsswitch.conf ] ; then
-sed -i.bak -e '
+    if [ -f /etc/nsswitch.conf ] ; then
+        sed -i.bak -e '
 /^hosts:/ !b
 s/[[:blank:]]\+myhostname\>//
 ' /etc/nsswitch.conf >/dev/null 2>&1 || :
-fi
+    fi
 fi
 
 %post libs -p /sbin/ldconfig
@@ -1136,6 +1172,9 @@ DRACUT_CONFIG="/etc/dracut.conf.d/90-eno-fix.conf"
 NEED_REBUILD=
 WROTE_MSG=
 
+# systemd-219-30 refuses onboard indexes of network card bigger then 16383
+# and this changes the name of the device. If we are updating on such machine
+# let's keep the old name with udev rule
 for i in /sys/class/net/eno* ; do
     DEVICE=${i##*/}
 
@@ -1182,7 +1221,6 @@ fi
 %dir %{_prefix}/lib/systemd/catalog
 %dir %{_prefix}/lib/systemd/ntp-units.d
 %dir %{_prefix}/lib/tmpfiles.d
-#%dir %{_prefix}/lib/sysusers.d
 %dir %{_prefix}/lib/sysctl.d
 %dir %{_prefix}/lib/modules-load.d
 %dir %{_prefix}/lib/binfmt.d
@@ -1258,7 +1296,6 @@ fi
 %{_bindir}/systemd-detect-virt
 %{_bindir}/systemd-inhibit
 %{_bindir}/systemd-path
-#%{_bindir}/systemd-sysusers
 %{_bindir}/systemd-firstboot
 %{_bindir}/hostnamectl
 %{_bindir}/localectl
@@ -1271,10 +1308,10 @@ fi
 %exclude %{_prefix}/lib/systemd/system/systemd-journal-gatewayd.*
 %exclude %{_prefix}/lib/systemd/system/systemd-journal-remote.*
 %exclude %{_prefix}/lib/systemd/system/systemd-journal-upload.*
-%exclude %{_prefix}/lib/systemd/system/systemd-networkd.service
-%exclude %{_prefix}/lib/systemd/system/systemd-networkd-wait-online.service
+%exclude %{_prefix}/lib/systemd/system/systemd-networkd*
 %exclude %{_prefix}/lib/systemd/system/systemd-resolved.service
 %exclude %{_prefix}/lib/systemd/system/dbus-org.freedesktop.resolve1.service
+%exclude %{_prefix}/lib/systemd/system/dbus-org.freedesktop.network1.service
 %{_prefix}/lib/systemd/system
 %{_prefix}/lib/systemd/user
 %exclude %{_prefix}/lib/systemd/systemd-journal-gatewayd
@@ -1297,8 +1334,6 @@ fi
 %{_prefix}/lib/tmpfiles.d/etc.conf
 %{_prefix}/lib/tmpfiles.d/sap.conf
 %{_prefix}/lib/sysctl.d/50-default.conf
-#%{_prefix}/lib/sysusers.d/basic.conf
-#%{_prefix}/lib/sysusers.d/systemd.conf
 %{_prefix}/lib/systemd/system-preset/90-systemd.preset
 %{_prefix}/lib/systemd/system-preset/99-default-disable.preset
 %{_prefix}/lib/systemd/catalog/systemd.catalog
@@ -1321,12 +1356,9 @@ fi
 %{_mandir}/man7/*
 %exclude %{_mandir}/man8/systemd-journal-gatewayd.*
 %exclude %{_mandir}/man8/systemd-journal-remote.*
-%exclude %{_mandir}/man8/systemd-networkd.*
+%exclude %{_mandir}/man8/systemd-networkd*
 %exclude %{_mandir}/man8/systemd-resolved.*
 %{_mandir}/man8/*
-#%{_datadir}/factory/etc/nsswitch.conf
-#%{_datadir}/factory/etc/pam.d/other
-#%{_datadir}/factory/etc/pam.d/system-auth
 %{_datadir}/systemd/kbd-model-map
 %{_datadir}/dbus-1/services/org.freedesktop.systemd1.service
 %{_datadir}/dbus-1/system-services/org.freedesktop.systemd1.service
@@ -1427,7 +1459,6 @@ fi
 %{_prefix}/lib/systemd/systemd-journal-upload
 %{_prefix}/lib/systemd/systemd-journal-remote
 %{_prefix}/lib/tmpfiles.d/systemd-remote.conf
-#%{_prefix}/lib/sysusers.d/systemd-remote.conf
 %{_mandir}/man8/systemd-journal-gatewayd.*
 %{_mandir}/man8/systemd-journal-remote.*
 %{_datadir}/systemd/gatewayd
@@ -1435,23 +1466,19 @@ fi
 %files networkd
 %dir %{_prefix}/lib/systemd/network
 %{_bindir}/networkctl
-#%{_prefix}/lib/systemd/network/99-default.link
-#%{_prefix}/lib/systemd/network/80-container-host0.network
-#%{_prefix}/lib/systemd/network/80-container-ve.network
-%{_prefix}/lib/systemd/system/systemd-networkd.service
-%{_prefix}/lib/systemd/system/systemd-networkd-wait-online.service
+%{_prefix}/lib/systemd/system/systemd-networkd*
 %{_prefix}/lib/systemd/systemd-networkd
 %{_prefix}/lib/systemd/systemd-networkd-wait-online
 %{_mandir}/man8/systemd-journal-gatewayd.*
 %{_mandir}/man8/systemd-journal-remote.*
-%{_mandir}/man8/systemd-networkd.*
+%{_mandir}/man8/systemd-networkd*
 %{_mandir}/man5/systemd.network.*
 %{_mandir}/man5/systemd.netdev.*
 %{_mandir}/man5/systemd.link.*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/org.freedesktop.network1.conf
 %{_datadir}/dbus-1/system-services/org.freedesktop.network1.service
-#%{_datadir}/polkit-1/actions/org.freedesktop.network1.policy
 %{_prefix}/lib/udev/rules.d/80-net-setup-link.rules
+%{_prefix}/lib/systemd/system/dbus-org.freedesktop.network1.service
 
 %files resolved
 %{_prefix}/lib/systemd/systemd-resolved
@@ -1466,18 +1493,122 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
-* Fri Apr 21 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-30.9
-- core: reinstate propagation of stop/restart jobs via RequsiteOf dependencies (#1436021)
-- core: when propagating restart requests due to deps, downgrade restart to try-restart (#1436021)
+* Tue Jun 27 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42
+- Revert "rules: move cpu hotplug rule to separate file" (#1465108)
+
+* Mon Jun 12 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-41
+- rules: move cpu hotplug rule to separate file (#1266322)
+
+* Tue May 30 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-40
+- readahead-collect: don't print warning message when handling symlink (#1387095)
+- tmpfiles: don't recursively descend into journal directories in /var (#1411199)
+- tmpfiles: also set acls on /var/log/journal (#1411199)
+- tmpfiles: set acls on system.journal explicitly (#1411199)
+- sysctl: configure kernel parameters in the order they occur in each sysctl configuration files (#4205) (#1382244)
+- units: drop explicit NotifyAccess setting from journald's unit file (#5749) (#1444356)
+- systemd-notify: Always pass a valid pid to sd_pid_notify (#1381743)
+- sd_pid_notify_with_fds: fix computing msg_controllen (#1381743)
+
+* Tue May 02 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-39
+- tests: set tasks_max to infinity (#1337244)
+- Avoid forever loop for journalctl --list-boots command (#4278) (#1294516)
+- sd-journal: return SD_JOURNAL_INVALIDATE only if journal files were actually deleted/moved (#5580) (#1446140)
+- load-fragment: don't print error about incorrect syntax when IPv6 is disabled (#1377055)
+- core: manager: add some missing dbus properties (#1427927)
+- core: manager: expose DefaultLimit* as properties on dbus (#1427927)
+- fstab-generator: remove bogus condition (#1446171)
+
+* Thu Apr 20 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-38
 - core: properly handle jobs that are suppressed to JOB_NOPs when propagating restarts (#1436021)
 
-* Mon Feb 13 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-30.8
-- tmp.mount.hm4: After swap.target (#3087) (#1298355)
-- make sure all swap units are ordered before the swap target (#1298355)
+* Wed Apr 19 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-37
+- core: add support for the "pids" cgroup controller (#1337244)
+- core: add new DefaultTasksMax= setting for system.conf (#1337244)
+- logind: add a new UserTasksMax= setting to logind.conf (#1337244)
+- core: support percentage specifications on TasksMax= (#1337244)
+- core: reinstate propagation of stop/restart jobs via RequsiteOf dependencies (#1436021)
+- core: when propagating restart requests due to deps, downgrade restart to try-restart (#1436021)
 
-* Tue Nov 29 2016 Lukas Nykryn <lnykryn@redhat.com> - 219-30.7
+* Thu Apr 13 2017 Lukáš Nykrýn <lnykryn@redhat.com> - 219-36
+- spec cleanup (#1439787, #1392300, #1368929)
+
+* Tue Apr 11 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-35
+- tmpfiles: add new 'e' action which cleans up a dir without creating it (#1225739)
+- util:bind_remount_recursive(): handle return 0 of set_consume() (#1433687)
+
+* Tue Apr 11 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-34
+- rules/40-redhat.rules: rules should be on one line (#1274401)
+
+* Mon Apr 10 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-33
+- execute: Add new PassEnvironment= directive (#1426214)
+- test-execute: Add tests for new PassEnvironment= directive (#1426214)
+- test-execute: Clarify interaction of PassEnvironment= and MANAGER_USER (#1426214)
+- load-fragment: resolve specifiers in RuntimeDirectory (#1428110)
+- Add microphone mute keymap for Dell Precision (#1413477)
+- hwdb: update micmute YCODE on device node at DELL LATITUDE laptops for mic mute button. (#5012) (#1413477)
+- udev/path_id: improve and enhance bus detection for Linux on z Systems (#1274401)
+- core: port config_parse_bounding_set to extract_first_word (#1387398)
+- core: simplify parsing of capability bounding set settings (#1387398)
+- test: add test for capability bounding set parsing (#1387398)
+- capabilities: keep bounding set in non-inverted format. (#1387398)
+- capabilities: added support for ambient capabilities. (#1387398)
+- man: add AmbientCapabilities entry. (#1387398)
+- test-capability: rebase to upstream version (#1387398)
+- namespace: don't fail on masked mounts (#1433687)
+- sysv-generator: Provides: $network should also pull network.target to transaction (#5652) (#1438749)
+- Install: correctly report symlink creations (#1435098)
+
+* Mon Feb 20 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-32
+- udev: fix crash with invalid udev.log-priority (#1245293)
+- core: make exec code a bit more readable (#1421181)
+- core: Private*/Protect* options with RootDirectory (#1421181)
+- core: if the start command vanishes during runtime don't hit an assert (#1421658)
+- systemctl: make sure that --now is carried out (#5209) (#1417459)
+- udev: inform systemd how many workers we can potentially spawn (#4036) (#1361601)
+- service: log_unit consumes id of unit not a unit (#1421658)
+- automount: add expire support (#1354410)
+- fstab-generator: fix memleak (#1354410)
+- remove bus-proxyd (#1317518)
+
+* Tue Feb 07 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-31
+- If the notification message length is 0, ignore the message (#4237) (#1380175)
+- systemctl: suppress errors with "show" for nonexistent units and properties (#1380259)
+- 40-redhat.rules: disable auto-online of hot-plugged memory on IBM z Systems (#1375603)
+- pid1: don't return any error in manager_dispatch_notify_fd() (#4240) (#1380259)
+- pid1: process zero-length notification messages again (#1380259
+#1380259)
+- pid1: more informative error message for ignored notifications (#1380259)
+- manager: 219 needs u->id in log_unit_debug (#1380259)
+- virt: add possibility to skip the check for chroot (#1379852)
 - load-fragment: fix parsing values in bytes and prevent returning -ERANGE incorrectly (#1396277)
 - core: fix assertion check (#1396312)
+- tmp.mount.hm4: After swap.target (#3087) (#1298355)
+- make sure all swap units are ordered before the swap target (#1298355)
+- Recognise Lustre as a remote file system (#4530) (#1390542)
+- unit: don't add Requires for tmp.mount (#1372249)
+- core: return 0 from device_serialize() (#1403249)
+- mtd_probe: include stdint (#1404251)
+- tests: fix failure of test-execute if /dev/mem is not available (#5028) (#1410056)
+- sd-journal: properly export has_{persistent|runtime}_files() (#1409527)
+- core: add possibility to set action for ctrl-alt-del burst (#4105) (#1353028)
+- failure-action: generalize failure action to emergency action (#1353028)
+- core: use emergency_action for ctr+alt+del burst (#1353028)
+- udev/path_id: introduce support for NVMe devices (#4169) (#1373150)
+- core: fix CapabilityBoundingSet merging (#1409586)
+- core: fix capability bounding set parsing (#1409586)
+- core: make parsing of RLIMIT_NICE aware of actual nice levels (#1409588)
+- shared: fix double free in unmask (#5005) (#1409997)
+- shared: fix double free in link (#1409997)
+- shared: check strdup != NULL (#1409997)
+- core: improve error message when RefuseManualStart(Stop) is hit (#5132) (#1026648)
+- systemctl: fix 'is-enabled' exit status on failure when executed in chroot (#4773) (#1413964)
+- man: document that the automatic journal limits are capped to 4G by default (#1418547)
+- random-seed: raise POOL_SIZE_MIN to 1024 (#1386824)
+- bash-completion: add support for --now (#5155) (#1351806)
+- basic: fix touch() creating files with 07777 mode (#1416062)
+- udev: net_id: add support for phys_port_name attribute (#4506) (#1392426)
+- install: introduce UnitFileFlags (#1413041)
+- shared, systemctl: teach is-enabled to show installation targets (#1413041)
 
 * Mon Nov 07 2016 Lukáš Nykrýn <lnykryn@redhat.com> - 219-30.6
 - better version of vmware trigger

@@ -1,4 +1,4 @@
-From 3ee0d3abc55571bdc13f1897688443a1538db367 Mon Sep 17 00:00:00 2001
+From cd238111a7980917e04cfdc5dae144d1fb4c0a49 Mon Sep 17 00:00:00 2001
 From: Jorge Niedbalski <jorge.niedbalski@canonical.com>
 Date: Wed, 28 Sep 2016 18:25:50 -0300
 Subject: [PATCH] If the notification message length is 0, ignore the message
@@ -9,7 +9,7 @@ Fixes #4234.
 Signed-off-by: Jorge Niedbalski <jnr@metaklass.org>
 
 Cherry-picked from: 531ac2b2349da02acc9c382849758e07eb92b020
-Resolves: #1381573
+Resolves: #1380175
 ---
  src/core/manager.c | 4 ++++
  1 file changed, 4 insertions(+)

@@ -1,4 +1,4 @@
-From 936aef312eb93eb84a872cae4e3cc98b7ac9305c Mon Sep 17 00:00:00 2001
+From 77f4e582d0f381391594e6f8a7b6767d572d96f7 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 19 May 2015 18:13:22 +0200
 Subject: [PATCH] core: when propagating restart requests due to deps,
@@ -24,7 +24,7 @@ Resolves: #1436021
  4 files changed, 24 insertions(+), 19 deletions(-)
 
 diff --git a/src/core/job.c b/src/core/job.c
-index c2876de..e2b7375 100644
+index 7032864..1617e24 100644
 --- a/src/core/job.c
 +++ b/src/core/job.c
 @@ -392,38 +392,38 @@ bool job_type_is_redundant(JobType a, UnitActiveState b) {
@@ -94,7 +94,7 @@ index e4191ee..ce81607 100644
  int job_type_merge_and_collapse(JobType *a, JobType b, Unit *u);
  
 diff --git a/src/core/manager.c b/src/core/manager.c
-index 6d045fd..329e0bf 100644
+index 8bd80e6..287cf6a 100644
 --- a/src/core/manager.c
 +++ b/src/core/manager.c
 @@ -1303,7 +1303,7 @@ int manager_add_job(Manager *m, JobType type, Unit *unit, JobMode mode, bool ove

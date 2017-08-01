@@ -1,4 +1,4 @@
-From 4179d6e6796a65738e9859a9e60c82f5c7573497 Mon Sep 17 00:00:00 2001
+From b5ed9900d9a02abd78bfb151932748725b7c0bdb Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Thu, 21 May 2015 20:39:23 +0200
 Subject: [PATCH] core: properly handle jobs that are suppressed to JOB_NOPs

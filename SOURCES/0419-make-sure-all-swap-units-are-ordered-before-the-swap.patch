@@ -1,4 +1,4 @@
-From fb85550c9fafacbd8c07b611d6f129dc341f9e28 Mon Sep 17 00:00:00 2001
+From 4fec67c88f7ddd02fecf711996f42ed4c9d24da6 Mon Sep 17 00:00:00 2001
 From: Franck Bui <fbui@suse.com>
 Date: Mon, 23 Nov 2015 11:14:10 +0100
 Subject: [PATCH] make sure all swap units are ordered before the swap target

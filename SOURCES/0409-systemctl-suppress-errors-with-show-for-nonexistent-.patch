@@ -1,4 +1,4 @@
-From aa23eb11cab247e713a19957eaaa80f7b5454ddc Mon Sep 17 00:00:00 2001
+From 6d590cc99d696e9b0bf5b6edf7582b824f5177ab Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Sat, 24 Sep 2016 20:58:04 -0400
 Subject: [PATCH] systemctl: suppress errors with "show" for nonexistent units
@@ -20,7 +20,7 @@ We might consider adding an explicit switch to fail on missing units/properties
 --ensure-exists --property=foobar.
 
 Cherry-picked from: bd5b9f0a12dd9c1947b11534e99c395ddf44caa9
-Resolves: #1380686
+Resolves: #1380259
 ---
  src/systemctl/systemctl.c | 9 ++++++---
  1 file changed, 6 insertions(+), 3 deletions(-)
