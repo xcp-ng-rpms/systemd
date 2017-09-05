@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        42%{?dist}
+Release:        42%{?dist}.1
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -34,6 +34,9 @@ Source10:       org.freedesktop.login1.policy
 Source11:       org.freedesktop.machine1.policy
 Source12:       org.freedesktop.systemd1.policy
 Source13:       org.freedesktop.timedate1.policy
+Source14:       phys-port-name-gen
+Source15:       76-phys-port-name.rules
+Source16:       76-phys-port-name.conf
 
 # RHEL-specific
 Patch0001: 0001-kernel-install-add-fedora-specific-callouts-to-new-k.patch
@@ -534,6 +537,7 @@ Patch0495: 0495-systemd-notify-Always-pass-a-valid-pid-to-sd_pid_not.patch
 Patch0496: 0496-sd_pid_notify_with_fds-fix-computing-msg_controllen.patch
 Patch0497: 0497-rules-move-cpu-hotplug-rule-to-separate-file.patch
 Patch0498: 0498-Revert-rules-move-cpu-hotplug-rule-to-separate-file.patch
+Patch0499: 0499-Revert-udev-net_id-add-support-for-phys_port_name-at.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -871,6 +875,14 @@ install -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/rsyslog.d/
 
 # Delete LICENSE files from _docdir (we'll get them in as %%license)
 rm -rf %{buildroot}%{_docdir}/LICENSE*
+
+# Install script and udev rule for adding phys_port_name for mlxsw and rocker drivers
+# And put them in dracut
+mkdir -p %{buildroot}%{_prefix}/lib/udev/rules.d
+install -m 0755 %{SOURCE14} %{buildroot}%{_prefix}/lib/udev/
+install -m 0644 %{SOURCE15} %{buildroot}%{_prefix}/lib/udev/rules.d/
+mkdir -p %{buildroot}%{_prefix}/lib/dracut/dracut.conf.d
+install -m 0644 %{SOURCE16} %{buildroot}%{_prefix}/lib/dracut/dracut.conf.d/
 
 %find_lang %{name}
 
@@ -1385,6 +1397,7 @@ fi
 %config(noreplace) %{_sysconfdir}/rc.d/rc.local
 %{_sysconfdir}/rc.local
 %{_datadir}/systemd/language-fallback-map
+%{_prefix}/lib/dracut/dracut.conf.d/76-phys-port-name.conf
 
 # Make sure we don't remove runlevel targets from F14 alpha installs,
 # but make sure we don't create then anew.
@@ -1493,6 +1506,10 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Tue Aug 15 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42.1
+- Revert "udev: net_id: add support for phys_port_name attribute (#4506)" (#1477285)
+- reintroduce naming based on phys_port_name for mlxsw and rocker via udev rule
+
 * Tue Jun 27 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42
 - Revert "rules: move cpu hotplug rule to separate file" (#1465108)
 
