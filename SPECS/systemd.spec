@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        42%{?dist}.1
+Release:        42%{?dist}.4
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -538,6 +538,9 @@ Patch0496: 0496-sd_pid_notify_with_fds-fix-computing-msg_controllen.patch
 Patch0497: 0497-rules-move-cpu-hotplug-rule-to-separate-file.patch
 Patch0498: 0498-Revert-rules-move-cpu-hotplug-rule-to-separate-file.patch
 Patch0499: 0499-Revert-udev-net_id-add-support-for-phys_port_name-at.patch
+Patch0500: 0500-sysctl-fix-uninitialized-variable.patch
+Patch0501: 0501-udev-ignore-SIGCHLD-from-unexpected-processes-130653.patch
+Patch0502: 0502-manager-when-reexecuting-try-to-connect-to-bus-only-.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1506,6 +1509,15 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Fri Sep 29 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42.4
+- manager: when reexecuting try to connect to bus only when dbus.service is around (#6773) (#1465737)
+
+* Mon Sep 25 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42.3
+- udev: ignore SIGCHLD from unexpected processes (#1306539) (#1306539)
+
+* Thu Sep 21 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42.2
+- sysctl: fix uninitialized variable (#1485121)
+
 * Tue Aug 15 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42.1
 - Revert "udev: net_id: add support for phys_port_name attribute (#4506)" (#1477285)
 - reintroduce naming based on phys_port_name for mlxsw and rocker via udev rule
