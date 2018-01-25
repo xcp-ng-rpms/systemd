@@ -10,13 +10,14 @@ Resolves: #1387398
  1 file changed, 29 insertions(+)
 
 diff --git a/man/systemd.exec.xml b/man/systemd.exec.xml
-index aa5831c..1b14ced 100644
+index aa5831cc2..1b14ced78 100644
 --- a/man/systemd.exec.xml
 +++ b/man/systemd.exec.xml
-@@ -767,6 +767,35 @@
+@@ -766,6 +766,35 @@
+         settings.</para></listitem>
        </varlistentry>
  
-       <varlistentry>
++      <varlistentry>
 +        <term><varname>AmbientCapabilities=</varname></term>
 +
 +        <listitem><para>Controls which capabilities to include in the
@@ -45,7 +46,6 @@ index aa5831c..1b14ced 100644
 +        capabilities over the user change.</para></listitem>
 +      </varlistentry>
 +
-+      <varlistentry>
+       <varlistentry>
          <term><varname>SecureBits=</varname></term>
          <listitem><para>Controls the secure bits set for the executed
-         process. Takes a space-separated combination of options from

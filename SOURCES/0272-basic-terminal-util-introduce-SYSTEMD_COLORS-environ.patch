@@ -21,25 +21,25 @@ Resolves: #1247963
  7 files changed, 31 insertions(+), 10 deletions(-)
 
 diff --git a/man/systemd.xml b/man/systemd.xml
-index eb289f0..30005b1 100644
+index eb289f03b..30005b1ef 100644
 --- a/man/systemd.xml
 +++ b/man/systemd.xml
-@@ -755,6 +755,13 @@
+@@ -754,6 +754,13 @@
+         script runlevel link farms.</para></listitem>
        </varlistentry>
  
-       <varlistentry>
++      <varlistentry>
 +        <term><varname>$SYSTEMD_COLORS</varname></term>
 +
 +        <listitem><para>Controls whether colorized output should be generated.
 +        </para></listitem>
 +      </varlistentry>
 +
-+      <varlistentry>
+       <varlistentry>
          <term><varname>$LISTEN_PID</varname></term>
          <term><varname>$LISTEN_FDS</varname></term>
- 
 diff --git a/src/journal/journalctl.c b/src/journal/journalctl.c
-index 8236d08..7058788 100644
+index 8236d0810..7058788ef 100644
 --- a/src/journal/journalctl.c
 +++ b/src/journal/journalctl.c
 @@ -2140,7 +2140,7 @@ int main(int argc, char *argv[]) {
@@ -52,7 +52,7 @@ index 8236d08..7058788 100644
                                  arg_utc * OUTPUT_UTC;
  
 diff --git a/src/login/loginctl.c b/src/login/loginctl.c
-index 6c8a59e..8e3bfbe 100644
+index 6c8a59e7c..8e3bfbea8 100644
 --- a/src/login/loginctl.c
 +++ b/src/login/loginctl.c
 @@ -83,7 +83,7 @@ static OutputFlags get_output_flags(void) {
@@ -65,7 +65,7 @@ index 6c8a59e..8e3bfbe 100644
  
  static int list_sessions(int argc, char *argv[], void *userdata) {
 diff --git a/src/machine/machinectl.c b/src/machine/machinectl.c
-index f191070..ef1214a 100644
+index f1910709d..ef1214a66 100644
 --- a/src/machine/machinectl.c
 +++ b/src/machine/machinectl.c
 @@ -105,7 +105,7 @@ static OutputFlags get_output_flags(void) {
@@ -78,7 +78,7 @@ index f191070..ef1214a 100644
  }
  
 diff --git a/src/shared/util.c b/src/shared/util.c
-index 5092588..dc51852 100644
+index 50925888d..dc5185269 100644
 --- a/src/shared/util.c
 +++ b/src/shared/util.c
 @@ -8146,3 +8146,16 @@ char *shell_maybe_quote(const char *s) {
@@ -99,7 +99,7 @@ index 5092588..dc51852 100644
 +        return parse_boolean(colors) != 0;
 +}
 diff --git a/src/shared/util.h b/src/shared/util.h
-index 7ecfd85..b4a4a49 100644
+index 7ecfd8571..b4a4a491f 100644
 --- a/src/shared/util.h
 +++ b/src/shared/util.h
 @@ -485,29 +485,30 @@ unsigned lines(void);
@@ -140,7 +140,7 @@ index 7ecfd85..b4a4a49 100644
  
  int files_same(const char *filea, const char *fileb);
 diff --git a/src/systemctl/systemctl.c b/src/systemctl/systemctl.c
-index 89d0b3b..5d3a85f 100644
+index 89d0b3b39..5d3a85fd9 100644
 --- a/src/systemctl/systemctl.c
 +++ b/src/systemctl/systemctl.c
 @@ -197,7 +197,7 @@ static OutputFlags get_output_flags(void) {

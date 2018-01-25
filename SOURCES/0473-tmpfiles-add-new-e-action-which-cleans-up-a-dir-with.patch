@@ -18,23 +18,23 @@ Resolves: #1225739
  2 files changed, 23 insertions(+), 37 deletions(-)
 
 diff --git a/man/tmpfiles.d.xml b/man/tmpfiles.d.xml
-index fc1fe13..fc9db62 100644
+index fc1fe13ac..fc9db622e 100644
 --- a/man/tmpfiles.d.xml
 +++ b/man/tmpfiles.d.xml
-@@ -162,6 +162,13 @@
+@@ -161,6 +161,13 @@
+           <listitem><para>Create or empty a directory.</para></listitem>
          </varlistentry>
  
-         <varlistentry>
++        <varlistentry>
 +          <term><varname>e</varname></term>
 +          <listitem><para>Clean directory contents based on the age argument.
 +          Lines of this type accept shell-style globs in
 +          place of normal path names.</para></listitem>
 +        </varlistentry>
 +
-+        <varlistentry>
+         <varlistentry>
            <term><varname>v</varname></term>
            <listitem><para>Create a subvolume if the path does not
-           exist yet and the file system supports this
 @@ -467,7 +474,7 @@
  
        <para>The age field only applies to lines
@@ -45,7 +45,7 @@ index fc1fe13..fc9db62 100644
        <literal>-</literal>, no automatic clean-up is
        done.</para>
 diff --git a/src/tmpfiles/tmpfiles.c b/src/tmpfiles/tmpfiles.c
-index bda89df..df7676b 100644
+index bda89df5b..df7676b57 100644
 --- a/src/tmpfiles/tmpfiles.c
 +++ b/src/tmpfiles/tmpfiles.c
 @@ -79,6 +79,7 @@ typedef enum ItemType {

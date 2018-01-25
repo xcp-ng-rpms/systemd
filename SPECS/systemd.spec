@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        42%{?dist}.4
+Release:        42%{?dist}.6
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -541,6 +541,10 @@ Patch0499: 0499-Revert-udev-net_id-add-support-for-phys_port_name-at.patch
 Patch0500: 0500-sysctl-fix-uninitialized-variable.patch
 Patch0501: 0501-udev-ignore-SIGCHLD-from-unexpected-processes-130653.patch
 Patch0502: 0502-manager-when-reexecuting-try-to-connect-to-bus-only-.patch
+Patch0503: 0503-unmount-Pass-in-mount-options-when-remounting-read-o.patch
+Patch0504: 0504-shutdown-don-t-remount-ro-network-filesystems.-6588.patch
+Patch0505: 0505-shutdown-fix-incorrect-fscanf-result-check-6806.patch
+Patch0506: 0506-manager-fix-connecting-to-bus-when-dbus-is-actually-.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1509,6 +1513,14 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Tue Jan 09 2018 Lukas Nykryn <lnykryn@redhat.com> - 219-42.6
+- manager: fix connecting to bus when dbus is actually around (#7205) (#1465737)
+
+* Thu Dec 07 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42.5
+- unmount: Pass in mount options when remounting read-only (#1312002)
+- shutdown: don't remount,ro network filesystems. (#6588) (#1312002)
+- shutdown: fix incorrect fscanf() result check (#6806) (#1312002)
+
 * Fri Sep 29 2017 Lukas Nykryn <lnykryn@redhat.com> - 219-42.4
 - manager: when reexecuting try to connect to bus only when dbus.service is around (#6773) (#1465737)
 

@@ -19,7 +19,7 @@ Resolves: #1222517
  1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/src/core/ima-setup.c b/src/core/ima-setup.c
-index 0e0d16a..1d4acfa 100644
+index 0e0d16a7c..1d4acfa3b 100644
 --- a/src/core/ima-setup.c
 +++ b/src/core/ima-setup.c
 @@ -27,9 +27,10 @@

@@ -18,7 +18,7 @@ Resolves: #1305279
  6 files changed, 100 insertions(+), 6 deletions(-)
 
 diff --git a/man/systemd.timer.xml b/man/systemd.timer.xml
-index 20890f2..bdd14d8 100644
+index 20890f227..bdd14d888 100644
 --- a/man/systemd.timer.xml
 +++ b/man/systemd.timer.xml
 @@ -180,13 +180,12 @@
@@ -80,7 +80,7 @@ index 20890f2..bdd14d8 100644
          <term><varname>Unit=</varname></term>
  
 diff --git a/src/core/dbus-timer.c b/src/core/dbus-timer.c
-index 43e7852..cd7bf44 100644
+index 43e785246..cd7bf44ba 100644
 --- a/src/core/dbus-timer.c
 +++ b/src/core/dbus-timer.c
 @@ -181,6 +181,7 @@ const sd_bus_vtable bus_timer_vtable[] = {
@@ -115,7 +115,7 @@ index 43e7852..cd7bf44 100644
  
                  int b;
 diff --git a/src/core/load-fragment-gperf.gperf.m4 b/src/core/load-fragment-gperf.gperf.m4
-index 5305984..5106a98 100644
+index 53059845e..5106a98ee 100644
 --- a/src/core/load-fragment-gperf.gperf.m4
 +++ b/src/core/load-fragment-gperf.gperf.m4
 @@ -336,6 +336,7 @@ Timer.OnUnitInactiveSec,         config_parse_timer,                 0,
@@ -127,7 +127,7 @@ index 5305984..5106a98 100644
  m4_dnl
  Path.PathExists,                 config_parse_path_spec,             0,                             0
 diff --git a/src/core/timer.c b/src/core/timer.c
-index 48cf9c1..972dd73 100644
+index 48cf9c16a..972dd73df 100644
 --- a/src/core/timer.c
 +++ b/src/core/timer.c
 @@ -29,6 +29,7 @@
@@ -187,7 +187,7 @@ index 48cf9c1..972dd73 100644
  
                  if (t->realtime_event_source) {
 diff --git a/src/core/timer.h b/src/core/timer.h
-index de412a0..b977245 100644
+index de412a043..b97724525 100644
 --- a/src/core/timer.h
 +++ b/src/core/timer.h
 @@ -69,6 +69,7 @@ struct Timer {
@@ -199,13 +199,17 @@ index de412a0..b977245 100644
          LIST_HEAD(TimerValue, values);
          usec_t next_elapse_realtime;
 diff --git a/src/libsystemd/sd-bus/bus-util.c b/src/libsystemd/sd-bus/bus-util.c
-index 6d56150..5ecb3be 100644
+index 6d5615082..5ecb3bea4 100644
 --- a/src/libsystemd/sd-bus/bus-util.c
 +++ b/src/libsystemd/sd-bus/bus-util.c
-@@ -1364,6 +1364,22 @@ int bus_append_unit_property_assignment(sd_bus_message *m, const char *assignmen
-                         return bus_log_create_error(r);
+@@ -1360,6 +1360,22 @@ int bus_append_unit_property_assignment(sd_bus_message *m, const char *assignmen
+                         return -EINVAL;
+                 }
  
-                 return 0;
++                if (r < 0)
++                        return bus_log_create_error(r);
++
++                return 0;
 +        } else if (streq(field, "RandomSec")) {
 +                usec_t t;
 +
@@ -218,10 +222,6 @@ index 6d56150..5ecb3be 100644
 +                        return bus_log_create_error(r);
 +
 +                r = sd_bus_message_append(m, "v", "t", t);
-+                if (r < 0)
-+                        return bus_log_create_error(r);
-+
-+                return 0;
-         }
+                 if (r < 0)
+                         return bus_log_create_error(r);
  
-         r = sd_bus_message_append_basic(m, SD_BUS_TYPE_STRING, field);
