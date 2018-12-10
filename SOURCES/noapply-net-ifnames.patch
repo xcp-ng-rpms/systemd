@@ -1,0 +1,25 @@
+From 943204e250f650ee61bae391975ad389fb42e9b1 Mon Sep 17 00:00:00 2001
+From: Fedora systemd team <systemd-maint@redhat.com>
+Date: Fri, 16 Jan 2015 16:09:09 +0000
+Subject: [PATCH] Remove the need for net.ifnames=0 on the kernel command-line
+
+---
+ rules/80-net-name-slot.rules | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/rules/80-net-name-slot.rules b/rules/80-net-name-slot.rules
+index c5f1b38..164689a 100644
+--- a/rules/80-net-name-slot.rules
++++ b/rules/80-net-name-slot.rules
+@@ -7,8 +7,4 @@ NAME!="", GOTO="net_name_slot_end"
+ IMPORT{cmdline}="net.ifnames"
+ ENV{net.ifnames}=="0", GOTO="net_name_slot_end"
+ 
+-NAME=="", ENV{ID_NET_NAME_ONBOARD}!="", NAME="$env{ID_NET_NAME_ONBOARD}"
+-NAME=="", ENV{ID_NET_NAME_SLOT}!="", NAME="$env{ID_NET_NAME_SLOT}"
+-NAME=="", ENV{ID_NET_NAME_PATH}!="", NAME="$env{ID_NET_NAME_PATH}"
+-
+ LABEL="net_name_slot_end"
+-- 
+1.9.3
+

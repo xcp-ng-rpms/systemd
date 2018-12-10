@@ -1,0 +1,26 @@
+From 1c969c9b7580ec75497b5339818d25765629f823 Mon Sep 17 00:00:00 2001
+From: Simon Rowe <simon.rowe@eu.citrix.com>
+Date: Tue, 21 Jul 2015 11:05:23 +0000
+Subject: [PATCH] Disable ACPI button actions
+
+Signed-off-by: Simon Rowe <simon.rowe@eu.citrix.com>
+
+diff --git a/src/login/logind.conf b/src/login/logind.conf
+index 834c4c2..be6884c 100644
+--- a/src/login/logind.conf
++++ b/src/login/logind.conf
+@@ -18,10 +18,10 @@
+ #KillOnlyUsers=
+ #KillExcludeUsers=root
+ #InhibitDelayMaxSec=5
+-#HandlePowerKey=poweroff
+-#HandleSuspendKey=suspend
+-#HandleHibernateKey=hibernate
+-#HandleLidSwitch=suspend
++HandlePowerKey=ignore
++HandleSuspendKey=ignore
++HandleHibernateKey=ignore
++HandleLidSwitch=ignore
+ #HandleLidSwitchDocked=ignore
+ #PowerKeyIgnoreInhibited=no
+ #SuspendKeyIgnoreInhibited=no

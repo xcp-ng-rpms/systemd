@@ -1,0 +1,31 @@
+From 4302857b31a8e89ddeba0921fee06a1ff0237996 Mon Sep 17 00:00:00 2001
+From: Felipe Franciosi <felipe@paradoxo.org>
+Date: Wed, 30 Sep 2015 22:07:16 +0100
+Subject: [PATCH] Support OP_NOMATCH for TAG key
+
+The TAG key can be used in rules for event matching. At the moment, it
+does not support inequality tests. This patch enhances the key test to
+validate the rule if it does not contain a given TAG (by TAG!="value").
+
+Signed-off-by: Felipe Franciosi <felipe@paradoxo.org>
+---
+ src/udev/udev-rules.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/udev/udev-rules.c b/src/udev/udev-rules.c
+index c56f09b..89b0231 100644
+--- a/src/udev/udev-rules.c
++++ b/src/udev/udev-rules.c
+@@ -2009,7 +2009,8 @@ int udev_rules_apply_to_event(struct udev_rules *rules, struct udev_event *event
+                                         break;
+                                 }
+                         }
+-                        if (!match && (cur->key.op != OP_NOMATCH))
++                        if ((!match && (cur->key.op != OP_NOMATCH)) ||
++                            (match && (cur->key.op == OP_NOMATCH)))
+                                 goto nomatch;
+                         break;
+                 }
+-- 
+1.7.10.4
+

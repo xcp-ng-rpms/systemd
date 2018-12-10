@@ -1,0 +1,39 @@
+From ed39ac321c728c5fc530f50d223c0232eb0cc854 Mon Sep 17 00:00:00 2001
+From: Fedora systemd team <systemd-maint@redhat.com>
+Date: Wed, 19 Nov 2014 16:06:08 +0000
+Subject: [PATCH] CA-117731: CLI command sr-create failed - iSCSI SCSIid not
+ being correctly read
+
+scsi_id expects the target vendor and model strings to be a particular
+length - 8 and 16 respectively. In case of IET, the model string is
+shorter than expected. The fix makes sure the strings are space padded
+to comply with scsi_id's requirements.
+---
+ src/udev/scsi_id/scsi_serial.c |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/udev/scsi_id/scsi_serial.c b/src/udev/scsi_id/scsi_serial.c
+index dcfff1d..d99bea6 100644
+--- a/src/udev/scsi_id/scsi_serial.c
++++ b/src/udev/scsi_id/scsi_serial.c
+@@ -816,6 +816,7 @@ int scsi_std_inquiry(struct udev *udev,
+         unsigned char buf[SCSI_INQ_BUFF_LEN];
+         struct stat statbuf;
+         int err = 0;
++        size_t len;
+ 
+         fd = open(devname, O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+         if (fd < 0) {
+@@ -838,8 +839,12 @@ int scsi_std_inquiry(struct udev *udev,
+ 
+         err = 0;
+         memcpy(dev_scsi->vendor, buf + 8, 8);
++        len = strlen(dev_scsi->vendor);
++        memset(dev_scsi->vendor + len, ' ', VENDOR_LENGTH - len);
+         dev_scsi->vendor[8] = '\0';
+         memcpy(dev_scsi->model, buf + 16, 16);
++        len = strlen(dev_scsi->model);
++        memset(dev_scsi->model + len, ' ', MODEL_LENGTH - len);
+         dev_scsi->model[16] = '\0';
+         memcpy(dev_scsi->revision, buf + 32, 4);
+         dev_scsi->revision[4] = '\0';

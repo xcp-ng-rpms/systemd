@@ -1,0 +1,24 @@
+From: Fedora systemd team <systemd-maint@redhat.com>
+Date: Wed, 19 Nov 2014 16:06:08 +0000
+Subject: [PATCH] Explicitly include stdint.h
+
+--- a/src/udev/mtd_probe/mtd_probe.c.orig	2015-02-03 01:00:07.256045228 +0000
++++ b/src/udev/mtd_probe/mtd_probe.c	2016-10-04 10:14:18.063330940 +0000
+@@ -16,7 +16,7 @@
+  * Foundation, Inc., 51 Franklin St, Fifth Floor,
+  * Boston, MA  02110-1301  USA
+  */
+-#include "mtd_probe.h"
++
+ #include <stdio.h>
+ #include <sys/ioctl.h>
+ #include <mtd/mtd-user.h>
+@@ -25,6 +25,8 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <stdlib.h>
++#include <stdint.h>
++#include "mtd_probe.h"
+ 
+ int main(int argc, char** argv)
+ {
