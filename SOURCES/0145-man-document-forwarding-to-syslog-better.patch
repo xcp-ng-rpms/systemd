@@ -12,7 +12,7 @@ Resolves: #1177336
  1 file changed, 44 insertions(+), 26 deletions(-)
 
 diff --git a/man/journald.conf.xml b/man/journald.conf.xml
-index 85146b0..abfe313 100644
+index 85146b0d8..abfe3130d 100644
 --- a/man/journald.conf.xml
 +++ b/man/journald.conf.xml
 @@ -97,7 +97,7 @@
@@ -83,10 +83,11 @@ index 85146b0..abfe313 100644
          <literal>systemd.journald.forward_to_wall=</literal>. When
          forwarding to the console, the TTY to log to can be changed
          with <varname>TTYPath=</varname>, described
-@@ -366,6 +358,32 @@
+@@ -365,6 +357,32 @@
+ 
    </refsect1>
  
-   <refsect1>
++  <refsect1>
 +    <title>Forwarding to traditional syslog daemons</title>
 +
 +    <para>
@@ -112,7 +113,6 @@ index 85146b0..abfe313 100644
 +    </para>
 +  </refsect1>
 +
-+  <refsect1>
+   <refsect1>
        <title>See Also</title>
        <para>
-         <citerefentry><refentrytitle>systemd</refentrytitle><manvolnum>1</manvolnum></citerefentry>,

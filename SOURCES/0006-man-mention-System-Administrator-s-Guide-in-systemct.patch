@@ -10,13 +10,14 @@ Resolves: #978948
  1 file changed, 11 insertions(+)
 
 diff --git a/man/systemctl.xml b/man/systemctl.xml
-index 338c1d3..6f30474 100644
+index 338c1d328..6f30474c3 100644
 --- a/man/systemctl.xml
 +++ b/man/systemctl.xml
-@@ -1714,6 +1714,17 @@ kobject-uevent 1 systemd-udevd-kernel.socket systemd-udevd.service
+@@ -1713,6 +1713,17 @@ kobject-uevent 1 systemd-udevd-kernel.socket systemd-udevd.service
+     <xi:include href="less-variables.xml" xpointer="less"/>
    </refsect1>
  
-   <refsect1>
++  <refsect1>
 +    <title>Examples</title>
 +    <para>
 +            For examples how to use systemctl in comparsion
@@ -27,7 +28,6 @@ index 338c1d3..6f30474 100644
 +    </para>
 +  </refsect1>
 +
-+  <refsect1>
+   <refsect1>
      <title>See Also</title>
      <para>
-       <citerefentry><refentrytitle>systemd</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
