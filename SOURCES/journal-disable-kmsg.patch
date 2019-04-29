@@ -1,0 +1,58 @@
+From 8d20265f7526683dce4ad5c1fdea23ac11550620 Mon Sep 17 00:00:00 2001
+From: Fedora systemd team <systemd-maint@redhat.com>
+Date: Mon, 26 Jan 2015 08:37:36 +0000
+Subject: [PATCH] CA-159050: journal: Disable kmsg device lookups
+
+Prevent deadlock when a VIF comes online where journald tries to capture
+the uevent for the VIF that is mentioned in the kmsg and xenstored tries
+to log to the journal, but reading the uevent requires xenstored.
+---
+ src/journal/journald-kmsg.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/src/journal/journald-kmsg.c b/src/journal/journald-kmsg.c
+index c4216c4..a93c503 100644
+--- a/src/journal/journald-kmsg.c
++++ b/src/journal/journald-kmsg.c
+@@ -112,7 +112,9 @@ static void dev_kmsg_record(Server *s, const char *p, size_t l) {
+         char *identifier = NULL, *pid = NULL, *e, *f, *k;
+         uint64_t serial;
+         size_t pl;
++#if 0
+         char *kernel_device = NULL;
++#endif
+ 
+         assert(s);
+         assert(p);
+@@ -204,10 +206,10 @@ static void dev_kmsg_record(Server *s, const char *p, size_t l) {
+                 m = cunescape_length_with_prefix(k, e - k, "_KERNEL_");
+                 if (!m)
+                         break;
+-
++#if 0
+                 if (startswith(m, "_KERNEL_DEVICE="))
+                         kernel_device = m + 15;
+-
++#endif
+                 IOVEC_SET_STRING(iovec[n++], m);
+                 z++;
+ 
+@@ -215,6 +217,7 @@ static void dev_kmsg_record(Server *s, const char *p, size_t l) {
+                 k = e + 1;
+         }
+ 
++#if 0
+         if (kernel_device) {
+                 struct udev_device *ud;
+ 
+@@ -264,6 +267,7 @@ static void dev_kmsg_record(Server *s, const char *p, size_t l) {
+                         udev_device_unref(ud);
+                 }
+         }
++#endif
+ 
+         if (asprintf(&source_time, "_SOURCE_MONOTONIC_TIMESTAMP=%llu", usec) >= 0)
+                 IOVEC_SET_STRING(iovec[n++], source_time);
+-- 
+2.17.0
+
