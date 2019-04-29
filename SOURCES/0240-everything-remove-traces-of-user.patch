@@ -32,7 +32,7 @@ Resolves: #1071363
  24 files changed, 40 insertions(+), 290 deletions(-)
 
 diff --git a/man/busctl.xml b/man/busctl.xml
-index 807fc78..0635280 100644
+index 807fc78e8..0635280ea 100644
 --- a/man/busctl.xml
 +++ b/man/busctl.xml
 @@ -75,9 +75,8 @@
@@ -56,13 +56,14 @@ index 807fc78..0635280 100644
        <xi:include href="user-system-options.xml" xpointer="host" />
        <xi:include href="user-system-options.xml" xpointer="machine" />
 diff --git a/man/journalctl.xml b/man/journalctl.xml
-index 08de0ff..2764f66 100644
+index 08de0ff06..2764f66ed 100644
 --- a/man/journalctl.xml
 +++ b/man/journalctl.xml
-@@ -470,20 +470,6 @@
+@@ -469,20 +469,6 @@
+         </listitem>
        </varlistentry>
  
-       <varlistentry>
+-      <varlistentry>
 -        <term><option>--user-unit=</option></term>
 -
 -        <listitem><para>Show messages for the specified user session
@@ -76,12 +77,11 @@ index 08de0ff..2764f66 100644
 -        </listitem>
 -      </varlistentry>
 -
--      <varlistentry>
+       <varlistentry>
          <term><option>-p</option></term>
          <term><option>--priority=</option></term>
- 
 diff --git a/man/pam_systemd.xml b/man/pam_systemd.xml
-index b4a3f50..a448aed 100644
+index b4a3f502b..a448aed02 100644
 --- a/man/pam_systemd.xml
 +++ b/man/pam_systemd.xml
 @@ -78,9 +78,7 @@
@@ -106,7 +106,7 @@ index b4a3f50..a448aed 100644
        <listitem><para>If the last concurrent session of a user ends,
        the <varname>$XDG_RUNTIME_DIR</varname> directory and all its
 diff --git a/man/systemctl.xml b/man/systemctl.xml
-index 6b29b8c..c6f5842 100644
+index 6b29b8cd0..c6f584278 100644
 --- a/man/systemctl.xml
 +++ b/man/systemctl.xml
 @@ -339,7 +339,6 @@
@@ -117,10 +117,11 @@ index 6b29b8c..c6f5842 100644
        <xi:include href="user-system-options.xml" xpointer="system" />
  
        <!-- we do not document -failed here, as it has been made
-@@ -357,17 +356,6 @@
+@@ -356,17 +355,6 @@
+         </listitem>
        </varlistentry>
  
-       <varlistentry>
+-      <varlistentry>
 -        <term><option>--global</option></term>
 -
 -        <listitem>
@@ -131,10 +132,9 @@ index 6b29b8c..c6f5842 100644
 -        </listitem>
 -      </varlistentry>
 -
--      <varlistentry>
+       <varlistentry>
          <term><option>--no-reload</option></term>
  
-         <listitem>
 @@ -795,9 +783,7 @@ kobject-uevent 1 systemd-udevd-kernel.socket systemd-udevd.service
              lines to fit in the terminal window. This can be changes
              with <option>--lines</option> and <option>--full</option>,
@@ -202,10 +202,11 @@ index 6b29b8c..c6f5842 100644
              temporary files which will be written to the real location if the
              editor exits successfully.</para>
  
-@@ -1597,17 +1571,6 @@ kobject-uevent 1 systemd-udevd-kernel.socket systemd-udevd.service
+@@ -1596,17 +1570,6 @@ kobject-uevent 1 systemd-udevd-kernel.socket systemd-udevd.service
+           </listitem>
          </varlistentry>
  
-         <varlistentry>
+-        <varlistentry>
 -          <term><command>exit</command></term>
 -
 -          <listitem>
@@ -216,12 +217,11 @@ index 6b29b8c..c6f5842 100644
 -          </listitem>
 -        </varlistentry>
 -
--        <varlistentry>
+         <varlistentry>
            <term><command>switch-root <replaceable>ROOT</replaceable> <optional><replaceable>INIT</replaceable></optional></command></term>
  
-           <listitem>
 diff --git a/man/systemd-analyze.xml b/man/systemd-analyze.xml
-index 1983150..b2e0f42 100644
+index 198315052..b2e0f42d5 100644
 --- a/man/systemd-analyze.xml
 +++ b/man/systemd-analyze.xml
 @@ -188,12 +188,6 @@
@@ -238,7 +238,7 @@ index 1983150..b2e0f42 100644
        <varlistentry>
          <term><option>--system</option></term>
 diff --git a/man/systemd-run.xml b/man/systemd-run.xml
-index febcdb0..f46fc3a 100644
+index febcdb026..f46fc3abf 100644
 --- a/man/systemd-run.xml
 +++ b/man/systemd-run.xml
 @@ -294,7 +294,6 @@
@@ -250,7 +250,7 @@ index febcdb0..f46fc3a 100644
        <xi:include href="user-system-options.xml" xpointer="host" />
        <xi:include href="user-system-options.xml" xpointer="machine" />
 diff --git a/man/systemd-system.conf.xml b/man/systemd-system.conf.xml
-index 1b74ed3..ca25c93 100644
+index 1b74ed38f..ca25c93a1 100644
 --- a/man/systemd-system.conf.xml
 +++ b/man/systemd-system.conf.xml
 @@ -66,10 +66,7 @@
@@ -266,7 +266,7 @@ index 1b74ed3..ca25c93 100644
      operations.</para>
    </refsect1>
 diff --git a/man/systemd.device.xml b/man/systemd.device.xml
-index ac6deaf..d6b6a7c 100644
+index ac6deafb1..d6b6a7ce4 100644
 --- a/man/systemd.device.xml
 +++ b/man/systemd.device.xml
 @@ -97,11 +97,9 @@
@@ -283,7 +283,7 @@ index ac6deaf..d6b6a7c 100644
          becomes available.</para>
  
 diff --git a/man/systemd.exec.xml b/man/systemd.exec.xml
-index 5b93aa7..6af7c7a 100644
+index 5b93aa71e..6af7c7ae5 100644
 --- a/man/systemd.exec.xml
 +++ b/man/systemd.exec.xml
 @@ -1148,9 +1148,7 @@
@@ -317,28 +317,29 @@ index 5b93aa7..6af7c7a 100644
          sessions. See
          <citerefentry><refentrytitle>pam_systemd</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
          </para></listitem>
-@@ -1221,13 +1217,6 @@
+@@ -1220,13 +1216,6 @@
+         <varname>ExecReload=</varname> and similar. </para></listitem>
        </varlistentry>
  
-       <varlistentry>
+-      <varlistentry>
 -        <term><varname>$MANAGERPID</varname></term>
 -
 -        <listitem><para>The PID of the user <command>systemd</command>
 -        instance, set for processes spawned by it. </para></listitem>
 -      </varlistentry>
 -
--      <varlistentry>
+       <varlistentry>
          <term><varname>$LISTEN_FDS</varname></term>
          <term><varname>$LISTEN_PID</varname></term>
- 
 diff --git a/man/systemd.special.xml b/man/systemd.special.xml
-index cf76aaf..553197d 100644
+index cf76aaf60..553197d66 100644
 --- a/man/systemd.special.xml
 +++ b/man/systemd.special.xml
-@@ -773,47 +773,6 @@
+@@ -772,47 +772,6 @@
+     </variablelist>
    </refsect1>
  
-   <refsect1>
+-  <refsect1>
 -    <title>Special User Units</title>
 -
 -    <para>When systemd runs as a user instance, the following special
@@ -379,10 +380,9 @@ index cf76aaf..553197d 100644
 -    </variablelist>
 -  </refsect1>
 -
--  <refsect1>
+   <refsect1>
      <title>Special Slice Units</title>
  
-     <para>There are four <literal>.slice</literal> units which form
 @@ -841,9 +800,8 @@
        <varlistentry>
          <term><filename>user.slice</filename></term>
@@ -396,7 +396,7 @@ index cf76aaf..553197d 100644
        </varlistentry>
  
 diff --git a/man/systemd.unit.xml b/man/systemd.unit.xml
-index c2e374a..414749b 100644
+index c2e374a94..414749bae 100644
 --- a/man/systemd.unit.xml
 +++ b/man/systemd.unit.xml
 @@ -263,14 +263,6 @@
@@ -494,7 +494,7 @@ index c2e374a..414749b 100644
        <filename>/usr/lib/systemd/system/httpd.service</filename> with
        the following contents:</para>
 diff --git a/man/systemd.xml b/man/systemd.xml
-index d006b0b..eb289f0 100644
+index d006b0bb9..eb289f03b 100644
 --- a/man/systemd.xml
 +++ b/man/systemd.xml
 @@ -77,10 +77,7 @@
@@ -562,10 +562,12 @@ index d006b0b..eb289f0 100644
          Takes a boolean argument which may be omitted which is
          interpreted as <option>true</option>.</para></listitem>
        </varlistentry>
-@@ -454,30 +444,6 @@
+@@ -452,30 +442,6 @@
+       </varlistentry>
+     </variablelist>
  
-     <variablelist>
-       <varlistentry>
+-    <variablelist>
+-      <varlistentry>
 -        <term>User unit directories</term>
 -
 -        <listitem><para>Similar rules apply for the user unit
@@ -588,11 +590,9 @@ index d006b0b..eb289f0 100644
 -      </varlistentry>
 -    </variablelist>
 -
--    <variablelist>
--      <varlistentry>
+     <variablelist>
+       <varlistentry>
          <term>SysV init scripts directory</term>
- 
-         <listitem><para>The location of the SysV init script directory
 @@ -514,11 +480,7 @@
          manager serializes its state, reexecutes itself and
          deserializes the saved state again. This is mostly equivalent
@@ -606,22 +606,22 @@ index d006b0b..eb289f0 100644
        </varlistentry>
  
        <varlistentry>
-@@ -707,13 +669,6 @@
+@@ -706,13 +668,6 @@
+         line.</para></listitem>
        </varlistentry>
  
-       <varlistentry>
+-      <varlistentry>
 -        <term><constant>SIGRTMIN+24</constant></term>
 -
 -        <listitem><para>Immediately exits the manager (only available
 -        for --user instances).</para></listitem>
 -      </varlistentry>
 -
--      <varlistentry>
+       <varlistentry>
          <term><constant>SIGRTMIN+26</constant></term>
          <term><constant>SIGRTMIN+27</constant></term>
-         <term><constant>SIGRTMIN+28</constant></term>
 diff --git a/man/user-system-options.xml b/man/user-system-options.xml
-index 8616c54..ae911a9 100644
+index 8616c5424..ae911a975 100644
 --- a/man/user-system-options.xml
 +++ b/man/user-system-options.xml
 @@ -3,15 +3,6 @@
@@ -641,7 +641,7 @@ index 8616c54..ae911a9 100644
      <term><option>--system</option></term>
  
 diff --git a/shell-completion/bash/busctl b/shell-completion/bash/busctl
-index 6a770b1..027dfdf 100644
+index 6a770b1b8..027dfdf67 100644
 --- a/shell-completion/bash/busctl
 +++ b/shell-completion/bash/busctl
 @@ -75,7 +75,7 @@ _busctl() {
@@ -654,7 +654,7 @@ index 6a770b1..027dfdf 100644
                               --quiet --verbose --expect-reply=no --auto-start=no
                               --allow-interactive-authorization=yes --augment-creds=no'
 diff --git a/shell-completion/bash/journalctl b/shell-completion/bash/journalctl
-index 1387524..91cb369 100644
+index 1387524a8..91cb369ec 100644
 --- a/shell-completion/bash/journalctl
 +++ b/shell-completion/bash/journalctl
 @@ -49,7 +49,7 @@ _journalctl() {
@@ -677,7 +677,7 @@ index 1387524..91cb369 100644
                                  return 0
                          ;;
 diff --git a/shell-completion/bash/systemctl.in b/shell-completion/bash/systemctl.in
-index 496c756..0a022c4 100644
+index 496c756a4..0a022c4cf 100644
 --- a/shell-completion/bash/systemctl.in
 +++ b/shell-completion/bash/systemctl.in
 @@ -92,7 +92,7 @@ _systemctl () {
@@ -690,7 +690,7 @@ index 496c756..0a022c4 100644
          )
  
 diff --git a/shell-completion/bash/systemd-analyze b/shell-completion/bash/systemd-analyze
-index 0094702..1c4fe40 100644
+index 00947029c..1c4fe4017 100644
 --- a/shell-completion/bash/systemd-analyze
 +++ b/shell-completion/bash/systemd-analyze
 @@ -35,7 +35,7 @@ _systemd_analyze() {
@@ -738,7 +738,7 @@ index 0094702..1c4fe40 100644
                          comps=$( compgen -A file -- "$cur" )
                          compopt -o filenames
 diff --git a/shell-completion/bash/systemd-run b/shell-completion/bash/systemd-run
-index 712655c..5145cd3 100644
+index 712655caf..5145cd3f2 100644
 --- a/shell-completion/bash/systemd-run
 +++ b/shell-completion/bash/systemd-run
 @@ -32,7 +32,7 @@ __get_machines() {
@@ -760,7 +760,7 @@ index 712655c..5145cd3 100644
      done
  
 diff --git a/src/analyze/analyze.c b/src/analyze/analyze.c
-index 591b4ab..ff84f68 100644
+index 591b4ab14..ff84f6894 100644
 --- a/src/analyze/analyze.c
 +++ b/src/analyze/analyze.c
 @@ -1170,7 +1170,6 @@ static void help(void) {
@@ -772,7 +772,7 @@ index 591b4ab..ff84f68 100644
                 "  -M --machine=CONTAINER  Operate on local container\n"
                 "     --order              Show only order in the graph\n"
 diff --git a/src/core/main.c b/src/core/main.c
-index 1c8d67d..2aec40b 100644
+index 1c8d67dac..2aec40b0b 100644
 --- a/src/core/main.c
 +++ b/src/core/main.c
 @@ -956,7 +956,6 @@ static int help(void) {
@@ -784,7 +784,7 @@ index 1c8d67d..2aec40b 100644
                 "     --crash-shell[=0|1]         Run shell on crash\n"
                 "     --confirm-spawn[=0|1]       Ask for confirmation when spawning processes\n"
 diff --git a/src/journal/journalctl.c b/src/journal/journalctl.c
-index c26cc00..8236d08 100644
+index c26cc00f5..8236d0810 100644
 --- a/src/journal/journalctl.c
 +++ b/src/journal/journalctl.c
 @@ -204,7 +204,6 @@ static void help(void) {
@@ -796,7 +796,7 @@ index c26cc00..8236d08 100644
                 "  -p --priority=RANGE      Show entries with the specified priority\n"
                 "  -e --pager-end           Immediately jump to the end in the pager\n"
 diff --git a/src/libsystemd/sd-bus/busctl.c b/src/libsystemd/sd-bus/busctl.c
-index d3c1772..bffbf4a 100644
+index d3c177201..bffbf4a0e 100644
 --- a/src/libsystemd/sd-bus/busctl.c
 +++ b/src/libsystemd/sd-bus/busctl.c
 @@ -1688,7 +1688,6 @@ static int help(void) {
@@ -808,7 +808,7 @@ index d3c1772..bffbf4a 100644
                 "  -M --machine=CONTAINER  Operate on local container\n"
                 "     --address=ADDRESS    Connect to bus specified by address\n"
 diff --git a/src/run/run.c b/src/run/run.c
-index 0661b3b..0e5bde2 100644
+index 0661b3bee..0e5bde23d 100644
 --- a/src/run/run.c
 +++ b/src/run/run.c
 @@ -68,7 +68,6 @@ static void help(void) {
@@ -820,7 +820,7 @@ index 0661b3b..0e5bde2 100644
                 "  -M --machine=CONTAINER          Operate on local container\n"
                 "     --scope                      Run this as scope rather than service\n"
 diff --git a/src/systemctl/systemctl.c b/src/systemctl/systemctl.c
-index 9898694..89d0b3b 100644
+index 9898694d7..89d0b3b39 100644
 --- a/src/systemctl/systemctl.c
 +++ b/src/systemctl/systemctl.c
 @@ -6050,7 +6050,6 @@ static void systemctl_help(void) {

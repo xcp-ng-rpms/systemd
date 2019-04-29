@@ -1,14 +1,15 @@
-From dc923c37bf23c035e510c241ff228e3e2f92c1ef Mon Sep 17 00:00:00 2001
+From e955c2298241b9a2957dd8d36c48cbfe0a108d49 Mon Sep 17 00:00:00 2001
 From: Branislav Blaskovic <bblaskov@redhat.com>
 Date: Sat, 7 Nov 2015 11:32:49 +0100
 Subject: [PATCH] test sysv-generator: Check for network-online.target.
 
+Resolves: #1279034
 ---
  test/sysv-generator-test.py | 18 ++++++++++++------
  1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/test/sysv-generator-test.py b/test/sysv-generator-test.py
-index 1537864..2060ad7 100644
+index 153786417..2060ad754 100644
 --- a/test/sysv-generator-test.py
 +++ b/test/sysv-generator-test.py
 @@ -225,21 +225,27 @@ class SysvGeneratorTest(unittest.TestCase):

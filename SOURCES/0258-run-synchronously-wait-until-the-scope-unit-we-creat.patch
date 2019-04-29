@@ -1,4 +1,4 @@
-From 18d515aeb3a2007fa0a762b9b9658f489d4b403d Mon Sep 17 00:00:00 2001
+From 5532bedf8ef456f02fdec62d46bc1be65cdfde30 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 28 Apr 2015 12:21:31 +0200
 Subject: [PATCH] run: synchronously wait until the scope unit we create is
@@ -11,7 +11,7 @@ short-running (such as an invocation to /bin/true).
 https://bugs.freedesktop.org/show_bug.cgi?id=86520
 
 Cherry-picked from: de158ed22db60e3a6654557fa4aa72f7248550af
-Resolves: #1283192
+Resolves: #1272368
 ---
  src/libsystemd/sd-bus/bus-util.c | 10 ++++++++++
  src/libsystemd/sd-bus/bus-util.h |  1 +
@@ -19,7 +19,7 @@ Resolves: #1283192
  3 files changed, 46 insertions(+), 7 deletions(-)
 
 diff --git a/src/libsystemd/sd-bus/bus-util.c b/src/libsystemd/sd-bus/bus-util.c
-index e48abf5..6d56150 100644
+index e48abf55a..6d5615082 100644
 --- a/src/libsystemd/sd-bus/bus-util.c
 +++ b/src/libsystemd/sd-bus/bus-util.c
 @@ -1854,6 +1854,16 @@ int bus_wait_for_jobs_add(BusWaitForJobs *d, const char *path) {
@@ -40,7 +40,7 @@ index e48abf5..6d56150 100644
          const char *type, *path, *source;
          int r;
 diff --git a/src/libsystemd/sd-bus/bus-util.h b/src/libsystemd/sd-bus/bus-util.h
-index 21db982..8c8846c 100644
+index 21db98228..8c8846c6e 100644
 --- a/src/libsystemd/sd-bus/bus-util.h
 +++ b/src/libsystemd/sd-bus/bus-util.h
 @@ -209,6 +209,7 @@ int bus_wait_for_jobs_new(sd_bus *bus, BusWaitForJobs **ret);
@@ -52,7 +52,7 @@ index 21db982..8c8846c 100644
  DEFINE_TRIVIAL_CLEANUP_FUNC(BusWaitForJobs*, bus_wait_for_jobs_free);
  
 diff --git a/src/run/run.c b/src/run/run.c
-index 0e5bde2..dd1338f 100644
+index 0e5bde23d..dd1338f3b 100644
 --- a/src/run/run.c
 +++ b/src/run/run.c
 @@ -806,14 +806,20 @@ static int start_transient_scope(
