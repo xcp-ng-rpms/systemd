@@ -716,6 +716,8 @@ Patch0674: 0674-rules-fix-memory-hotplug-rule-so-systemd-detect-virt.patch
 Patch0675: 0675-sd-bus-deal-with-cookie-overruns.patch
 Patch0676: 0676-core-Fix-edge-case-when-processing-proc-self-mountin.patch
 
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
 BuildRequires:  libcap-devel
@@ -1691,6 +1693,9 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Tue Jul 30 2019 Pablo Greco <pgreco@centosproject.org> - 219-62.9
+- Update kernel-install script for fedora-like kernels
+
 * Mon Jun 24 2019 Michal Sekletár <msekleta@redhat.com> - 219-62.9
 - core: Fix edge case when processing /proc/self/mountinfo (#1722576)
 
