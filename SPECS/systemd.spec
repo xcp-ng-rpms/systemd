@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        67%{?dist}
+Release:        67%{?dist}.1
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -785,6 +785,18 @@ Patch0743: 0743-man-be-more-explicit-about-thread-safety-of-sd_journ.patch
 Patch0744: 0744-selinux-don-t-log-SELINUX_INFO-and-SELINUX_WARNING-m.patch
 Patch0745: 0745-fix-mis-merge.patch
 Patch0746: 0746-fs-util-chase_symlinks-prevent-double-free.patch
+Patch0747: 0747-return-error-value-on-failure.patch
+Patch0748: 0748-revert-local-changes-made-during-backport-of-the-tes.patch
+Patch0749: 0749-core-timer-Prevent-timer-looping-when-unit-cannot-st.patch
+Patch0750: 0750-core-add-a-Requires-dependency-between-units-and-the.patch
+Patch0751: 0751-core-rerun-GC-logic-for-a-unit-that-loses-a-referenc.patch
+Patch0752: 0752-pid1-rename-unit_check_gc-to-unit_may_gc.patch
+Patch0753: 0753-pid1-include-the-source-unit-in-UnitRef.patch
+Patch0754: 0754-pid1-fix-collection-of-cycles-of-units-which-referen.patch
+Patch0755: 0755-pid1-free-basic-unit-information-at-the-very-end-bef.patch
+Patch0756: 0756-pid1-properly-remove-references-to-the-unit-from-gc-.patch
+Patch0757: 0757-service-relax-PID-file-symlink-chain-checks-a-bit-81.patch
+Patch0758: 0758-path-util-fix-more-path_is_mount-e792e890f-fallout.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1761,6 +1773,20 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Fri Jul 12 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-67.1
+- return error value on failure (#1729226)
+- revert local changes made during backport of the test (#1729226)
+- core/timer: Prevent timer looping when unit cannot start (#1729230)
+- core: add a "Requires=" dependency between units and the slices they are located in (#1729228)
+- core: rerun GC logic for a unit that loses a reference (#1729228)
+- pid1: rename unit_check_gc to unit_may_gc (#1729228)
+- pid1: include the source unit in UnitRef (#1729228)
+- pid1: fix collection of cycles of units which reference one another (#1729228)
+- pid1: free basic unit information at the very end, before freeing the unit (#1729228)
+- pid1: properly remove references to the unit from gc queue during final cleanup (#1729228)
+- service: relax PID file symlink chain checks a bit (#8133) (#1729414)
+- path-util: fix more path_is_mount e792e890f fallout (#1279231)
+
 * Wed Jun 19 2019 Michal Sekletár <msekleta@redhat.com> - 219-67
 - fix mis-merge (#1714503)
 - fs-util: chase_symlinks(): prevent double fre (#1714782)
