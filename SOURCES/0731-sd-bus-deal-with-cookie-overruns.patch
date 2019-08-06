@@ -1,4 +1,4 @@
-From 28f73a10df367721b30a95df5d729f6c56d318e5 Mon Sep 17 00:00:00 2001
+From ac46d01c5f6a211bbbbb43e20f63ecae2549da20 Mon Sep 17 00:00:00 2001
 From: Jan Synacek <jsynacek@redhat.com>
 Date: Tue, 2 Apr 2019 10:23:30 +0200
 Subject: [PATCH] sd-bus: deal with cookie overruns
@@ -15,16 +15,14 @@ Replaces: #11804
 Fixes: #11809
 
 (cherry picked from commit 1f82f5bb4237ed5f015daf93f818e9db95e764b8)
-(cherry picked from commit ac46d01c5f6a211bbbbb43e20f63ecae2549da20)
-
-Resolves: #1720699
+Resolves: #1693559
 ---
  src/libsystemd/sd-bus/sd-bus.c | 49 +++++++++++++++++++++++++++++++++-
  src/shared/macro.h             |  2 ++
  2 files changed, 50 insertions(+), 1 deletion(-)
 
 diff --git a/src/libsystemd/sd-bus/sd-bus.c b/src/libsystemd/sd-bus/sd-bus.c
-index b0a3237..44ed2c7 100644
+index b0a323792b..44ed2c7497 100644
 --- a/src/libsystemd/sd-bus/sd-bus.c
 +++ b/src/libsystemd/sd-bus/sd-bus.c
 @@ -1495,7 +1495,50 @@ _public_ int sd_bus_get_bus_id(sd_bus *bus, sd_id128_t *id) {
@@ -92,10 +90,10 @@ index b0a3237..44ed2c7 100644
  
  static int bus_remarshal_message(sd_bus *b, sd_bus_message **m) {
 diff --git a/src/shared/macro.h b/src/shared/macro.h
-index 7a57f4e..08567d2 100644
+index 26df270d51..d4cdb1d08b 100644
 --- a/src/shared/macro.h
 +++ b/src/shared/macro.h
-@@ -394,6 +394,8 @@ do {                                                                    \
+@@ -401,6 +401,8 @@ do {                                                                    \
  
  #define SET_FLAG(v, flag, b) \
          (v) = (b) ? ((v) | (flag)) : ((v) & ~(flag))
@@ -104,6 +102,3 @@ index 7a57f4e..08567d2 100644
  
  #define IN_SET(x, y, ...)                                               \
          ({                                                              \
--- 
-2.21.0
-
