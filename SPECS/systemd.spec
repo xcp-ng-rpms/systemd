@@ -798,6 +798,8 @@ Patch0756: 0756-pid1-properly-remove-references-to-the-unit-from-gc-.patch
 Patch0757: 0757-service-relax-PID-file-symlink-chain-checks-a-bit-81.patch
 Patch0758: 0758-path-util-fix-more-path_is_mount-e792e890f-fallout.patch
 
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
 BuildRequires:  libcap-devel
