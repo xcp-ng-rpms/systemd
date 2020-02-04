@@ -800,6 +800,8 @@ Patch0758: 0758-path-util-fix-more-path_is_mount-e792e890f-fallout.patch
 Patch0759: 0759-core-exclude-.slice-units-from-systemctl-isolate.patch
 Patch0760: 0760-unit-fix-potential-use-of-cgroup_path-after-free-whe.patch
 
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
 BuildRequires:  libcap-devel
