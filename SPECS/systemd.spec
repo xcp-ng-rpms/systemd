@@ -805,6 +805,8 @@ Patch0763: 0763-tests-add-basic-journal-test.patch
 Patch0764: 0764-tests-add-regression-test-for-systemctl-restart-syst.patch
 Patch0765: 0765-tests-add-test-that-journald-keeps-fds-over-terminat.patch
 
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
 BuildRequires:  libcap-devel
