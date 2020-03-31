@@ -1,20 +1,20 @@
-From 97c5fed4ddbd627c046fbf946474270182bdda6e Mon Sep 17 00:00:00 2001
+From 98234ad6e16e868bd1fa3e4622c43a182fdee75c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Renaud=20M=C3=A9trich?= <rmetrich@redhat.com>
 Date: Sat, 23 Nov 2019 13:37:02 +0100
 Subject: [PATCH] unit: fix potential use of cgroup_path after free() when
  freeing unit
 
-Resolves: #1778083
+Resolves: #1760149
 ---
  src/core/cgroup.c | 3 +--
  src/core/unit.c   | 2 +-
  2 files changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/src/core/cgroup.c b/src/core/cgroup.c
-index 0779fa5552..f598fdd1e7 100644
+index 0ce265dbf4..9af8126957 100644
 --- a/src/core/cgroup.c
 +++ b/src/core/cgroup.c
-@@ -873,8 +873,7 @@ void unit_destroy_cgroup_if_empty(Unit *u) {
+@@ -874,8 +874,7 @@ void unit_destroy_cgroup_if_empty(Unit *u) {
  
          hashmap_remove(u->manager->cgroup_unit, u->cgroup_path);
  
@@ -25,10 +25,10 @@ index 0779fa5552..f598fdd1e7 100644
          u->cgroup_realized_mask = 0;
  }
 diff --git a/src/core/unit.c b/src/core/unit.c
-index def36a0930..cabbf8056e 100644
+index 294c9eb70f..0dc66203a4 100644
 --- a/src/core/unit.c
 +++ b/src/core/unit.c
-@@ -514,7 +514,7 @@ void unit_free(Unit *u) {
+@@ -515,7 +515,7 @@ void unit_free(Unit *u) {
  
          if (u->cgroup_path) {
                  hashmap_remove(u->manager->cgroup_unit, u->cgroup_path);

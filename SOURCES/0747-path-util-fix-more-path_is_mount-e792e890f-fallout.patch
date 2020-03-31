@@ -1,11 +1,11 @@
-From a4f13a2fdf5cf1650edbb02ac0393c6815ef472c Mon Sep 17 00:00:00 2001
+From 728b5cc04fe75f2b46a34c78a94fe906f34596f1 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 7 Apr 2015 16:03:45 +0200
 Subject: [PATCH] path-util: fix more path_is_mount e792e890f fallout
 
 (cherry picked from commit da00518b3f3a8b08d521c4b72068eafa2db566cc)
 
-Resolves: #1279231
+Related: 1585411
 ---
  src/core/automount.c      |  6 ++----
  src/nspawn/nspawn.c       |  2 +-
@@ -14,7 +14,7 @@ Resolves: #1279231
  4 files changed, 15 insertions(+), 9 deletions(-)
 
 diff --git a/src/core/automount.c b/src/core/automount.c
-index 7b9c4aaf1d..2d6f5f3a77 100644
+index 4678bdc7c9..590b1952e0 100644
 --- a/src/core/automount.c
 +++ b/src/core/automount.c
 @@ -789,10 +789,8 @@ static int automount_start(Unit *u) {

@@ -1,4 +1,4 @@
-From 019b19130bcba9d88c0328b40f2639e6ebbb513c Mon Sep 17 00:00:00 2001
+From 8f1df942e2237124f7559176081af7ac631d3422 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Tue, 13 Feb 2018 23:57:43 +0100
 Subject: [PATCH] pid1: properly remove references to the unit from gc queue
@@ -18,9 +18,8 @@ it was above the LIST_REMOVE(gc_queue,...) call, but the second was not, because
 it was after that. Move the all LIST_REMOVE() calls down.
 
 (cherry picked from commit 1bdf2790025e661e41894129eb390bb032b88585)
-(cherry picked from commit 8f1df942e2237124f7559176081af7ac631d3422)
 
-Related: #1729228
+Related: #1718953
 ---
  src/core/unit.c | 34 +++++++++++++++++-----------------
  1 file changed, 17 insertions(+), 17 deletions(-)

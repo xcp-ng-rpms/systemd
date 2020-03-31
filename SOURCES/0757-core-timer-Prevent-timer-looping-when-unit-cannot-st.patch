@@ -1,4 +1,4 @@
-From d7eac3e0ae20510e2737dc4e23975391fef5ece3 Mon Sep 17 00:00:00 2001
+From fe81f6f734ee46a4877df6dda6e31cdc24c00a3c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 Date: Tue, 16 Jan 2018 19:22:46 +0100
 Subject: [PATCH] core/timer: Prevent timer looping when unit cannot start
@@ -44,11 +44,9 @@ o  Observe the service is being regularly triggered.
 o  Observe the tight looping as long as the looper.service cannot be started.
 
 Ref: #5969
-
 (cherry picked from commit 204d140c4def364c47d36226e4514a7e077fa196)
-(cherry picked from commit fe81f6f734ee46a4877df6dda6e31cdc24c00a3c)
 
-Resolves: #1729230
+Resolves: #1710302
 ---
  src/core/timer.c | 2 ++
  1 file changed, 2 insertions(+)

@@ -1,4 +1,4 @@
-From 2175fc04df0f8e272cbff7540acd38eced9c63d7 Mon Sep 17 00:00:00 2001
+From 0ace07115f14a57c81afbc9a7e947778a743870e Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Fri, 29 Apr 2016 11:18:53 +0200
 Subject: [PATCH] core: rerun GC logic for a unit that loses a reference
@@ -10,11 +10,9 @@ This (together with the previous commit) should deal with the GC issues pointed
 out in:
 
 https://github.com/systemd/systemd/pull/2993#issuecomment-215331189
-
 (cherry picked from commit b75102e5bf4cf249052d42be955d403e3e03b47c)
-(cherry picked from commit 0ace07115f14a57c81afbc9a7e947778a743870e)
 
-Related: #1729228
+Related: #1718953
 ---
  src/core/unit.c | 4 ++++
  1 file changed, 4 insertions(+)

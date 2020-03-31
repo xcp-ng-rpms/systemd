@@ -1,4 +1,4 @@
-From cb1a8f709ff3c27fc9f43aa27f985131422795bc Mon Sep 17 00:00:00 2001
+From 1716821fc5b93667a0bf821b25905de00818aec9 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Tue, 13 Feb 2018 10:50:13 +0100
 Subject: [PATCH] pid1: rename unit_check_gc to unit_may_gc
@@ -10,9 +10,8 @@ v2:
 - rename from unit_can_gc to unit_may_gc
 
 (cherry picked from commit f2f725e5cc950e84ebfd09bd64bc01c0ebdb6734)
-(cherry picked from commit 1716821fc5b93667a0bf821b25905de00818aec9)
 
-Related: #1729228
+Related: #1718953
 ---
  src/core/automount.c | 13 ++++++++-----
  src/core/manager.c   |  2 +-
@@ -27,10 +26,10 @@ Related: #1729228
  10 files changed, 55 insertions(+), 44 deletions(-)
 
 diff --git a/src/core/automount.c b/src/core/automount.c
-index 4678bdc7c9..7b9c4aaf1d 100644
+index 590b1952e0..2d6f5f3a77 100644
 --- a/src/core/automount.c
 +++ b/src/core/automount.c
-@@ -936,13 +936,16 @@ static const char *automount_sub_state_to_string(Unit *u) {
+@@ -934,13 +934,16 @@ static const char *automount_sub_state_to_string(Unit *u) {
          return automount_state_to_string(AUTOMOUNT(u)->state);
  }
  
@@ -51,7 +50,7 @@ index 4678bdc7c9..7b9c4aaf1d 100644
  }
  
  static int automount_dispatch_io(sd_event_source *s, int fd, uint32_t events, void *userdata) {
-@@ -1115,7 +1118,7 @@ const UnitVTable automount_vtable = {
+@@ -1113,7 +1116,7 @@ const UnitVTable automount_vtable = {
          .active_state = automount_active_state,
          .sub_state_to_string = automount_sub_state_to_string,
  

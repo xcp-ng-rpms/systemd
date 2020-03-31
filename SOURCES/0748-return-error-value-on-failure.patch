@@ -1,13 +1,11 @@
-From 0ee2318c1bc5f13904b8f60e3826eadfe2b7c66f Mon Sep 17 00:00:00 2001
+From e4a25c5d867e6ed832a077c32f3555bcd49ef8a6 Mon Sep 17 00:00:00 2001
 From: David Tardon <dtardon@redhat.com>
 Date: Thu, 4 Jul 2019 15:57:23 +0200
 Subject: [PATCH] return error value on failure
 
 Regression from commit c0f32feb77768aa76d8c813471b3484c93bc2651 .
 
-(cherry picked from commit e4a25c5d867e6ed832a077c32f3555bcd49ef8a6)
-
-Resolves: #1729226
+Resolves: #1726785
 ---
  src/core/service.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)

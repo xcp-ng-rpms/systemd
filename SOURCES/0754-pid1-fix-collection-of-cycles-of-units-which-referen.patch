@@ -1,4 +1,4 @@
-From 98774bdfb6d40e5b7d41b86238ee2d98ff12cb69 Mon Sep 17 00:00:00 2001
+From 703cc4991049cdf3ad3506e432cda982b3b3b007 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Tue, 13 Feb 2018 14:37:11 +0100
 Subject: [PATCH] pid1: fix collection of cycles of units which reference one
@@ -14,9 +14,8 @@ needed. If it is not needed, do not treat the reference from it as preventing
 the unit we are looking at from being freed.
 
 (cherry picked from commit 2641f02e23ac7d5385db7f932aff221a063f245e)
-(cherry picked from commit 703cc4991049cdf3ad3506e432cda982b3b3b007)
 
-Resolves: #1729228
+Resolves: #1718953
 ---
  src/core/manager.c | 14 ++++++++++++++
  src/core/unit.c    |  9 +++++----

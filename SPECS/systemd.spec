@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        67%{?dist}.4
+Release:        73%{?dist}.1
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -785,9 +785,9 @@ Patch0743: 0743-man-be-more-explicit-about-thread-safety-of-sd_journ.patch
 Patch0744: 0744-selinux-don-t-log-SELINUX_INFO-and-SELINUX_WARNING-m.patch
 Patch0745: 0745-fix-mis-merge.patch
 Patch0746: 0746-fs-util-chase_symlinks-prevent-double-free.patch
-Patch0747: 0747-return-error-value-on-failure.patch
-Patch0748: 0748-revert-local-changes-made-during-backport-of-the-tes.patch
-Patch0749: 0749-core-timer-Prevent-timer-looping-when-unit-cannot-st.patch
+Patch0747: 0747-path-util-fix-more-path_is_mount-e792e890f-fallout.patch
+Patch0748: 0748-return-error-value-on-failure.patch
+Patch0749: 0749-revert-local-changes-made-during-backport-of-the-tes.patch
 Patch0750: 0750-core-add-a-Requires-dependency-between-units-and-the.patch
 Patch0751: 0751-core-rerun-GC-logic-for-a-unit-that-loses-a-referenc.patch
 Patch0752: 0752-pid1-rename-unit_check_gc-to-unit_may_gc.patch
@@ -795,17 +795,51 @@ Patch0753: 0753-pid1-include-the-source-unit-in-UnitRef.patch
 Patch0754: 0754-pid1-fix-collection-of-cycles-of-units-which-referen.patch
 Patch0755: 0755-pid1-free-basic-unit-information-at-the-very-end-bef.patch
 Patch0756: 0756-pid1-properly-remove-references-to-the-unit-from-gc-.patch
-Patch0757: 0757-service-relax-PID-file-symlink-chain-checks-a-bit-81.patch
-Patch0758: 0758-path-util-fix-more-path_is_mount-e792e890f-fallout.patch
-Patch0759: 0759-core-exclude-.slice-units-from-systemctl-isolate.patch
-Patch0760: 0760-unit-fix-potential-use-of-cgroup_path-after-free-whe.patch
-Patch0761: 0761-core-when-restarting-services-don-t-close-fds.patch
-Patch0762: 0762-unit-rework-a-bit-how-we-keep-the-service-fdstore-fr.patch
-Patch0763: 0763-tests-add-basic-journal-test.patch
-Patch0764: 0764-tests-add-regression-test-for-systemctl-restart-syst.patch
-Patch0765: 0765-tests-add-test-that-journald-keeps-fds-over-terminat.patch
-
-Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+Patch0757: 0757-core-timer-Prevent-timer-looping-when-unit-cannot-st.patch
+Patch0758: 0758-service-relax-PID-file-symlink-chain-checks-a-bit-81.patch
+Patch0759: 0759-udev-rules-Add-rule-for-dev-kfd.patch
+Patch0760: 0760-core-exclude-.slice-units-from-systemctl-isolate.patch
+Patch0761: 0761-udev-scsi_id-fix-incorrect-page-length-when-get-devi.patch
+Patch0762: 0762-core-when-determining-whether-a-process-exit-status-.patch
+Patch0763: 0763-units-add-Wants-initrd-cleanup.service-to-initrd-swi.patch
+Patch0764: 0764-units-make-sure-initrd-cleanup.service-terminates-be.patch
+Patch0765: 0765-core-tiny-tweak-for-cgroup-trimming-during-manager_f.patch
+Patch0766: 0766-process-an-empty-environment-block-should-be-returne.patch
+Patch0767: 0767-core-make-sure-initrd-switch-root-command-survives-P.patch
+Patch0768: 0768-systemctl-always-avoid-being-killed-when-doing-switc.patch
+Patch0769: 0769-units-drop-KillMode-from-initrd-switch-root.service.patch
+Patch0770: 0770-systemctl-ignore-SIGTERM-after-switch-root.patch
+Patch0771: 0771-units-restore-Before-dependencies-for-systemd-vconso.patch
+Patch0772: 0772-core-reduce-the-number-of-stalled-PIDs-from-the-watc.patch
+Patch0773: 0773-timedate-use-gmtime_r-and-localtime_r.patch
+Patch0774: 0774-sd-bus-stop-using-the-result-of-an-assignment-as-an-.patch
+Patch0775: 0775-journal-upload-add-asserts-that-snprintf-does-not-re.patch
+Patch0776: 0776-analyze-actually-select-longest-activated-time-of-se.patch
+Patch0777: 0777-pid1-remove-unnecessary-error-reassignment.patch
+Patch0778: 0778-core-drop-unnecessary-condition.patch
+Patch0779: 0779-import-drop-unnecessary-condition.patch
+Patch0780: 0780-journal-verify-add-comment-and-silence-LGTM-warning.patch
+Patch0781: 0781-journal-drop-redundant-condition.patch
+Patch0782: 0782-lldp-set-correct-state-for-processing.patch
+Patch0783: 0783-sd-bus-fix-implicit-downcast-of-bitfield-reported-by.patch
+Patch0784: 0784-tree-wide-use-signed-int-instead-of-int-for-bit-fiel.patch
+Patch0785: 0785-machinectl-check-correct-FD-for-a-return-value.patch
+Patch0786: 0786-shared-install-avoid-overwriting-r-counter-with-a-pa.patch
+Patch0787: 0787-systemctl-set_put-can-t-return-EEXIST.patch
+Patch0788: 0788-systemctl-remove-dead-check.patch
+Patch0789: 0789-journal-gateway-explicitly-declare-local-variables.patch
+Patch0790: 0790-journal-gateway-use-localStorage-cursor-only-when-it.patch
+Patch0791: 0791-lgtm-ignore-files-dropped-in-upstream.patch
+Patch0792: 0792-lgtm-suppress-several-constant-comparisons.patch
+Patch0793: 0793-core-add-a-new-unit_needs_console-call.patch
+Patch0794: 0794-core-rework-how-we-count-the-n_on_console-counter.patch
+Patch0795: 0795-service-introduce-protocol-error-type.patch
+Patch0796: 0796-service-fix-main-processes-exit-behavior-for-type-no.patch
+Patch0797: 0797-service-go-through-stop_post-on-failure-4770.patch
+Patch0798: 0798-Call-getgroups-to-know-size-of-supplementary-groups-.patch
+Patch0799: 0799-udev-introduce-CONST-key-name.patch
+Patch0800: 0800-path-stop-watching-path-specs-once-we-triggered-the-.patch
+Patch0801: 0801-unit-fix-potential-use-of-cgroup_path-after-free-whe.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -995,6 +1029,7 @@ git init
 git config user.email "systemd-maint@redhat.com"
 git config user.name "systemd team"
 git add .
+git add -f src/journal-remote/browse.html
 git commit -a -q -m "%{version} baseline."
 
 # Apply all the patches.
@@ -1517,7 +1552,7 @@ fi
 %dir %{_datadir}/pkgconfig
 %dir %{_datadir}/zsh
 %dir %{_datadir}/zsh/site-functions
-%ghost %dir %{_localstatedir}/log/journal
+%ghost %dir %attr(2755, root, systemd-journal) %verify(not mode) %{_localstatedir}/log/journal
 %dir %{_localstatedir}/lib/systemd
 %dir %{_localstatedir}/lib/systemd/catalog
 %ghost %dir %{_localstatedir}/lib/systemd/coredump
@@ -1782,18 +1817,76 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
-* Tue Feb 18 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-67.4
-- core: when restarting services, don't close fds (#1798162)
-- unit: rework a bit how we keep the service fdstore from being destroyed during service restart (#1798162)
-- tests: add basic journal test (#1798162)
-- tests: add regression test for `systemctl restart systemd-journald` (#1798162)
-- tests: add test that journald keeps fds over termination by signal (#1798162)
+* Fri Nov 29 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-73.1
+- unit: fix potential use of cgroup_path after free() when freeing unit (#1760149)
 
-* Fri Nov 29 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-67.3
-- unit: fix potential use of cgroup_path after free() when freeing unit (#1778083)
+* Fri Oct 25 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-73
+- path: stop watching path specs once we triggered the target unit (#1641777)
 
-* Thu Sep 19 2019 David Tardon <dtardon@redhat.com> - 219-67.2
-- core: exclude .slice units from "systemctl isolate" (#1751130)
+* Thu Oct 24 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-72
+- service: introduce protocol error type (#1733998)
+- service: fix main processes exit behavior for type notify services (#1733998)
+- service: go through stop_post on failure (#4770) (#1733998)
+- Call getgroups() to know size of supplementary groups array to allocate (#1743230256 KB)
+- udev: introduce CONST key name (#1748051)
+
+* Thu Oct 10 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-71
+- core: add a new unit_needs_console() call (#1524359)
+- core: rework how we count the n_on_console counter (#1524359)
+
+* Fri Sep 27 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-70
+- add src/journal-remote/browse.html to index
+
+* Fri Sep 27 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-70
+- udev-rules: Add rule for /dev/kfd (#1659516)
+- core: exclude .slice units from "systemctl isolate" (#1745199)
+- udev/scsi_id: fix incorrect page length when get device identification VPD page (#1635945)
+- core: when determining whether a process exit status is clean, consider whether it is a command or a daemon (#1560417)
+- units: add Wants=initrd-cleanup.service to initrd-switch-root.target (#4345) (#1560417)
+- units: make sure initrd-cleanup.service terminates before switching to rootfs (#1560417)
+- core: tiny tweak for cgroup trimming during manager_free() (#1630378)
+- process: an empty environment block should be returned as such (#1685648)
+- core: make sure initrd-switch-root command survives PID1's killing spree (#4730) (#1754053)
+- systemctl: always avoid being killed when doing switch-root (#1754053)
+- units: drop KillMode= from initrd-switch-root.service (#1754053)
+- systemctl: ignore SIGTERM after switch root (#1754053)
+- units: restore Before dependencies for systemd-vconsole-setup.service (#1754053)
+- core: reduce the number of stalled PIDs from the watched processes list when possible (#1501796)
+- timedate: use gmtime_r() and localtime_r() (#1694605)
+- sd-bus: stop using the result of an assignment as an operand of && (#1694605)
+- journal-upload: add asserts that snprintf does not return an error (#1694605)
+- analyze: actually select longest activated-time of services (#1694605)
+- pid1: remove unnecessary error reassignment (#1694605)
+- core: drop unnecessary condition (#1694605)
+- import: drop unnecessary condition (#1694605)
+- journal-verify: add comment and silence LGTM warning (#1694605)
+- journal: drop redundant condition (#1694605)
+- lldp: set correct state for processing (#1694605)
+- sd-bus: fix implicit downcast of bitfield reported by LGTM (#1694605)
+- tree-wide: use 'signed int' instead of 'int' for bit field variables (#1694605)
+- machinectl: check correct FD for a return value (#1694605)
+- shared/install: avoid overwriting 'r' counter with a partial result (#1694605)
+- systemctl: set_put() can't return (-)EEXIST (#1694605)
+- systemctl: remove dead check (#1694605)
+- journal-gateway: explicitly declare local variables (#1694605)
+- journal-gateway: use localStorage["cursor"] only when it has valid value (#1694605)
+- lgtm: ignore files dropped in upstream (#1694605)
+- lgtm: suppress several constant comparisons (#1694605)
+
+* Thu Aug 22 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-69
+- revert local changes made during backport of the test (#1726785)
+- core: add a "Requires=" dependency between units and the slices they are located in (#1718953)
+- core: rerun GC logic for a unit that loses a reference (#1718953)
+- pid1: rename unit_check_gc to unit_may_gc (#1718953)
+- pid1: include the source unit in UnitRef (#1718953)
+- pid1: fix collection of cycles of units which reference one another (#1718953)
+- pid1: free basic unit information at the very end, before freeing the unit (#1718953)
+- pid1: properly remove references to the unit from gc queue during final cleanup (#1718953)
+- core/timer: Prevent timer looping when unit cannot start (#1710302)
+- service: relax PID file symlink chain checks a bit (#8133) (#1724420)
+
+* Wed Aug 07 2019 David Tardon <dtardon@redhat.com> - 219-68
+- fix rpm -V failure on /var/log/journal (#1545372)
 
 * Fri Jul 12 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-67.1
 - return error value on failure (#1729226)

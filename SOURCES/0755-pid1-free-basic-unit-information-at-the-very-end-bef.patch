@@ -1,4 +1,4 @@
-From 20d684011c93bed4b45c736ac1f9104983a090dc Mon Sep 17 00:00:00 2001
+From 42a93a826cd726d1e4d3ea2c8cb347cec2f0dabe Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Wed, 14 Feb 2018 00:01:05 +0100
 Subject: [PATCH] pid1: free basic unit information at the very end, before
@@ -13,9 +13,8 @@ So let's move the removal of this "basic" information towards the end
 of unit_free().
 
 (cherry picked from commit a946fa9bb968ac197d7a99970e27388b751dca94)
-(cherry picked from commit 42a93a826cd726d1e4d3ea2c8cb347cec2f0dabe)
 
-Related: #1729228
+Related: #1718953
 ---
  src/core/unit.c | 18 +++++++++---------
  1 file changed, 9 insertions(+), 9 deletions(-)

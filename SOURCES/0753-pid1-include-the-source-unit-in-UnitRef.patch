@@ -1,4 +1,4 @@
-From c6da3d5d824f7b125b3fd95a961eca98db7febf7 Mon Sep 17 00:00:00 2001
+From ff80bfd94181327a5f8e0fbd70b9b7afe0c5545c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Tue, 13 Feb 2018 13:12:43 +0100
 Subject: [PATCH] pid1: include the source unit in UnitRef
@@ -14,9 +14,8 @@ v2:
 - rename refs to refs_by_target
 
 (cherry picked from commit 7f7d01ed5804afef220ebdb29f22d8177d0d3a5c)
-(cherry picked from commit ff80bfd94181327a5f8e0fbd70b9b7afe0c5545c)
 
-Related: #1729228
+Related: #1718953
 ---
  src/core/busname.c       |  2 +-
  src/core/dbus-manager.c  |  2 +-
