@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        73%{?dist}.1
+Release:        73%{?dist}.5
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -840,6 +840,17 @@ Patch0798: 0798-Call-getgroups-to-know-size-of-supplementary-groups-.patch
 Patch0799: 0799-udev-introduce-CONST-key-name.patch
 Patch0800: 0800-path-stop-watching-path-specs-once-we-triggered-the-.patch
 Patch0801: 0801-unit-fix-potential-use-of-cgroup_path-after-free-whe.patch
+Patch0802: 0802-core-when-restarting-services-don-t-close-fds.patch
+Patch0803: 0803-unit-rework-a-bit-how-we-keep-the-service-fdstore-fr.patch
+Patch0804: 0804-tests-add-basic-journal-test.patch
+Patch0805: 0805-tests-add-regression-test-for-systemctl-restart-syst.patch
+Patch0806: 0806-tests-add-test-that-journald-keeps-fds-over-terminat.patch
+Patch0807: 0807-journal-do-not-trigger-assertion-when-journal_file_c.patch
+Patch0808: 0808-mount-don-t-propagate-errors-from-mount_setup_unit-f.patch
+Patch0809: 0809-mount-when-allocating-a-Mount-object-based-on-proc-s.patch
+Patch0810: 0810-core-enforce-a-ratelimiter-when-stopping-units-due-t.patch
+Patch0811: 0811-core-rework-StopWhenUnneeded-logic.patch
+Patch0812: 0812-fix-the-fix-for-1691511.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1817,6 +1828,25 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Tue Mar 17 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.5
+- core: enforce a ratelimiter when stopping units due to StopWhenUnneeded=1 (#1810576)
+- core: rework StopWhenUnneeded= logic (#1810576)
+- fix the fix for #1691511 (#1809159)
+
+* Thu Mar 12 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.4
+- mount: don't propagate errors from mount_setup_unit() further up (#1809159)
+- mount: when allocating a Mount object based on /proc/self/mountinfo mark it so (#1809159)
+
+* Thu Mar 05 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.3
+- journal: do not trigger assertion when journal_file_close() get NULL (#1807798)
+
+* Tue Feb 18 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.2
+- core: when restarting services, don't close fds (#1803802)
+- unit: rework a bit how we keep the service fdstore from being destroyed during service restart (#1803802)
+- tests: add basic journal test (#1803802)
+- tests: add regression test for `systemctl restart systemd-journald` (#1803802)
+- tests: add test that journald keeps fds over termination by signal (#1803802)
+
 * Fri Nov 29 2019 Lukas Nykryn <lnykryn@redhat.com> - 219-73.1
 - unit: fix potential use of cgroup_path after free() when freeing unit (#1760149)
 
