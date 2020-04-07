@@ -852,6 +852,8 @@ Patch0810: 0810-core-enforce-a-ratelimiter-when-stopping-units-due-t.patch
 Patch0811: 0811-core-rework-StopWhenUnneeded-logic.patch
 Patch0812: 0812-fix-the-fix-for-1691511.patch
 
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
 BuildRequires:  libcap-devel
