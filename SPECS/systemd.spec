@@ -857,6 +857,8 @@ Patch0815: 0815-sd-journal-remove-the-dead-code-and-actually-fix-146.patch
 Patch0816: 0816-swap-adjust-swap.c-in-a-similar-way-to-what-we-just-.patch
 Patch0817: 0817-swap-finish-the-secondary-swap-units-jobs-if-deactiv.patch
 
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
 BuildRequires:  libcap-devel
