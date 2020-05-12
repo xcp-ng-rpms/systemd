@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        73%{?dist}.5
+Release:        73%{?dist}.6
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -851,8 +851,11 @@ Patch0809: 0809-mount-when-allocating-a-Mount-object-based-on-proc-s.patch
 Patch0810: 0810-core-enforce-a-ratelimiter-when-stopping-units-due-t.patch
 Patch0811: 0811-core-rework-StopWhenUnneeded-logic.patch
 Patch0812: 0812-fix-the-fix-for-1691511.patch
-
-Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+Patch0813: 0813-sd-bus-when-attached-to-an-sd-event-loop-disconnect-.patch
+Patch0814: 0814-sd-journal-close-journal-files-that-were-deleted-by-.patch
+Patch0815: 0815-sd-journal-remove-the-dead-code-and-actually-fix-146.patch
+Patch0816: 0816-swap-adjust-swap.c-in-a-similar-way-to-what-we-just-.patch
+Patch0817: 0817-swap-finish-the-secondary-swap-units-jobs-if-deactiv.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1830,6 +1833,13 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Mon Apr 06 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.6
+- sd-bus: when attached to an sd-event loop, disconnect on processing errors (#1817504)
+- sd-journal: close journal files that were deleted by journald before we've setup inotify watch (#1820073)
+- sd-journal: remove the dead code and actually fix #14695 (#1820073)
+- swap: adjust swap.c in a similar way to what we just did to mount.c (#1821261)
+- swap: finish the secondary swap units' jobs if deactivation of the primary swap unit fails (#1821261)
+
 * Tue Mar 17 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.5
 - core: enforce a ratelimiter when stopping units due to StopWhenUnneeded=1 (#1810576)
 - core: rework StopWhenUnneeded= logic (#1810576)
