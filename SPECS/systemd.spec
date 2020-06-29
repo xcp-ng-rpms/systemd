@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        73%{?dist}.6
+Release:        73%{?dist}.8
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -856,8 +856,8 @@ Patch0814: 0814-sd-journal-close-journal-files-that-were-deleted-by-.patch
 Patch0815: 0815-sd-journal-remove-the-dead-code-and-actually-fix-146.patch
 Patch0816: 0816-swap-adjust-swap.c-in-a-similar-way-to-what-we-just-.patch
 Patch0817: 0817-swap-finish-the-secondary-swap-units-jobs-if-deactiv.patch
-
-Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+Patch0818: 0818-udev-rules-make-tape-changers-also-apprear-in-dev-ta.patch
+Patch0819: 0819-core-make-sure-to-restore-the-control-command-id-too.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1835,6 +1835,12 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Mon May 25 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.8
+- core: make sure to restore the control command id, too (#1837973)
+
+* Mon May 18 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.7
+- udev-rules: make tape-changers also apprear in /dev/tape/by-path/ (#1814028)
+
 * Mon Apr 06 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.6
 - sd-bus: when attached to an sd-event loop, disconnect on processing errors (#1817504)
 - sd-journal: close journal files that were deleted by journald before we've setup inotify watch (#1820073)
