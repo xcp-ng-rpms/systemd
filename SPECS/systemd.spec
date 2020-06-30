@@ -858,6 +858,7 @@ Patch0816: 0816-swap-adjust-swap.c-in-a-similar-way-to-what-we-just-.patch
 Patch0817: 0817-swap-finish-the-secondary-swap-units-jobs-if-deactiv.patch
 Patch0818: 0818-udev-rules-make-tape-changers-also-apprear-in-dev-ta.patch
 Patch0819: 0819-core-make-sure-to-restore-the-control-command-id-too.patch
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
