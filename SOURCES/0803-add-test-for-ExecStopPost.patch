@@ -1,0 +1,261 @@
+From 94da4f86eab658c14feac290663634ca29348a60 Mon Sep 17 00:00:00 2001
+From: David Tardon <dtardon@redhat.com>
+Date: Thu, 3 Oct 2019 19:05:06 +0200
+Subject: [PATCH] add test for ExecStopPost
+
+This is a follow-up to #4843.
+
+(cherry picked from commit 02baf239d87295362740d961765091b778795573)
+
+Related: #1733998
+---
+ test/TEST-42-EXECSTOPPOST/Makefile     |  10 +++
+ test/TEST-42-EXECSTOPPOST/test.sh      |  95 ++++++++++++++++++++
+ test/TEST-42-EXECSTOPPOST/testsuite.sh | 119 +++++++++++++++++++++++++
+ 3 files changed, 224 insertions(+)
+ create mode 100644 test/TEST-42-EXECSTOPPOST/Makefile
+ create mode 100755 test/TEST-42-EXECSTOPPOST/test.sh
+ create mode 100755 test/TEST-42-EXECSTOPPOST/testsuite.sh
+
+diff --git a/test/TEST-42-EXECSTOPPOST/Makefile b/test/TEST-42-EXECSTOPPOST/Makefile
+new file mode 100644
+index 0000000000..5e89a29eff
+--- /dev/null
++++ b/test/TEST-42-EXECSTOPPOST/Makefile
+@@ -0,0 +1,10 @@
++all:
++	@make -s --no-print-directory -C ../.. all
++	@basedir=../.. TEST_BASE_DIR=../ ./test.sh --all
++setup:
++	@make --no-print-directory -C ../.. all
++	@basedir=../.. TEST_BASE_DIR=../ ./test.sh --setup
++clean:
++	@basedir=../.. TEST_BASE_DIR=../ ./test.sh --clean
++run:
++	@basedir=../.. TEST_BASE_DIR=../ ./test.sh --run
+diff --git a/test/TEST-42-EXECSTOPPOST/test.sh b/test/TEST-42-EXECSTOPPOST/test.sh
+new file mode 100755
+index 0000000000..0958e01d68
+--- /dev/null
++++ b/test/TEST-42-EXECSTOPPOST/test.sh
+@@ -0,0 +1,95 @@
++#!/bin/bash
++TEST_DESCRIPTION="test that ExecStopPost= is always run"
++
++. $TEST_BASE_DIR/test-functions
++
++check_result_qemu() {
++    ret=1
++    mkdir -p $TESTDIR/root
++    mount ${LOOPDEV}p1 $TESTDIR/root
++    [[ -e $TESTDIR/root/testok ]] && ret=0
++    [[ -f $TESTDIR/root/failed ]] && cp -a $TESTDIR/root/failed $TESTDIR
++    [[ -f $TESTDIR/root/var/log/journal ]] && cp -a $TESTDIR/root/var/log/journal $TESTDIR
++    umount $TESTDIR/root
++    [[ -f $TESTDIR/failed ]] && cat $TESTDIR/failed
++    ls -l $TESTDIR/journal/*/*.journal
++    test -s $TESTDIR/failed && ret=$(($ret+1))
++    return $ret
++}
++
++test_run() {
++    if run_qemu; then
++        check_result_qemu || return 1
++    else
++        dwarn "can't run QEMU, skipping"
++    fi
++    if check_nspawn; then
++        run_nspawn
++        check_result_nspawn || return 1
++    else
++        dwarn "can't run systemd-nspawn, skipping"
++    fi
++    return 0
++}
++
++test_setup() {
++    create_empty_image
++    mkdir -p $TESTDIR/root
++    mount ${LOOPDEV}p1 $TESTDIR/root
++
++    (
++        LOG_LEVEL=5
++        eval $(udevadm info --export --query=env --name=${LOOPDEV}p2)
++
++        setup_basic_environment
++        dracut_install false true env touch
++
++        # mask some services that we do not want to run in these tests
++        ln -s /dev/null $initdir/etc/systemd/system/systemd-hwdb-update.service
++        ln -s /dev/null $initdir/etc/systemd/system/systemd-journal-catalog-update.service
++        ln -s /dev/null $initdir/etc/systemd/system/systemd-networkd.service
++        ln -s /dev/null $initdir/etc/systemd/system/systemd-networkd.socket
++        ln -s /dev/null $initdir/etc/systemd/system/systemd-resolved.service
++
++        # setup policy for Type=dbus test
++        mkdir -p $initdir/etc/dbus-1/system.d
++        cat > $initdir/etc/dbus-1/system.d/systemd.test.ExecStopPost.conf <<EOF
++<?xml version="1.0"?>
++<!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
++        "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
++<busconfig>
++    <policy user="root">
++        <allow own="systemd.test.ExecStopPost"/>
++    </policy>
++</busconfig>
++EOF
++
++        # setup the testsuite service
++        cat >$initdir/etc/systemd/system/testsuite.service <<EOF
++[Unit]
++Description=Testsuite service
++
++[Service]
++ExecStart=/bin/bash -x /testsuite.sh
++Type=oneshot
++StandardOutput=tty
++StandardError=tty
++NotifyAccess=all
++EOF
++        cp testsuite.sh $initdir/
++
++        setup_testsuite
++    )
++    setup_nspawn_root
++
++    ddebug "umount $TESTDIR/root"
++    umount $TESTDIR/root
++}
++
++test_cleanup() {
++    umount $TESTDIR/root 2>/dev/null
++    [[ $LOOPDEV ]] && losetup -d $LOOPDEV
++    return 0
++}
++
++do_test "$@"
+diff --git a/test/TEST-42-EXECSTOPPOST/testsuite.sh b/test/TEST-42-EXECSTOPPOST/testsuite.sh
+new file mode 100755
+index 0000000000..a7e663adb3
+--- /dev/null
++++ b/test/TEST-42-EXECSTOPPOST/testsuite.sh
+@@ -0,0 +1,119 @@
++#!/bin/bash
++set -ex
++
++systemd-analyze set-log-level debug
++
++# Emulates systemd-run to overcome its limitations on RHEL-7, like nonexistent
++# support for --wait and only a handful of supported properties.
++systemd-run-wait() {
++    local unit="$1"
++    local unitfile=/etc/systemd/system/$unit
++
++    shift
++
++    cat > $unitfile <<EOF
++[Service]
++StandardOutput=tty
++StandardError=tty
++EOF
++
++    # The $OPTIND variable used by geopts is NOT reset on function exit in the
++    # same shell session, so let's do it manually to always get relevant results
++    OPTIND=1
++
++    while getopts p: opt ; do
++        case $opt in
++            p) echo "$OPTARG" >> $unitfile ;;
++        esac
++    done
++    shift $((OPTIND - 1))
++    echo "ExecStart=/usr/bin/env $@" >> $unitfile
++    systemctl daemon-reload
++
++    systemctl start $unit
++    while systemctl is-active -q $unit ; do
++        sleep 1
++    done
++    ! systemctl is-failed -q $unit
++}
++
++systemd-run-wait simple1.service -p Type=simple -p ExecStopPost='/bin/touch /run/simple1' true
++test -f /run/simple1
++
++! systemd-run-wait simple2.service -p Type=simple -p ExecStopPost='/bin/touch /run/simple2' false
++test -f /run/simple2
++
++cat > /tmp/forking1.sh <<EOF
++#!/bin/bash
++
++set -eux
++
++sleep 4 &
++MAINPID=\$!
++disown
++
++systemd-notify MAINPID=\$MAINPID
++EOF
++chmod +x /tmp/forking1.sh
++
++# RHEL 7 doesn't support NotifyAccess=exec
++systemd-run-wait forking1.service -p Type=forking -p NotifyAccess=main -p ExecStopPost='/bin/touch /run/forking1' /tmp/forking1.sh
++test -f /run/forking1
++
++cat > /tmp/forking2.sh <<EOF
++#!/bin/bash
++
++set -eux
++
++( sleep 4; exit 1 ) &
++MAINPID=\$!
++disown
++
++systemd-notify MAINPID=\$MAINPID
++EOF
++chmod +x /tmp/forking2.sh
++
++# RHEL 7 doesn't support NotifyAccess=exec
++! systemd-run-wait forking2.service -p Type=forking -p NotifyAccess=main -p ExecStopPost='/bin/touch /run/forking2' /tmp/forking2.sh
++test -f /run/forking2
++
++systemd-run-wait oneshot1.service -p Type=oneshot -p ExecStopPost='/bin/touch /run/oneshot1' true
++test -f /run/oneshot1
++
++! systemd-run-wait oneshot2.service -p Type=oneshot -p ExecStopPost='/bin/touch /run/oneshot2' false
++test -f /run/oneshot2
++
++systemd-run-wait dbus1.service -p Type=dbus -p BusName=systemd.test.ExecStopPost -p ExecStopPost='/bin/touch /run/dbus1' \
++    busctl call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus RequestName su systemd.test.ExecStopPost 4 \
++    || :
++test -f /run/dbus1
++
++! systemd-run-wait dbus2.service -p Type=dbus -p BusName=systemd.test.ExecStopPost -p ExecStopPost='/bin/touch /run/dbus2' true
++test -f /run/dbus2
++
++cat > /tmp/notify1.sh <<EOF
++#!/bin/bash
++
++set -eux
++
++systemd-notify --ready
++EOF
++chmod +x /tmp/notify1.sh
++
++systemd-run-wait notify1.service -p Type=notify -p ExecStopPost='/bin/touch /run/notify1' /tmp/notify1.sh
++test -f /run/notify1
++
++! systemd-run-wait notify2.service -p Type=notify -p ExecStopPost='/bin/touch /run/notify2' true
++test -f /run/notify2
++
++systemd-run-wait idle1.service -p Type=idle -p ExecStopPost='/bin/touch /run/idle1' true
++test -f /run/idle1
++
++! systemd-run-wait idle2.service -p Type=idle -p ExecStopPost='/bin/touch /run/idle2' false
++test -f /run/idle2
++
++systemd-analyze log-level info
++
++echo OK > /testok
++
++exit 0

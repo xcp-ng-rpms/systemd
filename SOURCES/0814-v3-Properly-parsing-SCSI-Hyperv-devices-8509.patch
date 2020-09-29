@@ -1,0 +1,68 @@
+From f99cc28e392874b317b4ff2054bbd6970f71ecdd Mon Sep 17 00:00:00 2001
+From: Long Li <longli@microsoft.com>
+Date: Wed, 21 Mar 2018 03:51:28 -0700
+Subject: [PATCH] v3: Properly parsing SCSI Hyperv devices (#8509)
+
+Since 2016, Hyperv devices moved to using standard way to expose UUID to sysfs. Fix the parsing function to work with the newer format.
+
+Change log:
+v2: changed code to work with both old and new path format
+v3: changed guid_str_len type to size_t, fixed length in char guid[] in handle_scsi_hyperv()
+
+(cherry picked from commit cf3fabacaa141a1224a2ad239806a1fa28b51687)
+
+Resolves: #1809053
+---
+ src/udev/udev-builtin-path_id.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/src/udev/udev-builtin-path_id.c b/src/udev/udev-builtin-path_id.c
+index d113ff21b0..b0bcd80571 100644
+--- a/src/udev/udev-builtin-path_id.c
++++ b/src/udev/udev-builtin-path_id.c
+@@ -424,14 +424,16 @@ out:
+         return hostdev;
+ }
+ 
+-static struct udev_device *handle_scsi_hyperv(struct udev_device *parent, char **path) {
++static struct udev_device *handle_scsi_hyperv(struct udev_device *parent, char **path, size_t guid_str_len) {
+         struct udev_device *hostdev;
+         struct udev_device *vmbusdev;
+         const char *guid_str;
+-        char *lun = NULL;
+-        char guid[38];
++        _cleanup_free_ char *lun = NULL;
++        char guid[39];
+         size_t i, k;
+ 
++        assert(guid_str_len < sizeof(guid));
++
+         hostdev = udev_device_get_parent_with_subsystem_devtype(parent, "scsi", "scsi_host");
+         if (!hostdev)
+                 return NULL;
+@@ -444,10 +446,10 @@ static struct udev_device *handle_scsi_hyperv(struct udev_device *parent, char *
+         if (!guid_str)
+                 return NULL;
+ 
+-        if (strlen(guid_str) < 37 || guid_str[0] != '{' || guid_str[36] != '}')
++        if (strlen(guid_str) < guid_str_len || guid_str[0] != '{' || guid_str[guid_str_len-1] != '}')
+                 return NULL;
+ 
+-        for (i = 1, k = 0; i < 36; i++) {
++        for (i = 1, k = 0; i < guid_str_len-1; i++) {
+                 if (guid_str[i] == '-')
+                         continue;
+                 guid[k++] = guid_str[i];
+@@ -545,7 +547,11 @@ static struct udev_device *handle_scsi(struct udev_device *parent, bool enable_n
+         }
+ 
+         if (strstr(name, "/vmbus_") != NULL) {
+-                parent = handle_scsi_hyperv(parent, path);
++                parent = handle_scsi_hyperv(parent, path, 37);
++                goto out;
++        }
++        else if (strstr(name, "/VMBUS")) {
++                parent = handle_scsi_hyperv(parent, path, 38);
+                 goto out;
+         }
+ 

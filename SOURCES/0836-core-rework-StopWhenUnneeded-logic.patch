@@ -1,4 +1,4 @@
-From c7c8a7648623a25c00dc585bd42b9037a20396c8 Mon Sep 17 00:00:00 2001
+From ba36c6a8c8d134aa7196750af4a6651d5810f6d3 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Thu, 9 Aug 2018 16:26:27 +0200
 Subject: [PATCH] core: rework StopWhenUnneeded= logic
@@ -20,9 +20,8 @@ that are fully up and have no job queued. This means that whenever
 there's something pending for a unit we won't clean it up.
 
 (cherry picked from commit a3c1168ac293f16d9343d248795bb4c246aaff4a)
-(cherry picked from commit 65ebf5e453846e29ab5894670a83b5d8b942c858)
 
-Resolves: #1810576
+Resolves: #1775291
 ---
  src/core/manager.c |  43 +++++++++++++++
  src/core/manager.h |   3 ++
@@ -31,7 +30,7 @@ Resolves: #1810576
  4 files changed, 124 insertions(+), 61 deletions(-)
 
 diff --git a/src/core/manager.c b/src/core/manager.c
-index 4c87ad8a2f..f0553b4df9 100644
+index 7bbe912dc9..db562b18a5 100644
 --- a/src/core/manager.c
 +++ b/src/core/manager.c
 @@ -961,6 +961,45 @@ static unsigned manager_dispatch_gc_queue(Manager *m) {
@@ -113,10 +112,10 @@ index cfc564dfb6..f9280956e9 100644
  
          /* We use two hash tables here, since the same PID might be
 diff --git a/src/core/unit.c b/src/core/unit.c
-index 583b9fae28..dc2df4c89c 100644
+index 750b8b9a5c..2b058dd3e8 100644
 --- a/src/core/unit.c
 +++ b/src/core/unit.c
-@@ -380,6 +380,22 @@ void unit_add_to_dbus_queue(Unit *u) {
+@@ -396,6 +396,22 @@ void unit_add_to_dbus_queue(Unit *u) {
          u->in_dbus_queue = true;
  }
  
@@ -139,7 +138,7 @@ index 583b9fae28..dc2df4c89c 100644
  static void bidi_set_free(Unit *u, Set *s) {
          Iterator i;
          Unit *other;
-@@ -544,6 +560,9 @@ void unit_free(Unit *u) {
+@@ -560,6 +576,9 @@ void unit_free(Unit *u) {
                  u->manager->n_in_gc_queue--;
          }
  
@@ -149,7 +148,7 @@ index 583b9fae28..dc2df4c89c 100644
          if (u->on_console)
                  manager_unref_console(u->manager);
  
-@@ -1565,49 +1584,68 @@ bool unit_can_reload(Unit *u) {
+@@ -1583,49 +1602,68 @@ bool unit_can_reload(Unit *u) {
          return UNIT_VTABLE(u)->can_reload(u);
  }
  
@@ -249,7 +248,7 @@ index 583b9fae28..dc2df4c89c 100644
  }
  
  static void unit_check_binds_to(Unit *u) {
-@@ -1693,34 +1731,6 @@ static void retroactively_stop_dependencies(Unit *u) {
+@@ -1711,34 +1749,6 @@ static void retroactively_stop_dependencies(Unit *u) {
                          manager_add_job(u->manager, JOB_STOP, other, JOB_REPLACE, true, NULL, NULL);
  }
  
@@ -284,7 +283,7 @@ index 583b9fae28..dc2df4c89c 100644
  void unit_start_on_failure(Unit *u) {
          Unit *other;
          Iterator i;
-@@ -1898,7 +1908,7 @@ void unit_notify(Unit *u, UnitActiveState os, UnitActiveState ns, bool reload_su
+@@ -1916,7 +1926,7 @@ void unit_notify(Unit *u, UnitActiveState os, UnitActiveState ns, bool reload_su
                  }
  
                  /* stop unneeded units regardless if going down was expected or not */
@@ -293,7 +292,7 @@ index 583b9fae28..dc2df4c89c 100644
                          check_unneeded_dependencies(u);
  
                  if (ns != os && ns == UNIT_FAILED) {
-@@ -1959,7 +1969,7 @@ void unit_notify(Unit *u, UnitActiveState os, UnitActiveState ns, bool reload_su
+@@ -1977,7 +1987,7 @@ void unit_notify(Unit *u, UnitActiveState os, UnitActiveState ns, bool reload_su
          if (u->manager->n_reloading <= 0) {
                  /* Maybe we finished startup and are now ready for
                   * being stopped because unneeded? */
@@ -303,10 +302,10 @@ index 583b9fae28..dc2df4c89c 100644
                  /* Maybe we finished startup, but something we needed
                   * has vanished? Let's die then. (This happens when
 diff --git a/src/core/unit.h b/src/core/unit.h
-index 29353ea81c..38c97397ee 100644
+index e930d8ba5f..f426f3df21 100644
 --- a/src/core/unit.h
 +++ b/src/core/unit.h
-@@ -165,6 +165,9 @@ struct Unit {
+@@ -172,6 +172,9 @@ struct Unit {
          /* Target dependencies queue */
          LIST_FIELDS(Unit, target_deps_queue);
  
@@ -316,7 +315,7 @@ index 29353ea81c..38c97397ee 100644
          /* PIDs we keep an eye on. Note that a unit might have many
           * more, but these are the ones we care enough about to
           * process SIGCHLD for */
-@@ -235,6 +238,7 @@ struct Unit {
+@@ -245,6 +248,7 @@ struct Unit {
          bool in_gc_queue:1;
          bool in_cgroup_queue:1;
          bool in_target_deps_queue:1;
@@ -324,7 +323,7 @@ index 29353ea81c..38c97397ee 100644
  
          bool sent_dbus_new_signal:1;
  
-@@ -508,6 +512,7 @@ void unit_add_to_dbus_queue(Unit *u);
+@@ -518,6 +522,7 @@ void unit_add_to_dbus_queue(Unit *u);
  void unit_add_to_cleanup_queue(Unit *u);
  void unit_add_to_gc_queue(Unit *u);
  void unit_add_to_target_deps_queue(Unit *u);
@@ -332,7 +331,7 @@ index 29353ea81c..38c97397ee 100644
  
  int unit_merge(Unit *u, Unit *other);
  int unit_merge_by_name(Unit *u, const char *other);
-@@ -627,6 +632,8 @@ int unit_make_transient(Unit *u);
+@@ -637,6 +642,8 @@ int unit_make_transient(Unit *u);
  
  int unit_require_mounts_for(Unit *u, const char *path);
  

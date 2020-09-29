@@ -1,0 +1,45 @@
+From d081baa951ee0d1c918170c7c666208fe04944e2 Mon Sep 17 00:00:00 2001
+From: Lennart Poettering <lennart@poettering.net>
+Date: Fri, 8 Sep 2017 17:24:57 +0200
+Subject: [PATCH] core: downgrade log message about inability to propagate
+ cgroup release message
+
+If dbus is already down during shutdown, we can't propagate the cgroup
+release message anymore, but that's expected and nothing to warn about.
+Hence let's downgrade the message from LOG_WARN to LOG_DEBUG.
+
+Fixes: #6777
+(cherry picked from commit d5f1532657da107f1c8be8a97c15d964cd96665c)
+
+Resolves: #1679934
+---
+ src/core/dbus.c    | 2 +-
+ src/core/manager.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/core/dbus.c b/src/core/dbus.c
+index d551eab016..9d19138ab3 100644
+--- a/src/core/dbus.c
++++ b/src/core/dbus.c
+@@ -93,7 +93,7 @@ int bus_forward_agent_released(Manager *m, const char *path) {
+                                "Released",
+                                "s", path);
+         if (r < 0)
+-                return log_warning_errno(r, "Failed to propagate agent release message: %m");
++                return log_debug_errno(r, "Failed to propagate agent release message: %m");
+ 
+         return 1;
+ }
+diff --git a/src/core/manager.c b/src/core/manager.c
+index 4c87ad8a2f..7bbe912dc9 100644
+--- a/src/core/manager.c
++++ b/src/core/manager.c
+@@ -1666,7 +1666,7 @@ static int manager_dispatch_cgroups_agent_fd(sd_event_source *source, int fd, ui
+         buf[n] = 0;
+ 
+         manager_notify_cgroup_empty(m, buf);
+-        bus_forward_agent_released(m, buf);
++        (void) bus_forward_agent_released(m, buf);
+ 
+         return 0;
+ }

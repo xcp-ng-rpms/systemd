@@ -1,4 +1,4 @@
-From 5b7b538fcd268288cea8d8b7f16f839afbf74f39 Mon Sep 17 00:00:00 2001
+From f5e4e0c8139bc0fe001846fabe83c3220fe4bea7 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Wed, 28 Nov 2018 12:41:44 +0100
 Subject: [PATCH] mount: don't propagate errors from mount_setup_unit() further
@@ -10,7 +10,7 @@ further processing of mount units. Let's keep these failures local.
 
 Fixes: #10874
 (cherry picked from commit ba0d56f55f2073164799be714b5bd1aad94d059a)
-Resolves: #1809159
+Resolves: #1804757
 ---
  src/core/mount.c | 9 +++------
  1 file changed, 3 insertions(+), 6 deletions(-)

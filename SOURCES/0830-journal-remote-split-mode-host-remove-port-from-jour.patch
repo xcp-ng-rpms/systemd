@@ -1,0 +1,117 @@
+From 21b3ef4130291a1e3c184bb47c80cb962b32b782 Mon Sep 17 00:00:00 2001
+From: Klearchos Chaloulos <klearchos.chaloulos@nokia.com>
+Date: Tue, 1 Dec 2015 19:29:59 +0200
+Subject: [PATCH] journal-remote: split-mode=host, remove port from journal
+ filename
+
+When constructing the journal filename to store logs from a remote host, remove the port of the tcp connection, as the port will change with every reboot/connection loss between sender/reveiver machines. Having the port in the filename will cause a new journal file to be created for every reboot or connection loss.
+For the implementation, a new argument "bool include_port" is added to the getpeername_pretty() function. This is passed to the sockaddr_pretty() function. The value of the include_port argument is set to true in all calls of getpeername_pretty(), except for 2 calls in journal-remote.c, where it is set to false.
+
+(cherry picked from commit 366b7db4b65b994cd33cf4fd3c1be429be561307)
+
+Resolves: #1244691
+---
+ src/activate/activate.c             | 2 +-
+ src/core/service.c                  | 2 +-
+ src/journal-remote/journal-remote.c | 4 ++--
+ src/shared/socket-util.c            | 4 ++--
+ src/shared/socket-util.h            | 2 +-
+ src/socket-proxy/socket-proxyd.c    | 2 +-
+ 6 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/src/activate/activate.c b/src/activate/activate.c
+index 2689934c40..a456af1573 100644
+--- a/src/activate/activate.c
++++ b/src/activate/activate.c
+@@ -241,7 +241,7 @@ static int do_accept(const char* name, char **argv, char **envp, int fd) {
+         }
+ 
+         getsockname_pretty(fd2, &local);
+-        getpeername_pretty(fd2, &peer);
++        getpeername_pretty(fd2, true, &peer);
+         log_info("Connection from %s to %s", strna(peer), strna(local));
+ 
+         return launch1(name, argv, envp, fd2);
+diff --git a/src/core/service.c b/src/core/service.c
+index 7f0e6df412..dd0ae7cb88 100644
+--- a/src/core/service.c
++++ b/src/core/service.c
+@@ -3309,7 +3309,7 @@ int service_set_socket_fd(Service *s, int fd, Socket *sock, bool selinux_context
+         if (s->state != SERVICE_DEAD)
+                 return -EAGAIN;
+ 
+-        if (getpeername_pretty(fd, &peer) >= 0) {
++        if (getpeername_pretty(fd, true, &peer) >= 0) {
+ 
+                 if (UNIT(s)->description) {
+                         _cleanup_free_ char *a;
+diff --git a/src/journal-remote/journal-remote.c b/src/journal-remote/journal-remote.c
+index 431e28329b..166bdad541 100644
+--- a/src/journal-remote/journal-remote.c
++++ b/src/journal-remote/journal-remote.c
+@@ -620,7 +620,7 @@ static int request_handler(
+                 if (r < 0)
+                         return code;
+         } else {
+-                r = getnameinfo_pretty(fd, &hostname);
++                r = getpeername_pretty(fd, false, &hostname);
+                 if (r < 0) {
+                         return mhd_respond(connection, MHD_HTTP_INTERNAL_SERVER_ERROR,
+                                            "Cannot check remote hostname");
+@@ -880,7 +880,7 @@ static int remoteserver_init(RemoteServer *s,
+                 } else if (sd_is_socket(fd, AF_UNSPEC, 0, false)) {
+                         char *hostname;
+ 
+-                        r = getnameinfo_pretty(fd, &hostname);
++                        r = getpeername_pretty(fd, false, &hostname);
+                         if (r < 0)
+                                 return log_error_errno(r, "Failed to retrieve remote name: %m");
+ 
+diff --git a/src/shared/socket-util.c b/src/shared/socket-util.c
+index b14e368176..d492ae4222 100644
+--- a/src/shared/socket-util.c
++++ b/src/shared/socket-util.c
+@@ -612,7 +612,7 @@ int sockaddr_pretty(const struct sockaddr *_sa, socklen_t salen, bool translate_
+         return 0;
+ }
+ 
+-int getpeername_pretty(int fd, char **ret) {
++int getpeername_pretty(int fd, bool include_port, char **ret) {
+         union sockaddr_union sa;
+         socklen_t salen = sizeof(sa);
+         int r;
+@@ -642,7 +642,7 @@ int getpeername_pretty(int fd, char **ret) {
+         /* For remote sockets we translate IPv6 addresses back to IPv4
+          * if applicable, since that's nicer. */
+ 
+-        return sockaddr_pretty(&sa.sa, salen, true, true, ret);
++        return sockaddr_pretty(&sa.sa, salen, true, include_port, ret);
+ }
+ 
+ int getsockname_pretty(int fd, char **ret) {
+diff --git a/src/shared/socket-util.h b/src/shared/socket-util.h
+index 9200ce8822..403c9bc098 100644
+--- a/src/shared/socket-util.h
++++ b/src/shared/socket-util.h
+@@ -102,7 +102,7 @@ bool socket_ipv6_is_supported(void);
+ int sockaddr_port(const struct sockaddr *_sa) _pure_;
+ 
+ int sockaddr_pretty(const struct sockaddr *_sa, socklen_t salen, bool translate_ipv6, bool include_port, char **ret);
+-int getpeername_pretty(int fd, char **ret);
++int getpeername_pretty(int fd, bool include_port, char **ret);
+ int getsockname_pretty(int fd, char **ret);
+ 
+ int socknameinfo_pretty(union sockaddr_union *sa, socklen_t salen, char **_ret);
+diff --git a/src/socket-proxy/socket-proxyd.c b/src/socket-proxy/socket-proxyd.c
+index a3c3c87f11..b0a062b716 100644
+--- a/src/socket-proxy/socket-proxyd.c
++++ b/src/socket-proxy/socket-proxyd.c
+@@ -504,7 +504,7 @@ static int accept_cb(sd_event_source *s, int fd, uint32_t revents, void *userdat
+                 if (errno != -EAGAIN)
+                         log_warning_errno(errno, "Failed to accept() socket: %m");
+         } else {
+-                getpeername_pretty(nfd, &peer);
++                getpeername_pretty(nfd, true, &peer);
+                 log_debug("New connection from %s", strna(peer));
+ 
+                 r = add_connection_socket(context, nfd);

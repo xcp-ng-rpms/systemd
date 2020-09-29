@@ -1,4 +1,4 @@
-From 13f9e172d4a3576efa1ddacaca26286266866d2d Mon Sep 17 00:00:00 2001
+From 1b723aea42e29becd0be2fdef990401803dbfba6 Mon Sep 17 00:00:00 2001
 From: Joerg Steffens <joerg.steffens@bareos.com>
 Date: Tue, 21 Nov 2017 12:21:49 +0100
 Subject: [PATCH] udev-rules: make tape-changers also apprear in
@@ -34,8 +34,8 @@ Tape devices and tape changer have different ID_PATHs.
 SCSI tape changer get the suffix "-changer"
 to make them better distinguishable from tape devices.
 
-(cherry-picked from commit 7f8ddf96a25162f06bd94a684cf700c128d18142)
-(cherry picked from commit 1b723aea42e29becd0be2fdef990401803dbfba6)
+(cherry-picked from commmit 7f8ddf96a25162f06bd94a684cf700c128d18142)
+
 Resolves: #1814028
 ---
  rules/60-persistent-storage-tape.rules | 3 +++

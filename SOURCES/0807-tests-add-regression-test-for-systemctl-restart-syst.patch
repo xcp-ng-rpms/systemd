@@ -1,4 +1,4 @@
-From e3468af46bd16e3550c25a0770f47f0bf21780f3 Mon Sep 17 00:00:00 2001
+From ae68ff48fffe8df34c2065ad221b7d2377523edc Mon Sep 17 00:00:00 2001
 From: Evgeny Vereshchagin <evvers@ya.ru>
 Date: Wed, 30 Dec 2015 03:33:43 +0000
 Subject: [PATCH] tests: add regression test for `systemctl restart
@@ -8,7 +8,7 @@ See https://github.com/systemd/systemd/issues/2236
 
 (cherry picked from commit 3889613ec6bc54b9e02955f62b9d5c5b571c3d4b)
 (cherry picked from commit 4dc893c03fe9c56a3d3070fb8583f5584014aa49)
-Resolves: #1803802
+Resolves: #1757704
 ---
  test/TEST-04-JOURNAL/test-journal.sh | 8 ++++++++
  test/TEST-04-JOURNAL/test.sh         | 9 +++++++++

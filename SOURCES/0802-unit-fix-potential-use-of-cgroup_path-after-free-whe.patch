@@ -1,4 +1,4 @@
-From 98234ad6e16e868bd1fa3e4622c43a182fdee75c Mon Sep 17 00:00:00 2001
+From 8a2dc9e983d6fb67955ae68da0a4af4248ecaf2d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Renaud=20M=C3=A9trich?= <rmetrich@redhat.com>
 Date: Sat, 23 Nov 2019 13:37:02 +0100
 Subject: [PATCH] unit: fix potential use of cgroup_path after free() when

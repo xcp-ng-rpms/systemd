@@ -1,4 +1,4 @@
-From 659b97b93d93ad05732831f6f097cf6f2a9c6410 Mon Sep 17 00:00:00 2001
+From 591bcfa98983c97df4dbb9d15bc272c3fc093863 Mon Sep 17 00:00:00 2001
 From: David Tardon <dtardon@redhat.com>
 Date: Mon, 16 Mar 2020 09:37:22 +0100
 Subject: [PATCH] fix the fix for #1691511
@@ -6,9 +6,7 @@ Subject: [PATCH] fix the fix for #1691511
 The fix for #1691511 should have been used only for existing mounts
 (mount_setup_existing_unit() in current master).
 
-(cherry picked from commit 4584818bea998d257a166c238b829025b6138e55)
-
-Related: #1809159
+Related: #1804757
 ---
  src/core/mount.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)

@@ -1,11 +1,11 @@
-From c53791854050661d34417f12755837abd74d213a Mon Sep 17 00:00:00 2001
+From 5042511b6d12e30fc66e5a404153aac6c63af7d9 Mon Sep 17 00:00:00 2001
 From: Evgeny Vereshchagin <evvers@ya.ru>
 Date: Tue, 17 Nov 2015 11:21:23 +0000
 Subject: [PATCH] tests: add basic journal test
 
 (cherry picked from commit 1c36b4a73b876258fbe01fbe9bc9b750b7dcc9ce)
 (cherry picked from commit e974b9915ccc7bf56d23fd6fc67631990d893c89)
-Resolves: #1803802
+Resolves: #1757704
 ---
  test/TEST-04-JOURNAL/Makefile        |  1 +
  test/TEST-04-JOURNAL/test-journal.sh | 18 +++++++

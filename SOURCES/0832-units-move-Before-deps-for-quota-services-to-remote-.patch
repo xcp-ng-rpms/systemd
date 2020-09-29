@@ -1,0 +1,48 @@
+From 0693f51f979f260426cddc1f270e28e3cb2b46fa Mon Sep 17 00:00:00 2001
+From: tblume <Thomas.Blume@suse.com>
+Date: Thu, 30 Mar 2017 11:21:18 +0200
+Subject: [PATCH] units: move Before deps for quota services to
+ remote-fs.target (#5627)
+
+Creating quota on an iscsi device is causing dependency loops at next reboot.
+Reason is that systemd-quotacheck and quotaon.service are ordered before
+local-fs.target and quota enabled mounts have a before dependency to them.
+This cannot work for _netdev mounts, because network activation is ordered
+after local-fs.target.
+Moving the Before dependency for systemd-quotacheck and quotaon.service
+to remote-fs.target fixes this.
+
+(cherry picked from commit 4e6f13af93a551933a75331b1f67123b3d09f6ef)
+
+Resolves: #1693374
+---
+ units/quotaon.service.in            | 2 +-
+ units/systemd-quotacheck.service.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/units/quotaon.service.in b/units/quotaon.service.in
+index 49a50a7feb..57667e110d 100644
+--- a/units/quotaon.service.in
++++ b/units/quotaon.service.in
+@@ -10,7 +10,7 @@ Description=Enable File System Quotas
+ Documentation=man:quotaon(8)
+ DefaultDependencies=no
+ After=systemd-readahead-collect.service systemd-readahead-replay.service systemd-quotacheck.service
+-Before=local-fs.target shutdown.target
++Before=remote-fs.target shutdown.target
+ ConditionPathExists=@QUOTAON@
+ 
+ [Service]
+diff --git a/units/systemd-quotacheck.service.in b/units/systemd-quotacheck.service.in
+index f726ea1bcd..41c9bea6d2 100644
+--- a/units/systemd-quotacheck.service.in
++++ b/units/systemd-quotacheck.service.in
+@@ -10,7 +10,7 @@ Description=File System Quota Check
+ Documentation=man:systemd-quotacheck.service(8)
+ DefaultDependencies=no
+ After=systemd-readahead-collect.service systemd-readahead-replay.service systemd-remount-fs.service
+-Before=local-fs.target shutdown.target
++Before=remote-fs.target shutdown.target
+ ConditionPathExists=@QUOTACHECK@
+ 
+ [Service]

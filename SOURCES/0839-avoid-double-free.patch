@@ -1,0 +1,26 @@
+From 20fb5227cd981c5eb188a6ad738672486e40a50e Mon Sep 17 00:00:00 2001
+From: David Tardon <dtardon@redhat.com>
+Date: Mon, 11 May 2020 13:34:24 +0200
+Subject: [PATCH] avoid double free
+
+This was a mis-merge in the fix for #1809053 (commit
+f99cc28e392874b317b4ff2054bbd6970f71ecdd).
+
+Resolves: #1832816
+---
+ src/udev/udev-builtin-path_id.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/udev/udev-builtin-path_id.c b/src/udev/udev-builtin-path_id.c
+index b0bcd80571..1db403b39c 100644
+--- a/src/udev/udev-builtin-path_id.c
++++ b/src/udev/udev-builtin-path_id.c
+@@ -428,7 +428,7 @@ static struct udev_device *handle_scsi_hyperv(struct udev_device *parent, char *
+         struct udev_device *hostdev;
+         struct udev_device *vmbusdev;
+         const char *guid_str;
+-        _cleanup_free_ char *lun = NULL;
++        char *lun = NULL;
+         char guid[39];
+         size_t i, k;
+ 

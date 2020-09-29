@@ -1,4 +1,4 @@
-From fadf2a316458ac262f3d5f690bd481fac2d4e566 Mon Sep 17 00:00:00 2001
+From 7fe6194a2a7872532f121e6159d4fa60d1c85c50 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michal=20Sekleta=CC=81r?= <msekleta@redhat.com>
 Date: Fri, 27 Mar 2020 17:01:59 +0100
 Subject: [PATCH] sd-journal: remove the dead code and actually fix #14695
@@ -14,7 +14,7 @@ Fixes #14695
 
 (cherry-picked from commit 8581b9f9732d4c158bb5f773230a65ce77f2c292)
 
-Resolves: #1820073
+Resolves: #1812889
 ---
  src/journal/sd-journal.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)

@@ -1,0 +1,26 @@
+From 070dfe9be5cf873e2a815232900da9651dfe4544 Mon Sep 17 00:00:00 2001
+From: David Tardon <dtardon@redhat.com>
+Date: Tue, 17 Mar 2020 10:49:44 +0100
+Subject: [PATCH] mount: don't add Requires for tmp.mount
+
+This is a follow-up to #1372249.
+
+rhel-only
+Resolves: #1813270
+---
+ src/core/mount.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/core/mount.c b/src/core/mount.c
+index 56fda1b73f..72e981676d 100644
+--- a/src/core/mount.c
++++ b/src/core/mount.c
+@@ -300,7 +300,7 @@ static int mount_add_mount_links(Mount *m) {
+                 if (r < 0)
+                         return r;
+ 
+-                if (UNIT(m)->fragment_path) {
++                if (UNIT(m)->fragment_path && !streq(UNIT(m)->id, "tmp.mount")) {
+                         /* If we have fragment configuration, then make this dependency required */
+                         r = unit_add_dependency(other, UNIT_REQUIRES, UNIT(m), true);
+                         if (r < 0)

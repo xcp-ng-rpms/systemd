@@ -1,4 +1,4 @@
-From f57ee0c7862260f3c7054b224f360cdef5140685 Mon Sep 17 00:00:00 2001
+From d27610cfef24a985116ed88f29a462f627745b19 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 19 May 2015 16:00:24 +0200
 Subject: [PATCH] core: enforce a ratelimiter when stopping units due to
@@ -8,16 +8,15 @@ Otherwise we might end up in an endless stop loop.
 
 http://lists.freedesktop.org/archives/systemd-devel/2015-April/030224.html
 (cherry picked from commit bea355dac94e82697aa98e25d80ee4248263bf92)
-(cherry picked from commit 6c72a575c7c61e17c8e96b23042f7b4a5ac39339)
 
-Related: #1810576
+Related: #1775291
 ---
  src/core/unit.c | 10 ++++++++++
  src/core/unit.h |  3 +++
  2 files changed, 13 insertions(+)
 
 diff --git a/src/core/unit.c b/src/core/unit.c
-index eff9fdbe70..583b9fae28 100644
+index 502830d2cb..750b8b9a5c 100644
 --- a/src/core/unit.c
 +++ b/src/core/unit.c
 @@ -97,6 +97,8 @@ Unit *unit_new(Manager *m, size_t size) {
@@ -29,7 +28,7 @@ index eff9fdbe70..583b9fae28 100644
          return u;
  }
  
-@@ -1594,6 +1596,14 @@ static void unit_check_unneeded(Unit *u) {
+@@ -1612,6 +1614,14 @@ static void unit_check_unneeded(Unit *u) {
                  if (unit_active_or_pending(other))
                          return;
  
@@ -45,10 +44,10 @@ index eff9fdbe70..583b9fae28 100644
  
          /* Ok, nobody needs us anymore. Sniff. Then let's commit suicide */
 diff --git a/src/core/unit.h b/src/core/unit.h
-index 3b0fd8d9df..29353ea81c 100644
+index 8cc7a9e0b2..e930d8ba5f 100644
 --- a/src/core/unit.h
 +++ b/src/core/unit.h
-@@ -185,6 +185,9 @@ struct Unit {
+@@ -192,6 +192,9 @@ struct Unit {
          /* Error code when we didn't manage to load the unit (negative) */
          int load_error;
  

@@ -1,4 +1,4 @@
-From 9684908410868cb590ad74f4747bdbf9b5790abb Mon Sep 17 00:00:00 2001
+From 29254c6a73ede5af4df1c364c958a978f5a7af8a Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Mon, 13 Nov 2017 15:08:49 +0100
 Subject: [PATCH] unit: rework a bit how we keep the service fdstore from being
@@ -24,7 +24,7 @@ Follow-up for f0bfbfac43b7faa68ef1bb2ad659c191b9ec85d2.
 
 (cherry picked from commit 7eb2a8a1259043e107ebec94e30ed160a93f40a7)
 (cherry picked from commit e2636bde0f07319d0d35262dac6ff2638ba4e598)
-Resolves: #1803802
+Resolves: #1757704
 ---
  src/core/service.c | 23 ++++++++++++++++++-----
  src/core/service.h |  1 +

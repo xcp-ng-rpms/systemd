@@ -1,0 +1,27 @@
+From b12e40d3e16b998542faef3fe916d5605b3fe0cb Mon Sep 17 00:00:00 2001
+From: Lennart Poettering <lennart@poettering.net>
+Date: Thu, 29 Nov 2018 16:40:13 +0100
+Subject: [PATCH] core: clarify that the CollectMode bus property is constant
+
+it's configured from unit files only, and hence is constant.
+
+(cherry-picked from commit 641e0d7a1bf4e24f5bf5f99a2d74a97635335c8e)
+
+Related: #1817576
+---
+ src/core/dbus-unit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/core/dbus-unit.c b/src/core/dbus-unit.c
+index ea6ac6767f..8febdfd021 100644
+--- a/src/core/dbus-unit.c
++++ b/src/core/dbus-unit.c
+@@ -606,7 +606,7 @@ const sd_bus_vtable bus_unit_vtable[] = {
+         SD_BUS_PROPERTY("Asserts", "a(sbbsi)", property_get_conditions, offsetof(Unit, asserts), 0),
+         SD_BUS_PROPERTY("LoadError", "(ss)", property_get_load_error, 0, SD_BUS_VTABLE_PROPERTY_CONST),
+         SD_BUS_PROPERTY("Transient", "b", bus_property_get_bool, offsetof(Unit, transient), SD_BUS_VTABLE_PROPERTY_CONST),
+-        SD_BUS_PROPERTY("CollectMode", "s", property_get_collect_mode, offsetof(Unit, collect_mode), 0),
++        SD_BUS_PROPERTY("CollectMode", "s", property_get_collect_mode, offsetof(Unit, collect_mode), SD_BUS_VTABLE_PROPERTY_CONST),
+ 
+         SD_BUS_METHOD("Start", "s", "o", method_start, 0),
+         SD_BUS_METHOD("Stop", "s", "o", method_stop, 0),

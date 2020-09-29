@@ -1,4 +1,4 @@
-From 714d1c41100be669bd106df9a0efa76e49182e69 Mon Sep 17 00:00:00 2001
+From df8adf9c8a8258ae041db28f4bf411da6156170a Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Wed, 22 Apr 2020 20:34:02 +0200
 Subject: [PATCH] core: make sure to restore the control command id, too
@@ -6,13 +6,13 @@ Subject: [PATCH] core: make sure to restore the control command id, too
 Fixes: #15356
 (cherry picked from commit e9da62b18af647bfa73807e1c7fc3bfa4bb4b2ac)
 
-Resolves: #1837973
+Resolves: #1828953
 ---
  src/core/service.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/src/core/service.c b/src/core/service.c
-index e32cdf4594..df64fbaf60 100644
+index dd0ae7cb88..4c73b6ef96 100644
 --- a/src/core/service.c
 +++ b/src/core/service.c
 @@ -2263,9 +2263,10 @@ static int service_deserialize_exec_command(Unit *u, const char *key, const char

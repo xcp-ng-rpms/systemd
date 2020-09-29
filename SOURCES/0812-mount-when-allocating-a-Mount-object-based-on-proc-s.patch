@@ -1,4 +1,4 @@
-From 58407f55ccfc83eef2bd14e672d13213ef93069d Mon Sep 17 00:00:00 2001
+From 774f040ecc62e9c559269bb13afb1c4d04e1b6ab Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Wed, 28 Nov 2018 14:51:04 +0100
 Subject: [PATCH] mount: when allocating a Mount object based on
@@ -10,7 +10,7 @@ thus mount_load() called) this
 fact is already known.
 
 (cherry picked from commit 6d7e89b07065b8c49af47aaf1ccc336d017fc3a2)
-Related: #1809159
+Related: #1804757
 ---
  src/core/mount.c | 7 +++++++
  1 file changed, 7 insertions(+)

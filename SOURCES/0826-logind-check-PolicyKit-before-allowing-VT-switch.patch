@@ -1,0 +1,209 @@
+From fb419649754767124f30dba36f8fdbd114b0e9d7 Mon Sep 17 00:00:00 2001
+From: Lennart Poettering <lennart@poettering.net>
+Date: Wed, 22 Jan 2020 12:04:38 +0100
+Subject: [PATCH] logind: check PolicyKit before allowing VT switch
+
+Let's lock this down a bit. Effectively nothing much changes, since the
+default PK policy will allow users on the VT to change VT. Only users
+with no local VT session won't be able to switch VTs.
+
+(cherry picked from commit 4acf0cfd2f92edb94ad48d04f1ce6c9ab4e19d55)
+
+Resolves: #1797672
+---
+ src/login/logind-dbus.c                    | 18 ++++++--
+ src/login/logind-seat-dbus.c               | 50 +++++++++++++++++++++-
+ src/login/logind-session-dbus.c            | 16 ++++++-
+ src/login/logind-session.h                 |  2 +
+ src/login/org.freedesktop.login1.policy.in | 10 +++++
+ 5 files changed, 89 insertions(+), 7 deletions(-)
+
+diff --git a/src/login/logind-dbus.c b/src/login/logind-dbus.c
+index 63b9a0df36..019aa193f5 100644
+--- a/src/login/logind-dbus.c
++++ b/src/login/logind-dbus.c
+@@ -854,11 +854,9 @@ static int method_activate_session(sd_bus *bus, sd_bus_message *message, void *u
+         if (r < 0)
+                 return r;
+ 
+-        r = session_activate(session);
+-        if (r < 0)
+-                return r;
++        /* PolicyKit is done by bus_session_method_activate() */
+ 
+-        return sd_bus_reply_method_return(message, NULL);
++        return bus_session_method_activate(bus, message, session, error);
+ }
+ 
+ static int method_activate_session_on_seat(sd_bus *bus, sd_bus_message *message, void *userdata, sd_bus_error *error) {
+@@ -890,6 +888,18 @@ static int method_activate_session_on_seat(sd_bus *bus, sd_bus_message *message,
+         if (session->seat != seat)
+                 return sd_bus_error_setf(error, BUS_ERROR_SESSION_NOT_ON_SEAT, "Session %s not on seat %s", session_name, seat_name);
+ 
++        r = bus_verify_polkit_async(
++                        message,
++                        CAP_SYS_ADMIN,
++                        "org.freedesktop.login1.chvt",
++                        false,
++                        &m->polkit_registry,
++                        error);
++        if (r < 0)
++                return r;
++        if (r == 0)
++                return 1; /* Will call us back */
++
+         r = session_activate(session);
+         if (r < 0)
+                 return r;
+diff --git a/src/login/logind-seat-dbus.c b/src/login/logind-seat-dbus.c
+index 50b0b8842f..f49e416fce 100644
+--- a/src/login/logind-seat-dbus.c
++++ b/src/login/logind-seat-dbus.c
+@@ -229,6 +229,18 @@ static int method_activate_session(sd_bus *bus, sd_bus_message *message, void *u
+         if (session->seat != s)
+                 return sd_bus_error_setf(error, BUS_ERROR_SESSION_NOT_ON_SEAT, "Session %s not on seat %s", name, s->id);
+ 
++        r = bus_verify_polkit_async(
++                        message,
++                        CAP_SYS_ADMIN,
++                        "org.freedesktop.login1.chvt",
++                        false,
++                        &s->manager->polkit_registry,
++                        error);
++        if (r < 0)
++                return r;
++        if (r == 0)
++                return 1; /* Will call us back */
++
+         r = session_activate(session);
+         if (r < 0)
+                 return r;
+@@ -250,7 +262,19 @@ static int method_switch_to(sd_bus *bus, sd_bus_message *message, void *userdata
+                 return r;
+ 
+         if (to <= 0)
+-                return -EINVAL;
++                return sd_bus_error_setf(error, SD_BUS_ERROR_INVALID_ARGS, "Invalid virtual terminal");
++
++        r = bus_verify_polkit_async(
++                        message,
++                        CAP_SYS_ADMIN,
++                        "org.freedesktop.login1.chvt",
++                        false,
++                        &s->manager->polkit_registry,
++                        error);
++        if (r < 0)
++                return r;
++        if (r == 0)
++                return 1; /* Will call us back */
+ 
+         r = seat_switch_to(s, to);
+         if (r < 0)
+@@ -267,6 +291,18 @@ static int method_switch_to_next(sd_bus *bus, sd_bus_message *message, void *use
+         assert(message);
+         assert(s);
+ 
++        r = bus_verify_polkit_async(
++                        message,
++                        CAP_SYS_ADMIN,
++                        "org.freedesktop.login1.chvt",
++                        false,
++                        &s->manager->polkit_registry,
++                        error);
++        if (r < 0)
++                return r;
++        if (r == 0)
++                return 1; /* Will call us back */
++
+         r = seat_switch_to_next(s);
+         if (r < 0)
+                 return r;
+@@ -282,6 +318,18 @@ static int method_switch_to_previous(sd_bus *bus, sd_bus_message *message, void
+         assert(message);
+         assert(s);
+ 
++        r = bus_verify_polkit_async(
++                        message,
++                        CAP_SYS_ADMIN,
++                        "org.freedesktop.login1.chvt",
++                        false,
++                        &s->manager->polkit_registry,
++                        error);
++        if (r < 0)
++                return r;
++        if (r == 0)
++                return 1; /* Will call us back */
++
+         r = seat_switch_to_previous(s);
+         if (r < 0)
+                 return r;
+diff --git a/src/login/logind-session-dbus.c b/src/login/logind-session-dbus.c
+index 75b7186e8f..0ec4196257 100644
+--- a/src/login/logind-session-dbus.c
++++ b/src/login/logind-session-dbus.c
+@@ -213,7 +213,7 @@ static int method_terminate(sd_bus *bus, sd_bus_message *message, void *userdata
+         return sd_bus_reply_method_return(message, NULL);
+ }
+ 
+-static int method_activate(sd_bus *bus, sd_bus_message *message, void *userdata, sd_bus_error *error) {
++int bus_session_method_activate(sd_bus *bus, sd_bus_message *message, void *userdata, sd_bus_error *error) {
+         Session *s = userdata;
+         int r;
+ 
+@@ -221,6 +221,18 @@ static int method_activate(sd_bus *bus, sd_bus_message *message, void *userdata,
+         assert(message);
+         assert(s);
+ 
++        r = bus_verify_polkit_async(
++                        message,
++                        CAP_SYS_ADMIN,
++                        "org.freedesktop.login1.chvt",
++                        false,
++                        &s->manager->polkit_registry,
++                        error);
++        if (r < 0)
++                return r;
++        if (r == 0)
++                return 1; /* Will call us back */
++
+         r = session_activate(s);
+         if (r < 0)
+                 return r;
+@@ -506,7 +518,7 @@ const sd_bus_vtable session_vtable[] = {
+         SD_BUS_PROPERTY("LockedHint", "b", property_get_locked_hint, 0, SD_BUS_VTABLE_PROPERTY_EMITS_CHANGE),
+ 
+         SD_BUS_METHOD("Terminate", NULL, NULL, method_terminate, SD_BUS_VTABLE_CAPABILITY(CAP_KILL)),
+-        SD_BUS_METHOD("Activate", NULL, NULL, method_activate, SD_BUS_VTABLE_UNPRIVILEGED),
++        SD_BUS_METHOD("Activate", NULL, NULL, bus_session_method_activate, SD_BUS_VTABLE_UNPRIVILEGED),
+         SD_BUS_METHOD("Lock", NULL, NULL, method_lock, 0),
+         SD_BUS_METHOD("Unlock", NULL, NULL, method_lock, 0),
+         SD_BUS_METHOD("SetIdleHint", "b", NULL, method_set_idle_hint, SD_BUS_VTABLE_UNPRIVILEGED),
+diff --git a/src/login/logind-session.h b/src/login/logind-session.h
+index d662082d85..b498f49592 100644
+--- a/src/login/logind-session.h
++++ b/src/login/logind-session.h
+@@ -184,3 +184,5 @@ void session_leave_vt(Session *s);
+ bool session_is_controller(Session *s, const char *sender);
+ int session_set_controller(Session *s, const char *sender, bool force);
+ void session_drop_controller(Session *s);
++
++int bus_session_method_activate(sd_bus *bus, sd_bus_message *message, void *userdata, sd_bus_error *error);
+diff --git a/src/login/org.freedesktop.login1.policy.in b/src/login/org.freedesktop.login1.policy.in
+index 49094eeddb..fa51ed8d74 100644
+--- a/src/login/org.freedesktop.login1.policy.in
++++ b/src/login/org.freedesktop.login1.policy.in
+@@ -270,4 +270,14 @@
+                 <annotate key="org.freedesktop.policykit.imply">org.freedesktop.login1.hibernate</annotate>
+         </action>
+ 
++        <action id="org.freedesktop.login1.chvt">
++                <description gettext-domain="systemd">Change Session</description>
++                <message gettext-domain="systemd">Authentication is required for changing the virtual terminal.</message>
++                <defaults>
++                        <allow_any>auth_admin_keep</allow_any>
++                        <allow_inactive>auth_admin_keep</allow_inactive>
++                        <allow_active>yes</allow_active>
++                </defaults>
++        </action>
++
+ </policyconfig>

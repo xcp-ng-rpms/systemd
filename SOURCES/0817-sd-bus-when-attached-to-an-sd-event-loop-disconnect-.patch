@@ -1,4 +1,4 @@
-From e525ce5713f8263258c2cdf687adc67108425f6a Mon Sep 17 00:00:00 2001
+From 24622692a67b59e943afc1d309da696e48bf6a54 Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Fri, 15 Dec 2017 22:24:16 +0100
 Subject: [PATCH] sd-bus: when attached to an sd-event loop, disconnect on
@@ -10,7 +10,7 @@ do that, and disconnect.
 
 (cherry-picked from commit 5ae37ad833583e6c1c7765767b7f8360afca3b07)
 
-Resolves: #1817504
+Resolves: #1769928
 ---
  src/libsystemd/sd-bus/sd-bus.c | 45 +++++++++++++++++++++-------------
  1 file changed, 28 insertions(+), 17 deletions(-)

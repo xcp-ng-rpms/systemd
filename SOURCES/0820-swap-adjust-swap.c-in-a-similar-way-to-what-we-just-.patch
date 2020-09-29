@@ -1,4 +1,4 @@
-From 6181124fac6fbfd83e12fbe5f0068da826ab5772 Mon Sep 17 00:00:00 2001
+From b77d7c2a22c679cb9445f34c59462804051bd12f Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Mon, 25 Sep 2017 19:53:19 +0200
 Subject: [PATCH] swap: adjust swap.c in a similar way to what we just did to
@@ -9,9 +9,8 @@ Thankfully the swap.c state engine is much simpler than mount.c's, hence
 this should be easier to digest.
 
 (cherry picked from commit 50864457e1bc5f7a4ab2fd02e1565bc5d135d2f3)
-(cherry picked from commit 714dbded2ac725e1e2e6b61a289c118dae555dee)
 
-Related: #1821261
+Related: #1749621
 ---
  src/core/swap.c | 96 +++++++++++++++++++++++--------------------------
  src/core/swap.h |  2 --

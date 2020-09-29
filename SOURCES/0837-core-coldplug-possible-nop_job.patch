@@ -1,4 +1,4 @@
-From 59bce92b081cf0b52c4335461af7cbd003a11aeb Mon Sep 17 00:00:00 2001
+From 8ee652948b0255005e4c9d278ac06b30711d9dbd Mon Sep 17 00:00:00 2001
 From: chenglin130 <cheng.lin130@zte.com.cn>
 Date: Sat, 9 Nov 2019 23:04:04 +0800
 Subject: [PATCH] core: coldplug possible nop_job
@@ -21,18 +21,16 @@ After successful reproduce, systemctl list-jobs will list the hang job.
 Upsteam:
 https://github.com/systemd/systemd/pull/13124
 
-(cherry picked from commit 8ee652948b0255005e4c9d278ac06b30711d9dbd)
-
-Resolves: #1847336
+Resolves: #1829754
 ---
  src/core/unit.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/src/core/unit.c b/src/core/unit.c
-index dc2df4c89c..856ebf3e64 100644
+index 2b058dd3e8..d953780a52 100644
 --- a/src/core/unit.c
 +++ b/src/core/unit.c
-@@ -2900,6 +2900,7 @@ static int unit_add_deserialized_job_coldplug(Unit *u) {
+@@ -2918,6 +2918,7 @@ static int unit_add_deserialized_job_coldplug(Unit *u) {
  
  int unit_coldplug(Unit *u, Hashmap *deferred_work) {
          int r;
@@ -40,7 +38,7 @@ index dc2df4c89c..856ebf3e64 100644
  
          assert(u);
  
-@@ -2907,8 +2908,9 @@ int unit_coldplug(Unit *u, Hashmap *deferred_work) {
+@@ -2925,8 +2926,9 @@ int unit_coldplug(Unit *u, Hashmap *deferred_work) {
                  if ((r = UNIT_VTABLE(u)->coldplug(u, deferred_work)) < 0)
                          return r;
  

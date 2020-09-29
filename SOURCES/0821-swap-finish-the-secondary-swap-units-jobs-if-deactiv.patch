@@ -1,4 +1,4 @@
-From 8877bffec31185b58ffa867d59ae0da213fae080 Mon Sep 17 00:00:00 2001
+From e2cf8d5fcec71c1c4ca7223c51552847eb2a456e Mon Sep 17 00:00:00 2001
 From: HATAYAMA Daisuke <d.hatayama@fujitsu.com>
 Date: Wed, 24 Jul 2019 23:54:48 -0400
 Subject: [PATCH] swap: finish the secondary swap units' jobs if deactivation
@@ -49,9 +49,8 @@ deactivation of the primary swap unit fails.
 
 Fixes: #11577
 (cherry picked from commit 9c1f969d40f84d5cc98d810bab8b24148b2d8928)
-(cherry picked from commit 1e5b6b9930db88c3a5fb464bad13853885ea82f1)
 
-Resolves: #1821261
+Resolves: #1749621
 ---
  src/core/swap.c | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)

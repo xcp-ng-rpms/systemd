@@ -1,0 +1,317 @@
+From 909d27fffffb28f4da7752be25e5c47990eba641 Mon Sep 17 00:00:00 2001
+From: Lennart Poettering <lennart@poettering.net>
+Date: Mon, 13 Nov 2017 17:14:07 +0100
+Subject: [PATCH] core: add a new unit file setting CollectMode= for tweaking
+ the GC logic
+
+Right now, the option only takes one of two possible values "inactive"
+or "inactive-or-failed", the former being the default, and exposing same
+behaviour as the status quo ante. If set to "inactive-or-failed" units
+may be collected by the GC logic when in the "failed" state too.
+
+This logic should be a nicer alternative to using the "-" modifier for
+ExecStart= and friends, as the exit data is collected and logged about
+and only removed when the GC comes along. This should be useful in
+particular for per-connection socket-activated services, as well as
+"systemd-run" command lines that shall leave no artifacts in the
+system.
+
+I was thinking about whether to expose this as a boolean, but opted for
+an enum instead, as I have the suspicion other tweaks like this might be
+a added later on, in which case we extend this setting instead of having
+to add yet another one.
+
+Also, let's add some documentation for the GC logic.
+
+(cherry-picked from commit 5afe510c89f26b0e721b276a0e78af914b47f0b0)
+
+Resolves: #1817576
+---
+ man/systemd.unit.xml                  | 56 +++++++++++++++++++++++++++
+ src/core/dbus-unit.c                  | 20 ++++++++++
+ src/core/load-fragment-gperf.gperf.m4 |  1 +
+ src/core/load-fragment.c              |  2 +
+ src/core/load-fragment.h              |  1 +
+ src/core/unit.c                       | 36 ++++++++++++++---
+ src/core/unit.h                       | 13 +++++++
+ 7 files changed, 124 insertions(+), 5 deletions(-)
+
+diff --git a/man/systemd.unit.xml b/man/systemd.unit.xml
+index 414749bae9..0c06add166 100644
+--- a/man/systemd.unit.xml
++++ b/man/systemd.unit.xml
+@@ -303,6 +303,45 @@
+     </para>
+   </refsect1>
+ 
++  <refsect1>
++    <title>Unit Garbage Collection</title>
++
++    <para>The system and service manager loads a unit's configuration automatically when a unit is referenced for the
++    first time. It will automatically unload the unit configuration and state again when the unit is not needed anymore
++    ("garbage collection"). A unit may be referenced through a number of different mechanisms:</para>
++
++    <orderedlist>
++      <listitem><para>Another loaded unit references it with a dependency such as <varname>After=</varname>,
++      <varname>Wants=</varname>, …</para></listitem>
++
++      <listitem><para>The unit is currently starting, running, reloading or stopping.</para></listitem>
++
++      <listitem><para>The unit is currently in the <constant>failed</constant> state. (But see below.)</para></listitem>
++
++      <listitem><para>A job for the unit is pending.</para></listitem>
++
++      <listitem><para>The unit is pinned by an active IPC client program.</para></listitem>
++
++      <listitem><para>The unit is a special "perpetual" unit that is always active and loaded. Examples for perpetual
++      units are the root mount unit <filename>-.mount</filename> or the scope unit <filename>init.scope</filename> that
++      the service manager itself lives in.</para></listitem>
++
++      <listitem><para>The unit has running processes associated with it.</para></listitem>
++    </orderedlist>
++
++    <para>The garbage collection logic may be altered with the <varname>CollectMode=</varname> option, which allows
++    configuration whether automatic unloading of units that are in <constant>failed</constant> state is permissible,
++    see below.</para>
++
++    <para>Note that when a unit's configuration and state is unloaded, all execution results, such as exit codes, exit
++    signals, resource consumption and other statistics are lost, except for what is stored in the log subsystem.</para>
++
++    <para>Use <command>systemctl daemon-reload</command> or an equivalent command to reload unit configuration while
++    the unit is already loaded. In this case all configuration settings are flushed out and replaced with the new
++    configuration (which however might not be in effect immediately), however all runtime state is
++    saved/restored.</para>
++  </refsect1>
++
+   <refsect1>
+     <title>[Unit] Section Options</title>
+ 
+@@ -666,6 +705,23 @@
+         ones.</para></listitem>
+       </varlistentry>
+ 
++      <varlistentry>
++        <term><varname>CollectMode=</varname></term>
++
++        <listitem><para>Tweaks the "garbage collection" algorithm for this unit. Takes one of <option>inactive</option>
++        or <option>inactive-or-failed</option>. If set to <option>inactive</option> the unit will be unloaded if it is
++        in the <constant>inactive</constant> state and is not referenced by clients, jobs or other units — however it
++        is not unloaded if it is in the <constant>failed</constant> state. In <option>failed</option> mode, failed
++        units are not unloaded until the user invoked <command>systemctl reset-failed</command> on them to reset the
++        <constant>failed</constant> state, or an equivalent command. This behaviour is altered if this option is set to
++        <option>inactive-or-failed</option>: in this case the unit is unloaded even if the unit is in a
++        <constant>failed</constant> state, and thus an explicitly resetting of the <constant>failed</constant> state is
++        not necessary. Note that if this mode is used unit results (such as exit codes, exit signals, consumed
++        resources, …) are flushed out immediately after the unit completed, except for what is stored in the logging
++        subsystem. Defaults to <option>inactive</option>.</para>
++        </listitem>
++      </varlistentry>
++
+       <varlistentry>
+         <term><varname>JobTimeoutSec=</varname></term>
+         <term><varname>JobTimeoutAction=</varname></term>
+diff --git a/src/core/dbus-unit.c b/src/core/dbus-unit.c
+index 77073308c8..ea6ac6767f 100644
+--- a/src/core/dbus-unit.c
++++ b/src/core/dbus-unit.c
+@@ -34,6 +34,7 @@
+ static BUS_DEFINE_PROPERTY_GET_ENUM(property_get_load_state, unit_load_state, UnitLoadState);
+ static BUS_DEFINE_PROPERTY_GET_ENUM(property_get_job_mode, job_mode, JobMode);
+ static BUS_DEFINE_PROPERTY_GET_ENUM(property_get_emergency_action, emergency_action, EmergencyAction);
++static BUS_DEFINE_PROPERTY_GET_ENUM(property_get_collect_mode, collect_mode, CollectMode);
+ 
+ static int property_get_names(
+                 sd_bus *bus,
+@@ -605,6 +606,7 @@ const sd_bus_vtable bus_unit_vtable[] = {
+         SD_BUS_PROPERTY("Asserts", "a(sbbsi)", property_get_conditions, offsetof(Unit, asserts), 0),
+         SD_BUS_PROPERTY("LoadError", "(ss)", property_get_load_error, 0, SD_BUS_VTABLE_PROPERTY_CONST),
+         SD_BUS_PROPERTY("Transient", "b", bus_property_get_bool, offsetof(Unit, transient), SD_BUS_VTABLE_PROPERTY_CONST),
++        SD_BUS_PROPERTY("CollectMode", "s", property_get_collect_mode, offsetof(Unit, collect_mode), 0),
+ 
+         SD_BUS_METHOD("Start", "s", "o", method_start, 0),
+         SD_BUS_METHOD("Stop", "s", "o", method_stop, 0),
+@@ -937,6 +939,24 @@ static int bus_unit_set_transient_property(
+ 
+                 return 1;
+ 
++        } else if (streq(name, "CollectMode")) {
++                const char *s;
++                CollectMode m;
++
++                r = sd_bus_message_read(message, "s", &s);
++                if (r < 0)
++                        return r;
++
++                m = collect_mode_from_string(s);
++                if (m < 0)
++                        return sd_bus_error_setf(error, SD_BUS_ERROR_INVALID_ARGS, "Unknown garbage collection mode: %s", s);
++
++                if (mode != UNIT_CHECK) {
++                        u->collect_mode = m;
++                        unit_write_drop_in_format(u, mode, name, "[Unit]\nCollectMode=%s", collect_mode_to_string(m));
++                }
++
++                return 1;
+         } else if (streq(name, "Slice") && unit_get_cgroup_context(u)) {
+                 const char *s;
+ 
+diff --git a/src/core/load-fragment-gperf.gperf.m4 b/src/core/load-fragment-gperf.gperf.m4
+index 664bba0ef6..3a8ee96fa3 100644
+--- a/src/core/load-fragment-gperf.gperf.m4
++++ b/src/core/load-fragment-gperf.gperf.m4
+@@ -200,6 +200,7 @@ Unit.AssertCapability,           config_parse_unit_condition_string, CONDITION_C
+ Unit.AssertHost,                 config_parse_unit_condition_string, CONDITION_HOST,                offsetof(Unit, asserts)
+ Unit.AssertACPower,              config_parse_unit_condition_string, CONDITION_AC_POWER,            offsetof(Unit, asserts)
+ Unit.AssertNull,                 config_parse_unit_condition_null,   0,                             offsetof(Unit, asserts)
++Unit.CollectMode,                config_parse_collect_mode,          0,                             offsetof(Unit, collect_mode)
+ m4_dnl
+ Service.PIDFile,                 config_parse_unit_path_printf,      0,                             offsetof(Service, pid_file)
+ Service.ExecStartPre,            config_parse_exec,                  SERVICE_EXEC_START_PRE,        offsetof(Service, exec_command)
+diff --git a/src/core/load-fragment.c b/src/core/load-fragment.c
+index 1721fea8f3..8d73d5df41 100644
+--- a/src/core/load-fragment.c
++++ b/src/core/load-fragment.c
+@@ -98,6 +98,8 @@ int config_parse_warn_compat(
+         return 0;
+ }
+ 
++DEFINE_CONFIG_PARSE_ENUM(config_parse_collect_mode, collect_mode, CollectMode, "Failed to parse garbage collection mode");
++
+ int config_parse_unit_deps(const char *unit,
+                            const char *filename,
+                            unsigned line,
+diff --git a/src/core/load-fragment.h b/src/core/load-fragment.h
+index 4bd286c11b..7b1193ddb2 100644
+--- a/src/core/load-fragment.h
++++ b/src/core/load-fragment.h
+@@ -110,6 +110,7 @@ int config_parse_cpu_quota(const char *unit, const char *filename, unsigned line
+ int config_parse_protect_home(const char* unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+ int config_parse_protect_system(const char* unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+ int config_parse_bus_name(const char* unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
++int config_parse_collect_mode(const char *unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+ 
+ /* gperf prototypes */
+ const struct ConfigPerfItem* load_fragment_gperf_lookup(const char *key, GPERF_LEN_TYPE length);
+diff --git a/src/core/unit.c b/src/core/unit.c
+index eff9fdbe70..502830d2cb 100644
+--- a/src/core/unit.c
++++ b/src/core/unit.c
+@@ -67,7 +67,7 @@ const UnitVTable * const unit_vtable[_UNIT_TYPE_MAX] = {
+         [UNIT_TIMER] = &timer_vtable,
+         [UNIT_PATH] = &path_vtable,
+         [UNIT_SLICE] = &slice_vtable,
+-        [UNIT_SCOPE] = &scope_vtable
++        [UNIT_SCOPE] = &scope_vtable,
+ };
+ 
+ static int maybe_warn_about_dependency(const char *id, const char *other, UnitDependency dependency);
+@@ -285,6 +285,7 @@ int unit_set_description(Unit *u, const char *description) {
+ 
+ bool unit_may_gc(Unit *u) {
+         UnitActiveState state;
++
+         assert(u);
+ 
+         /* Checks whether the unit is ready to be unloaded for garbage collection.
+@@ -308,16 +309,31 @@ bool unit_may_gc(Unit *u) {
+             UNIT_VTABLE(u)->release_resources)
+                 UNIT_VTABLE(u)->release_resources(u);
+ 
+-        /* But we keep the unit object around for longer when it is referenced or configured to not be gc'ed */
+-        if (state != UNIT_INACTIVE)
+-                return false;
+-
+         if (UNIT_VTABLE(u)->no_gc)
+                 return false;
+ 
+         if (u->no_gc)
+                 return false;
+ 
++        /* But we keep the unit object around for longer when it is referenced or configured to not be gc'ed */
++        switch (u->collect_mode) {
++
++        case COLLECT_INACTIVE:
++                if (state != UNIT_INACTIVE)
++                        return false;
++
++                break;
++
++        case COLLECT_INACTIVE_OR_FAILED:
++                if (!IN_SET(state, UNIT_INACTIVE, UNIT_FAILED))
++                        return false;
++
++                break;
++
++        default:
++                assert_not_reached("Unknown garbage collection mode");
++        }
++
+         if (UNIT_VTABLE(u)->may_gc && !UNIT_VTABLE(u)->may_gc(u))
+                 return false;
+ 
+@@ -896,6 +912,7 @@ void unit_dump(Unit *u, FILE *f, const char *prefix) {
+                 "%s\tMay GC: %s\n"
+                 "%s\tNeed Daemon Reload: %s\n"
+                 "%s\tTransient: %s\n"
++                "%s\tGarbage Collection Mode: %s\n"
+                 "%s\tSlice: %s\n"
+                 "%s\tCGroup: %s\n"
+                 "%s\tCGroup realized: %s\n"
+@@ -913,6 +930,7 @@ void unit_dump(Unit *u, FILE *f, const char *prefix) {
+                 prefix, yes_no(unit_may_gc(u)),
+                 prefix, yes_no(unit_need_daemon_reload(u)),
+                 prefix, yes_no(u->transient),
++                prefix, collect_mode_to_string(u->collect_mode),
+                 prefix, strna(unit_slice_name(u)),
+                 prefix, strna(u->cgroup_path),
+                 prefix, yes_no(u->cgroup_realized),
+@@ -3732,3 +3750,11 @@ static const char* const unit_active_state_table[_UNIT_ACTIVE_STATE_MAX] = {
+ };
+ 
+ DEFINE_STRING_TABLE_LOOKUP(unit_active_state, UnitActiveState);
++
++static const char* const collect_mode_table[_COLLECT_MODE_MAX] = {
++        [COLLECT_INACTIVE] = "inactive",
++        [COLLECT_INACTIVE_OR_FAILED] = "inactive-or-failed",
++};
++
++DEFINE_STRING_TABLE_LOOKUP(collect_mode, CollectMode);
++
+diff --git a/src/core/unit.h b/src/core/unit.h
+index 3b0fd8d9df..8cc7a9e0b2 100644
+--- a/src/core/unit.h
++++ b/src/core/unit.h
+@@ -60,6 +60,13 @@ typedef enum KillOperation {
+         KILL_ABORT,
+ } KillOperation;
+ 
++typedef enum CollectMode {
++        COLLECT_INACTIVE,
++        COLLECT_INACTIVE_OR_FAILED,
++        _COLLECT_MODE_MAX,
++        _COLLECT_MODE_INVALID = -1,
++} CollectMode;
++
+ static inline bool UNIT_IS_ACTIVE_OR_RELOADING(UnitActiveState t) {
+         return t == UNIT_ACTIVE || t == UNIT_RELOADING;
+ }
+@@ -198,6 +205,9 @@ struct Unit {
+         /* How to start OnFailure units */
+         JobMode on_failure_job_mode;
+ 
++        /* Tweaking the GC logic */
++        CollectMode collect_mode;
++
+         /* Garbage collect us we nobody wants or requires us anymore */
+         bool stop_when_unneeded;
+ 
+@@ -630,6 +640,9 @@ pid_t unit_main_pid(Unit *u);
+ const char *unit_active_state_to_string(UnitActiveState i) _const_;
+ UnitActiveState unit_active_state_from_string(const char *s) _pure_;
+ 
++const char* collect_mode_to_string(CollectMode m) _const_;
++CollectMode collect_mode_from_string(const char *s) _pure_;
++
+ bool unit_needs_console(Unit *u);
+ 
+ /* Macros which append UNIT= or USER_UNIT= to the message */

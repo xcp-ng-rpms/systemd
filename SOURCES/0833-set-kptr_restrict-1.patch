@@ -1,0 +1,24 @@
+From 7e8934693393c45ba76155088b01ad1ace9daeac Mon Sep 17 00:00:00 2001
+From: David Tardon <dtardon@redhat.com>
+Date: Tue, 3 Dec 2019 13:57:38 +0100
+Subject: [PATCH] set kptr_restrict=1
+
+Resolves: #1689344
+---
+ sysctl.d/50-default.conf | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sysctl.d/50-default.conf b/sysctl.d/50-default.conf
+index 44c48236cc..b1806502e8 100644
+--- a/sysctl.d/50-default.conf
++++ b/sysctl.d/50-default.conf
+@@ -20,6 +20,9 @@ kernel.sysrq = 16
+ # Append the PID to the core filename
+ kernel.core_uses_pid = 1
+ 
++# https://bugzilla.redhat.com/show_bug.cgi?id=1689344
++kernel.kptr_restrict = 1
++
+ # Source route verification
+ net.ipv4.conf.default.rp_filter = 1
+ net.ipv4.conf.all.rp_filter = 1

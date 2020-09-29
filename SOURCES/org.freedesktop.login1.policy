@@ -740,4 +740,14 @@
                 <annotate key="org.freedesktop.policykit.imply">org.freedesktop.login1.hibernate</annotate>
         </action>
 
+        <action id="org.freedesktop.login1.chvt">
+                <description>Change Session</description>
+                <message>Authentication is required for changing the virtual terminal.</message>
+                <defaults>
+                        <allow_any>auth_admin_keep</allow_any>
+                        <allow_inactive>auth_admin_keep</allow_inactive>
+                        <allow_active>yes</allow_active>
+                </defaults>
+        </action>
+
 </policyconfig>

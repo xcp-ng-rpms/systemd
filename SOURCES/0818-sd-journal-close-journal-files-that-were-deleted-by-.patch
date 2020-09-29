@@ -1,4 +1,4 @@
-From f813fe0bebb2dddf0fe961527c6e840b88d49dc3 Mon Sep 17 00:00:00 2001
+From 8a98e68dc1fdf10881fffc40604dfd28a49fdc27 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michal=20Sekleta=CC=81r?= <msekleta@redhat.com>
 Date: Tue, 4 Feb 2020 14:23:14 +0100
 Subject: [PATCH] sd-journal: close journal files that were deleted by journald
@@ -8,7 +8,7 @@ Subject: [PATCH] sd-journal: close journal files that were deleted by journald
 
 Fixes #14695
 
-Related: #1820073
+Related: #1812889
 ---
  src/journal/journal-file.c |  2 +-
  src/journal/journal-file.h |  1 +

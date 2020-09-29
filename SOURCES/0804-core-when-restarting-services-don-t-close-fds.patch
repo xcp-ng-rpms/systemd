@@ -1,4 +1,4 @@
-From 017d1bc2a34946336dbafcc1c9c390ea45a2a3bd Mon Sep 17 00:00:00 2001
+From 70215e23a5c77445ed1b62186c069a173c632618 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Sat, 22 Oct 2016 22:16:02 -0400
 Subject: [PATCH] core: when restarting services, don't close fds
@@ -10,7 +10,7 @@ Fixes #4408.
 
 (cherry picked from commit f0bfbfac43b7faa68ef1bb2ad659c191b9ec85d2)
 (cherry picked from commit 4c271437cd695c31e76adb191013009689a7797c)
-Resolves: #1803802
+Resolves: #1757704
 ---
  src/core/service.c | 22 +++++++++++++++-------
  src/core/unit.c    |  6 ++++--

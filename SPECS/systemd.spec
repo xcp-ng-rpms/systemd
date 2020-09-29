@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        73%{?dist}.9
+Release:        78%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -839,27 +839,45 @@ Patch0797: 0797-service-go-through-stop_post-on-failure-4770.patch
 Patch0798: 0798-Call-getgroups-to-know-size-of-supplementary-groups-.patch
 Patch0799: 0799-udev-introduce-CONST-key-name.patch
 Patch0800: 0800-path-stop-watching-path-specs-once-we-triggered-the-.patch
-Patch0801: 0801-unit-fix-potential-use-of-cgroup_path-after-free-whe.patch
-Patch0802: 0802-core-when-restarting-services-don-t-close-fds.patch
-Patch0803: 0803-unit-rework-a-bit-how-we-keep-the-service-fdstore-fr.patch
-Patch0804: 0804-tests-add-basic-journal-test.patch
-Patch0805: 0805-tests-add-regression-test-for-systemctl-restart-syst.patch
-Patch0806: 0806-tests-add-test-that-journald-keeps-fds-over-terminat.patch
-Patch0807: 0807-journal-do-not-trigger-assertion-when-journal_file_c.patch
-Patch0808: 0808-mount-don-t-propagate-errors-from-mount_setup_unit-f.patch
-Patch0809: 0809-mount-when-allocating-a-Mount-object-based-on-proc-s.patch
-Patch0810: 0810-core-enforce-a-ratelimiter-when-stopping-units-due-t.patch
-Patch0811: 0811-core-rework-StopWhenUnneeded-logic.patch
-Patch0812: 0812-fix-the-fix-for-1691511.patch
-Patch0813: 0813-sd-bus-when-attached-to-an-sd-event-loop-disconnect-.patch
-Patch0814: 0814-sd-journal-close-journal-files-that-were-deleted-by-.patch
-Patch0815: 0815-sd-journal-remove-the-dead-code-and-actually-fix-146.patch
-Patch0816: 0816-swap-adjust-swap.c-in-a-similar-way-to-what-we-just-.patch
-Patch0817: 0817-swap-finish-the-secondary-swap-units-jobs-if-deactiv.patch
-Patch0818: 0818-udev-rules-make-tape-changers-also-apprear-in-dev-ta.patch
-Patch0819: 0819-core-make-sure-to-restore-the-control-command-id-too.patch
-Patch0820: 0820-core-coldplug-possible-nop_job.patch
-Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+Patch0801: 0801-sd-bus-bump-message-queue-size-again.patch
+Patch0802: 0802-unit-fix-potential-use-of-cgroup_path-after-free-whe.patch
+Patch0803: 0803-add-test-for-ExecStopPost.patch
+Patch0804: 0804-core-when-restarting-services-don-t-close-fds.patch
+Patch0805: 0805-unit-rework-a-bit-how-we-keep-the-service-fdstore-fr.patch
+Patch0806: 0806-tests-add-basic-journal-test.patch
+Patch0807: 0807-tests-add-regression-test-for-systemctl-restart-syst.patch
+Patch0808: 0808-tests-add-test-that-journald-keeps-fds-over-terminat.patch
+Patch0809: 0809-nss-util-silence-warning-about-deprecated-RES_USE_IN.patch
+Patch0810: 0810-journal-do-not-trigger-assertion-when-journal_file_c.patch
+Patch0811: 0811-mount-don-t-propagate-errors-from-mount_setup_unit-f.patch
+Patch0812: 0812-mount-when-allocating-a-Mount-object-based-on-proc-s.patch
+Patch0813: 0813-fix-the-fix-for-1691511.patch
+Patch0814: 0814-v3-Properly-parsing-SCSI-Hyperv-devices-8509.patch
+Patch0815: 0815-Consider-smb3-as-remote-filesystem.patch
+Patch0816: 0816-mount-don-t-add-Requires-for-tmp.mount.patch
+Patch0817: 0817-sd-bus-when-attached-to-an-sd-event-loop-disconnect-.patch
+Patch0818: 0818-sd-journal-close-journal-files-that-were-deleted-by-.patch
+Patch0819: 0819-sd-journal-remove-the-dead-code-and-actually-fix-146.patch
+Patch0820: 0820-swap-adjust-swap.c-in-a-similar-way-to-what-we-just-.patch
+Patch0821: 0821-swap-finish-the-secondary-swap-units-jobs-if-deactiv.patch
+Patch0822: 0822-core-add-a-new-unit-file-setting-CollectMode-for-twe.patch
+Patch0823: 0823-run-add-G-as-shortcut-for-property-CollectMode-inact.patch
+Patch0824: 0824-core-clarify-that-the-CollectMode-bus-property-is-co.patch
+Patch0825: 0825-udev-rules-make-tape-changers-also-apprear-in-dev-ta.patch
+Patch0826: 0826-logind-check-PolicyKit-before-allowing-VT-switch.patch
+Patch0827: 0827-timer-don-t-use-persietent-file-timestamps-from-the-.patch
+Patch0828: 0828-core-transition-to-FINAL_SIGTERM-state-after-ExecSto.patch
+Patch0829: 0829-bus_open-leak-sd_event_source-when-udevadm-trigger.patch
+Patch0830: 0830-journal-remote-split-mode-host-remove-port-from-jour.patch
+Patch0831: 0831-core-downgrade-log-message-about-inability-to-propag.patch
+Patch0832: 0832-units-move-Before-deps-for-quota-services-to-remote-.patch
+Patch0833: 0833-set-kptr_restrict-1.patch
+Patch0834: 0834-journal-break-recursion.patch
+Patch0835: 0835-core-enforce-a-ratelimiter-when-stopping-units-due-t.patch
+Patch0836: 0836-core-rework-StopWhenUnneeded-logic.patch
+Patch0837: 0837-core-coldplug-possible-nop_job.patch
+Patch0838: 0838-core-make-sure-to-restore-the-control-command-id-too.patch
+Patch0839: 0839-avoid-double-free.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1837,30 +1855,54 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
-* Wed Jun 17 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.9
-- core: coldplug possible nop_job (#1847336)
+* Tue May 12 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-78
+- avoid double free (#1832816)
 
-* Mon May 25 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.8
-- core: make sure to restore the control command id, too (#1837973)
+* Thu Apr 30 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-77
+- core: coldplug possible nop_job (#1829754)
+- core: make sure to restore the control command id, too (#1828953)
 
-* Mon May 18 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.7
+* Wed Apr 29 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-76
+- core: enforce a ratelimiter when stopping units due to StopWhenUnneeded=1 (#1775291)
+- core: rework StopWhenUnneeded= logic (#1775291)
+
+* Wed Apr 29 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-75
+- journal: break recursion (#1778744)
+
+* Tue Apr 28 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-74
+- sd-bus: bump message queue size again (#1770158)
+- unit: fix potential use of cgroup_path after free() when freeing unit (#1760149)
+- add test for ExecStopPost (#1733998)
+- core: when restarting services, don't close fds (#1757704)
+- unit: rework a bit how we keep the service fdstore from being destroyed during service restart (#1757704)
+- tests: add basic journal test (#1757704)
+- tests: add regression test for `systemctl restart systemd-journald` (#1757704)
+- tests: add test that journald keeps fds over termination by signal (#1757704)
+- nss-util: silence warning about deprecated RES_USE_INET6 (#1799002)
+- journal: do not trigger assertion when journal_file_close() get NULL (#1786046)
+- mount: don't propagate errors from mount_setup_unit() further up (#1804757)
+- mount: when allocating a Mount object based on /proc/self/mountinfo mark it so (#1804757)
+- fix the fix for #1691511 (#1804757)
+- v3: Properly parsing SCSI Hyperv devices (#8509) (#1809053)
+- Consider smb3 as remote filesystem (#1811700)
+- mount: don't add Requires for tmp.mount (#1813270)
+- sd-bus: when attached to an sd-event loop, disconnect on processing errors (#1769928)
+- sd-journal: close journal files that were deleted by journald before we've setup inotify watch (#1812889)
+- sd-journal: remove the dead code and actually fix #14695 (#1812889)
+- swap: adjust swap.c in a similar way to what we just did to mount.c (#1749621)
+- swap: finish the secondary swap units' jobs if deactivation of the primary swap unit fails (#1749621)
+- core: add a new unit file setting CollectMode= for tweaking the GC logic (#1817576)
+- run: add "-G" as shortcut for "--property=CollectMode=inactive-or-failed" (#1817576)
+- core: clarify that the CollectMode bus property is constant (#1817576)
 - udev-rules: make tape-changers also apprear in /dev/tape/by-path/ (#1814028)
-
-* Mon Apr 06 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.6
-- sd-bus: when attached to an sd-event loop, disconnect on processing errors (#1817504)
-- sd-journal: close journal files that were deleted by journald before we've setup inotify watch (#1820073)
-- sd-journal: remove the dead code and actually fix #14695 (#1820073)
-- swap: adjust swap.c in a similar way to what we just did to mount.c (#1821261)
-- swap: finish the secondary swap units' jobs if deactivation of the primary swap unit fails (#1821261)
-
-* Tue Mar 17 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.5
-- core: enforce a ratelimiter when stopping units due to StopWhenUnneeded=1 (#1810576)
-- core: rework StopWhenUnneeded= logic (#1810576)
-- fix the fix for #1691511 (#1809159)
-
-* Thu Mar 12 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.4
-- mount: don't propagate errors from mount_setup_unit() further up (#1809159)
-- mount: when allocating a Mount object based on /proc/self/mountinfo mark it so (#1809159)
+- logind: check PolicyKit before allowing VT switch (#1797672)
+- timer: don't use persietent file timestamps from the future (#6823) (#1769923)
+- core: transition to FINAL_SIGTERM state after ExecStopPost= (#1766477)
+- bus_open leak sd_event_source when udevadm trigger。 (#1798503)
+- journal-remote: split-mode=host, remove port from journal filename (#1244691)
+- core: downgrade log message about inability to propagate cgroup release message (#1679934)
+- units: move Before deps for quota services to remote-fs.target (#5627) (#1693374)
+- set kptr_restrict=1 (#1689344)
 
 * Thu Mar 05 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-73.3
 - journal: do not trigger assertion when journal_file_close() get NULL (#1807798)
