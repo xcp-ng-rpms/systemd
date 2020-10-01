@@ -878,6 +878,7 @@ Patch0836: 0836-core-rework-StopWhenUnneeded-logic.patch
 Patch0837: 0837-core-coldplug-possible-nop_job.patch
 Patch0838: 0838-core-make-sure-to-restore-the-control-command-id-too.patch
 Patch0839: 0839-avoid-double-free.patch
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
