@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        78%{?dist}
+Release:        78%{?dist}.2
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -878,7 +878,11 @@ Patch0836: 0836-core-rework-StopWhenUnneeded-logic.patch
 Patch0837: 0837-core-coldplug-possible-nop_job.patch
 Patch0838: 0838-core-make-sure-to-restore-the-control-command-id-too.patch
 Patch0839: 0839-avoid-double-free.patch
-Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+Patch0840: 0840-device-make-sure-we-emit-PropertiesChanged-signal-on.patch
+Patch0841: 0841-device-don-t-emit-PropetiesChanged-needlessly.patch
+Patch0842: 0842-core-don-t-update-unit-description-if-it-is-already-.patch
+Patch0843: 0843-unit-don-t-emit-PropertiesChanged-signal-if-adding-a.patch
+Patch0844: 0844-core-fix-unnecessary-fallback-to-the-rescue-mode-cau.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1856,6 +1860,15 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Mon Oct 19 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-78.2
+- core: don't update unit description if it is already set to the same value (#1793527)
+- unit: don't emit PropertiesChanged signal if adding a dependency to a unit is a no-op (#1793527)
+- core: fix unnecessary fallback to the rescue mode caused by initrd-switch-root.service's exit status judgment error (#1825232)
+
+* Wed Aug 12 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-78.1
+- device: make sure we emit PropertiesChanged signal once we set sysfs (#1793527)
+- device: don't emit PropetiesChanged needlessly (#1793527)
+
 * Tue May 12 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-78
 - avoid double free (#1832816)
 

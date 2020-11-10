@@ -1,0 +1,30 @@
+From 74854679448851e04ee8f6f10cf7908e3273e989 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Thu, 15 Oct 2020 16:48:39 +0200
+Subject: [PATCH] core: don't update unit description if it is already set to
+ the same value
+
+This is a followup for 47f260a680046d3f9244fffa1ea978041811bf6a as that
+actually relies on such behavior of unit_set_description().
+
+RHEL-only
+
+Related: #1793527
+---
+ src/core/unit.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/core/unit.c b/src/core/unit.c
+index d953780a52..18b1b898fd 100644
+--- a/src/core/unit.c
++++ b/src/core/unit.c
+@@ -273,6 +273,9 @@ int unit_set_description(Unit *u, const char *description) {
+         if (isempty(description))
+                 s = NULL;
+         else {
++                if (streq_ptr(u->description, description))
++                        return 0;
++
+                 s = strdup(description);
+                 if (!s)
+                         return -ENOMEM;

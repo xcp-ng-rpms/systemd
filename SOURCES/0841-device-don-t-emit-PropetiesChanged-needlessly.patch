@@ -1,0 +1,45 @@
+From 47f260a680046d3f9244fffa1ea978041811bf6a Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Fri, 24 Jul 2020 17:45:48 +0200
+Subject: [PATCH] device: don't emit PropetiesChanged needlessly
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Functions called from device_setup_unit() already make sure that unit is
+enqueued in case it is a new unit or properties exported on the bus have
+changed.
+
+This should prevent unnecessary DBus wakeups and associated DBus traffic
+when device_setup_unit() was called while reparsing /proc/self/mountinfo
+due to the mountinfo notifications. Note that we parse
+/proc/self/mountinfo quite often on the busy systems (e.g. k8s container
+hosts) but majority of the time mounts didn't change, only some mount
+got added. Thus we don't need to generate PropertiesChanged for devices
+associated with the mounts that didn't change.
+
+Thanks to Renaud Métrich <rmetrich@redhat.com> for debugging the
+problem and providing draft version of the patch.
+
+(cherry-picked from commit 2e129d5d6bd6bd8be4b5359e81a880cbf72a44b8)
+
+Resolves: #1793527
+---
+ src/core/device.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/src/core/device.c b/src/core/device.c
+index 23c8ee356f..112b28e21f 100644
+--- a/src/core/device.c
++++ b/src/core/device.c
+@@ -362,10 +362,6 @@ static int device_setup_unit(Manager *m, struct udev_device *dev, const char *pa
+         if (main)
+                 (void) device_add_udev_wants(u, dev);
+ 
+-        /* Note that this won't dispatch the load queue, the caller
+-         * has to do that if needed and appropriate */
+-
+-        unit_add_to_dbus_queue(u);
+         return 0;
+ 
+ fail:
