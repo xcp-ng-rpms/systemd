@@ -883,6 +883,7 @@ Patch0841: 0841-device-don-t-emit-PropetiesChanged-needlessly.patch
 Patch0842: 0842-core-don-t-update-unit-description-if-it-is-already-.patch
 Patch0843: 0843-unit-don-t-emit-PropertiesChanged-signal-if-adding-a.patch
 Patch0844: 0844-core-fix-unnecessary-fallback-to-the-rescue-mode-cau.patch
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
