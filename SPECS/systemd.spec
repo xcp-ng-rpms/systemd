@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        78%{?dist}.2
+Release:        78%{?dist}.3
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -883,7 +883,7 @@ Patch0841: 0841-device-don-t-emit-PropetiesChanged-needlessly.patch
 Patch0842: 0842-core-don-t-update-unit-description-if-it-is-already-.patch
 Patch0843: 0843-unit-don-t-emit-PropertiesChanged-signal-if-adding-a.patch
 Patch0844: 0844-core-fix-unnecessary-fallback-to-the-rescue-mode-cau.patch
-Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+Patch0845: 0845-core-Detect-initial-timer-state-from-serialized-data.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1861,6 +1861,9 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Fri Jan 15 2021 systemd maintenance team <systemd-maint@redhat.com> - 219-78.3
+- core: Detect initial timer state from serialized data (#1764908)
+
 * Mon Oct 19 2020 systemd maintenance team <systemd-maint@redhat.com> - 219-78.2
 - core: don't update unit description if it is already set to the same value (#1793527)
 - unit: don't emit PropertiesChanged signal if adding a dependency to a unit is a no-op (#1793527)

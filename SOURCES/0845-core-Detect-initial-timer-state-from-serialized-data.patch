@@ -1,0 +1,140 @@
+From b9914f359690e83303ee8a2ffa4d60cdf76f2a90 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Date: Fri, 2 Nov 2018 20:56:08 +0100
+Subject: [PATCH] core: Detect initial timer state from serialized data
+
+We keep a mark whether a single-shot timer was triggered in the caller's
+variable initial. When such a timer elapses while we are
+serializing/deserializing the inner state, we consider the timer
+incorrectly as elapsed and don't trigger it later.
+
+This patch exploits last_trigger timestamp that we already serialize,
+hence we can eliminate the argument initial completely.
+
+A reproducer for OnBootSec= timers:
+        cat >repro.c <<EOD
+        /*
+         * Compile:	gcc repro.c -o repro
+         * Run:		./repro
+         */
+        #include <errno.h>
+        #include <fcntl.h>
+        #include <stdio.h>
+        #include <stdlib.h>
+        #include <sys/stat.h>
+        #include <sys/types.h>
+        #include <time.h>
+        #include <unistd.h>
+
+        int main(int argc, char *argv[]) {
+        	char command[1024];
+        	int pause;
+
+        	struct timespec now;
+
+        	while (1) {
+        		usleep(rand() % 200000); // prevent periodic repeats
+               		clock_gettime(CLOCK_MONOTONIC, &now);
+        		printf("%i\n", now.tv_sec);
+
+        		system("rm -f $PWD/mark");
+        		snprintf(command, 1024, "systemd-run --user --on-boot=%i --timer-property=AccuracySec=100ms "
+        					"touch $PWD/mark", now.tv_sec + 1);
+        		system(command);
+        		system("systemctl --user list-timers");
+        		pause = (1000000000 - now.tv_nsec)/1000 - 70000; // fiddle to hit the middle of reloading
+        		usleep(pause > 0 ? pause : 0);
+        		system("systemctl --user daemon-reload");
+        		sync();
+        		sleep(2);
+        		if (open("./mark", 0) < 0)
+        			if (errno == ENOENT) {
+        				printf("mark file does not exist\n");
+        				break;
+        			}
+        	}
+
+        	return 0;
+        }
+        EOD
+
+(cherry picked from commit aa1f95d2647197eca84c33a0f10adaeada08467d)
+
+Resolves: #1764908
+---
+ src/core/timer.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/src/core/timer.c b/src/core/timer.c
+index fb192d5..b36700c 100644
+--- a/src/core/timer.c
++++ b/src/core/timer.c
+@@ -267,10 +267,10 @@ static void timer_set_state(Timer *t, TimerState state) {
+         unit_notify(UNIT(t), state_translation_table[old_state], state_translation_table[state], true);
+ }
+ 
+-static void timer_enter_waiting(Timer *t, bool initial);
++static void timer_enter_waiting(Timer *t);
+ 
+ static int timer_enter_waiting_coldplug(Unit *u) {
+-        timer_enter_waiting(TIMER(u), false);
++        timer_enter_waiting(TIMER(u));
+         return 0;
+ }
+ 
+@@ -338,7 +338,7 @@ static void add_random(Timer *t, usec_t *v) {
+         log_unit_debug(UNIT(t)->id, "Adding %s random time.", format_timespan(s, sizeof(s), add, 0));
+ }
+ 
+-static void timer_enter_waiting(Timer *t, bool initial) {
++static void timer_enter_waiting(Timer *t) {
+         bool found_monotonic = false, found_realtime = false;
+         usec_t ts_realtime, ts_monotonic;
+         usec_t base = 0;
+@@ -442,7 +442,7 @@ static void timer_enter_waiting(Timer *t, bool initial) {
+ 
+                         v->next_elapse = base + v->value;
+ 
+-                        if (!initial && v->next_elapse < ts_monotonic && IN_SET(v->base, TIMER_ACTIVE, TIMER_BOOT, TIMER_STARTUP)) {
++                        if (dual_timestamp_is_set(&t->last_trigger) && v->next_elapse < ts_monotonic && IN_SET(v->base, TIMER_ACTIVE, TIMER_BOOT, TIMER_STARTUP)) {
+                                 /* This is a one time trigger, disable it now */
+                                 v->disabled = true;
+                                 continue;
+@@ -619,7 +619,7 @@ static int timer_start(Unit *u) {
+         }
+ 
+         t->result = TIMER_SUCCESS;
+-        timer_enter_waiting(t, true);
++        timer_enter_waiting(t);
+         return 1;
+ }
+ 
+@@ -742,14 +742,14 @@ static void timer_trigger_notify(Unit *u, Unit *other) {
+         case TIMER_ELAPSED:
+ 
+                 /* Recalculate sleep time */
+-                timer_enter_waiting(t, false);
++                timer_enter_waiting(t);
+                 break;
+ 
+         case TIMER_RUNNING:
+ 
+                 if (UNIT_IS_INACTIVE_OR_FAILED(unit_active_state(other))) {
+                         log_unit_debug(UNIT(t)->id, "%s got notified about unit deactivation.", UNIT(t)->id);
+-                        timer_enter_waiting(t, false);
++                        timer_enter_waiting(t);
+                 }
+                 break;
+ 
+@@ -782,7 +782,7 @@ static void timer_time_change(Unit *u) {
+                 return;
+ 
+         log_unit_debug(u->id, "%s: time change, recalculating next elapse.", u->id);
+-        timer_enter_waiting(t, false);
++        timer_enter_waiting(t);
+ }
+ 
+ static const char* const timer_state_table[_TIMER_STATE_MAX] = {
+-- 
+2.26.2
+
