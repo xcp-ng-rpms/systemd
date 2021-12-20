@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        57.1%{?dist}
+Release:        57.2%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -647,20 +647,24 @@ Patch614: SOURCES/systemd/0614-umount-always-use-MNT_FORCE-in-umount_all-7213.pa
 Patch615: SOURCES/systemd/0615-core-Implement-timeout-based-umount-remount-limit.patch
 Patch616: SOURCES/systemd/0616-core-Implement-sync_with_progress.patch
 
-Patch617: CA-117731.patch
-Patch618: net-ifnames.patch
-Patch619: disable-journal.patch
-Patch620: journal-disable-kmsg.patch
-Patch621: disable-acpi-events.patch
-Patch622: allow-tag-nomatch.patch
-Patch623: fix-mtd_probe-build.patch
-Patch624: 0670-Refuse-dbus-message-paths-longer-than-BUS_PATH_SIZE_.patch
-Patch625: 0671-Allocate-temporary-strings-to-hold-dbus-paths-on-the.patch
-Patch626: 0672-sd-bus-if-we-receive-an-invalid-dbus-message-ignore-.patch
+Patch617: 0670-Refuse-dbus-message-paths-longer-than-BUS_PATH_SIZE_.patch
+Patch618: 0671-Allocate-temporary-strings-to-hold-dbus-paths-on-the.patch
+Patch619: 0672-sd-bus-if-we-receive-an-invalid-dbus-message-ignore-.patch
+Patch620: 0735-udev-check-if-the-spawned-PID-didn-t-exit-after-reap.patch
+Patch621: 0736-udev-call-poll-again-after-killing-the-spawned-proce.patch
+Patch622: 0737-udev-check-age-against-both-timeouts-to-prevent-inte.patch
+Patch623: 0738-avoid-possible-hang-if-our-child-process-hangs.patch
+Patch624: CA-117731.patch
+Patch625: net-ifnames.patch
+Patch626: disable-journal.patch
+Patch627: journal-disable-kmsg.patch
+Patch628: disable-acpi-events.patch
+Patch629: allow-tag-nomatch.patch
+Patch630: fix-mtd_probe-build.patch
 
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 
 # Preset policy is in rhel-release package
 # we are just disabling everything
@@ -759,9 +763,9 @@ elaborate transactional dependency-based service control logic. It can
 work as a drop-in replacement for sysvinit.
 
 %package libs
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        systemd libraries
 License:        LGPLv2+ and MIT
 Obsoletes:      libudev < 183
@@ -770,9 +774,9 @@ Obsoletes:      libudev < 183
 Libraries for systemd and udev, as well as the systemd PAM module.
 
 %package devel
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        Development headers for systemd
 License:        LGPLv2+ and MIT
 Requires:       %{name} = %{version}-%{release}
@@ -784,9 +788,9 @@ Requires:       %{name}-libs = %{version}-%{release}
 Development headers and auxiliary files for developing applications for systemd.
 
 %package sysv
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        SysV tools for systemd
 License:        LGPLv2+
 Requires:       %{name} = %{version}-%{release}
@@ -795,9 +799,9 @@ Requires:       %{name} = %{version}-%{release}
 SysV compatibility tools for systemd
 
 %package python
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        Python 2 bindings for systemd
 License:        LGPLv2+
 Requires:       %{name} = %{version}-%{release}
@@ -808,9 +812,9 @@ This package contains bindings which allow Python 2 programs to use
 systemd APIs
 
 %package -n libgudev1
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        Libraries for adding libudev support to applications that use glib
 Conflicts:      filesystem < 3
 License:        LGPLv2+
@@ -822,9 +826,9 @@ This package contains the libraries that make it easier to use libudev
 functionality from applications that use glib.
 
 %package -n libgudev1-devel
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        Header files for adding libudev support to applications that use glib
 Requires:       libgudev1 = %{version}-%{release}
 License:        LGPLv2+
@@ -834,9 +838,9 @@ This package contains the header and pkg-config files for developing
 glib-based applications using libudev functionality.
 
 %package journal-gateway
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        Gateway for serving journal events over the network using HTTP
 Requires:       %{name} = %{version}-%{release}
 License:        LGPLv2+
@@ -849,9 +853,9 @@ Requires(postun): systemd
 systemd-journal-gatewayd serves journal events over the network using HTTP.
 
 %package networkd
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        System service that manages networks.
 Requires:       %{name} = %{version}-%{release}
 License:        LGPLv2+
@@ -865,9 +869,9 @@ systemd-networkd is a system service that manages networks.
 It detects and configures network devices as they appear, as well as creating virtual network devices.
 
 %package resolved
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 6547427ebb0c3f08ce771bcba12c87a0ab9ff629
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1&format=tar.gz#/systemd-v2.0.1.pg.tar.gz) = 9f636146c8f0096338215e7227167ab3a8567db8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/systemd.pg/archive?at=v2.0.1.1&format=tar.gz#/systemd-v2.0.1.1.pg.tar.gz) = 83b3f9195b45850a2160e7f22a231601dc7ca05f
 Summary:        Network Name Resolution manager.
 Requires:       %{name} = %{version}-%{release}
 License:        LGPLv2+
