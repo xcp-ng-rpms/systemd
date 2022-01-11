@@ -1,0 +1,27 @@
+From bc861f7c3f1f7902ff94f43f45e0b960d6f2985c Mon Sep 17 00:00:00 2001
+From: David Tardon <dtardon@redhat.com>
+Date: Tue, 30 Nov 2021 11:09:59 +0100
+Subject: [PATCH] install: fix a potential crash
+
+This is a follow-up for commit b864dc9ef4aa00191dfa81accbe93f9ed0382261 .
+
+Fixes #136.
+
+Related: #1828758
+---
+ src/shared/install.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/shared/install.c b/src/shared/install.c
+index 761bf8074e..38cfc4a94c 100644
+--- a/src/shared/install.c
++++ b/src/shared/install.c
+@@ -619,7 +619,7 @@ static int find_symlinks(
+                         continue;
+ 
+                 suffix = strrchr(de->d_name, '.');
+-                if (!streq(suffix, ".wants") && !streq(suffix, ".requires"))
++                if (!streq_ptr(suffix, ".wants") && !streq_ptr(suffix, ".requires"))
+                         continue;
+ 
+                 path = path_join(config_path, de->d_name, NULL);

@@ -1,0 +1,48 @@
+From a7415ab87fa5cc7cae356aa296e5c3fec4add1bf Mon Sep 17 00:00:00 2001
+From: Yu Watanabe <watanabe.yu+github@gmail.com>
+Date: Wed, 31 Jan 2018 23:43:28 +0900
+Subject: [PATCH] strv: fix buffer size calculation in strv_join_quoted()
+
+Fixes #8056.
+
+[fbui: the affected function was removed since v236+ (by commit
+       2e59b24) so the patch is not needed by upstream which was at
+       v237+ when the issue was found.]
+
+rhel-only
+Resolves: #1989245
+---
+ src/shared/strv.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/src/shared/strv.c b/src/shared/strv.c
+index e27ac68151..416373b183 100644
+--- a/src/shared/strv.c
++++ b/src/shared/strv.c
+@@ -353,21 +353,18 @@ char *strv_join_quoted(char **l) {
+         size_t allocated = 0, len = 0;
+ 
+         STRV_FOREACH(s, l) {
+-                /* assuming here that escaped string cannot be more
+-                 * than twice as long, and reserving space for the
+-                 * separator and quotes.
+-                 */
+                 _cleanup_free_ char *esc = NULL;
+                 size_t needed;
+ 
+-                if (!GREEDY_REALLOC(buf, allocated,
+-                                    len + strlen(*s) * 2 + 3))
+-                        goto oom;
+-
+                 esc = cescape(*s);
+                 if (!esc)
+                         goto oom;
+ 
++                /* reserving space for the escaped text, separator, quotes and NULL terminator. */
++                if (!GREEDY_REALLOC(buf, allocated,
++                                    len + strlen(esc) + 4))
++                        goto oom;
++
+                 needed = snprintf(buf + len, allocated - len, "%s\"%s\"",
+                                   len > 0 ? " " : "", esc);
+                 assert(needed < allocated - len);

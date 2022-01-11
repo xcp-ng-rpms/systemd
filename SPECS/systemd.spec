@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        78%{?dist}.3
+Release:        78%{?dist}.5
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -884,7 +884,11 @@ Patch0842: 0842-core-don-t-update-unit-description-if-it-is-already-.patch
 Patch0843: 0843-unit-don-t-emit-PropertiesChanged-signal-if-adding-a.patch
 Patch0844: 0844-core-fix-unnecessary-fallback-to-the-rescue-mode-cau.patch
 Patch0845: 0845-core-Detect-initial-timer-state-from-serialized-data.patch
-Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+Patch0846: 0846-test-add-a-test-reproducer-for-BZ-1989245.patch
+Patch0847: 0847-strv-fix-buffer-size-calculation-in-strv_join_quoted.patch
+Patch0848: 0848-install-refactor-find_symlinks-and-don-t-search-for-.patch
+Patch0849: 0849-install-fix-a-potential-crash.patch
+Patch0850: 0850-acl-util-only-set-the-mask-if-not-present.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1801,7 +1805,7 @@ fi
 %{_bindir}/systemd-sysv-convert
 
 %files python
-%{python_sitearch}/systemd
+%{python2_sitearch}/systemd
 
 %files -n libgudev1
 %{_libdir}/libgudev-1.0.so.*
@@ -1852,7 +1856,7 @@ fi
 %files resolved
 %{_prefix}/lib/systemd/systemd-resolved
 %{_prefix}/lib/systemd/systemd-resolve-host
-%{_sysconfdir}/systemd/resolved.conf
+%config(noreplace) %{_sysconfdir}/systemd/resolved.conf
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/org.freedesktop.resolve1.conf
 %{_datadir}/dbus-1/system-services/org.freedesktop.resolve1.service
 %{_libdir}/libnss_resolve.so.2
@@ -1862,6 +1866,15 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Mon Dec 06 2021 systemd maintenance team <systemd-maint@redhat.com> - 219-78.5
+- install: fix a potential crash (#1828758)
+- acl-util: only set the mask if not present (#2026361)
+
+* Mon Nov 29 2021 systemd maintenance team <systemd-maint@redhat.com> - 219-78.4
+- test: add a test/reproducer for BZ#1989245 (#1989245)
+- strv: fix buffer size calculation in strv_join_quoted() (#1989245)
+- install: refactor find_symlinks() and don't search for symlinks recursively (#1828758)
+
 * Fri Jan 15 2021 systemd maintenance team <systemd-maint@redhat.com> - 219-78.3
 - core: Detect initial timer state from serialized data (#1764908)
 

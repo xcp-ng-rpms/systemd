@@ -1,0 +1,66 @@
+From cedab11bf07cdb5275ac12104d4dad6debbedce4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
+Date: Sat, 28 Nov 2015 18:41:08 -0500
+Subject: [PATCH] acl-util: only set the mask if not present
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+When we have non-owner user or group entries, we need the mask
+for the acl to be valid. But acl_calc_mask() calculates the mask
+to include all permissions, even those that were masked before.
+Apparently this happens when we inherit *:r-x permissions from
+a parent directory — the kernel sets *:r-x, mask:r--, effectively
+masking the executable bit. acl_calc_mask() would set the mask:r-x,
+effectively enabling the bit. To avoid this, be more conservative when
+to add the mask entry: first iterate over all entries, and do nothing
+if a mask.
+
+This returns the code closer to J.A.Steffens' original version
+in v204-90-g23ad4dd884.
+
+Should fix https://github.com/systemd/systemd/issues/1977.
+
+(cherry picked from commit 6debb3982612b1fce9b2dd878bad07fe5ae9c0a9)
+
+Resolves: #2026361
+---
+ src/shared/acl-util.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/src/shared/acl-util.c b/src/shared/acl-util.c
+index d18a02f503..ec08661167 100644
+--- a/src/shared/acl-util.c
++++ b/src/shared/acl-util.c
+@@ -69,6 +69,7 @@ int acl_find_uid(acl_t acl, uid_t uid, acl_entry_t *entry) {
+ int calc_acl_mask_if_needed(acl_t *acl_p) {
+         acl_entry_t i;
+         int r;
++        bool need = false;
+ 
+         assert(acl_p);
+ 
+@@ -83,17 +84,16 @@ int calc_acl_mask_if_needed(acl_t *acl_p) {
+                 if (tag == ACL_MASK)
+                         return 0;
+ 
+-                if (IN_SET(tag, ACL_USER, ACL_GROUP)) {
+-                        if (acl_calc_mask(acl_p) < 0)
+-                                return -errno;
+-
+-                        return 1;
+-                }
++                if (IN_SET(tag, ACL_USER, ACL_GROUP))
++                        need = true;
+         }
+         if (r < 0)
+                 return -errno;
+ 
+-        return 0;
++        if (need && acl_calc_mask(acl_p) < 0)
++                return -errno;
++
++        return need;
+ }
+ 
+ int add_base_acls_if_needed(acl_t *acl_p, const char *path) {
