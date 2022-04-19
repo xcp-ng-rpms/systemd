@@ -1,0 +1,56 @@
+From a4621ae866977991eed65d143ffec525659c9a1b Mon Sep 17 00:00:00 2001
+From: Ronan Abhamon <ronan.abhamon@vates.fr>
+Date: Tue, 19 Apr 2022 11:04:51 +0200
+Subject: [PATCH] Backport: udev: exclude DRBD from block device ownership
+ event locking
+
+It does not make sense for udev to even open DRBD block devices
+(/dev/drbdX). It is on one hand not necessary as DRBD is controlled by
+something else in the stack (e.g., pacemaker), and it even can get
+cumbersome in various scenarios (e.g., DRBD9 auto-promote).
+
+Closes: systemd#9371
+
+Signed-off-by: Roland Kammerer <roland.kammerer@linbit.com>
+Signed-off-by: Lars Ellenberg <lars.ellenberg@linbit.com>
+---
+ src/udev/udevd.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/src/udev/udevd.c b/src/udev/udevd.c
+index 99d4c89..744be35 100644
+--- a/src/udev/udevd.c
++++ b/src/udev/udevd.c
+@@ -172,6 +172,18 @@ static void worker_list_cleanup(struct udev *udev) {
+         }
+ }
+ 
++static bool shall_lock_device(struct udev_device *dev) {
++        const char *sysname;
++
++        if (!streq_ptr("block", udev_device_get_subsystem(dev)))
++                return false;
++
++        sysname = udev_device_get_sysname(dev);
++        return !startswith(sysname, "dm-") &&
++               !startswith(sysname, "md") &&
++               !startswith(sysname, "drbd");
++}
++
+ static void worker_new(struct event *event) {
+         struct udev *udev = event->udev;
+         struct worker *worker;
+@@ -283,9 +295,7 @@ static void worker_new(struct event *event) {
+                          * udev has finished its event handling.
+                          */
+                         if (!streq_ptr(udev_device_get_action(dev), "remove") &&
+-                            streq_ptr("block", udev_device_get_subsystem(dev)) &&
+-                            !startswith(udev_device_get_sysname(dev), "dm-") &&
+-                            !startswith(udev_device_get_sysname(dev), "md")) {
++                            shall_lock_device(dev)) {
+                                 struct udev_device *d = dev;
+ 
+                                 if (streq_ptr("partition", udev_device_get_devtype(d)))
+-- 
+2.34.1
+

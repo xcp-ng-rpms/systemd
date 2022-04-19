@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        57.2%{?dist}
+Release:        57.3%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -661,6 +661,9 @@ Patch627: journal-disable-kmsg.patch
 Patch628: disable-acpi-events.patch
 Patch629: allow-tag-nomatch.patch
 Patch630: fix-mtd_probe-build.patch
+
+# XCP-ng patches
+Patch1000: systemd-219-Backport-udev-exclude-DRBD-from-block-device-ownersh.XCP-ng.patch
 
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd/archive?at=v219&format=tar.gz&prefix=systemd-219#/systemd-219.tar.gz) = a88abde72169ddc2df77df3fa5bed30725022253
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/systemd.centos/archive?at=imports%2Fc7%2Fsystemd-219-57.el7_5.1&format=tar.gz#/systemd-219.centos.tar.gz) = 510b6a86d799463b360822320227d95ca008deb7
@@ -1665,6 +1668,9 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Tue Apr 19 2022 Ronan Abhamon <ronan.abhamon@vates.fr> - 219-57.3
+- Add systemd-219-Backport-udev-exclude-DRBD-from-block-device-ownersh.XCP-ng.patch patch
+
 * Mon Jun 25 2018 Lukas Nykryn <lnykryn@redhat.com> - 219-57.1
 - umount: always use MNT_FORCE in umount_all() (#7213) (#1571098)
 - core: Implement timeout based umount/remount limit (#1571098)
