@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        78%{?dist}.5
+Release:        78%{?dist}.7
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -889,6 +889,9 @@ Patch0847: 0847-strv-fix-buffer-size-calculation-in-strv_join_quoted.patch
 Patch0848: 0848-install-refactor-find_symlinks-and-don-t-search-for-.patch
 Patch0849: 0849-install-fix-a-potential-crash.patch
 Patch0850: 0850-acl-util-only-set-the-mask-if-not-present.patch
+
+Patch9000: 9000-resolved-pin-stream-while-calling-callbacks-for-it.patch
+Patch9001: 9001-resolve-introduce-reference-counting-on-DnsStream.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1866,6 +1869,12 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Thu Aug 04 2022 systemd maintenance team <systemd-maint@redhat.com> - 219-78.7
+- resolve: introduce reference counting on DnsStream (#2110544)
+
+* Tue Aug 02 2022 systemd maintenance team <systemd-maint@redhat.com> - 219-78.6
+- resolved: pin stream while calling callbacks for it (#2110544)
+
 * Mon Dec 06 2021 systemd maintenance team <systemd-maint@redhat.com> - 219-78.5
 - install: fix a potential crash (#1828758)
 - acl-util: only set the mask if not present (#2026361)

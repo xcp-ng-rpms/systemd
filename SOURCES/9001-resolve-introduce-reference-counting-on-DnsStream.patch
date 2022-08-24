@@ -1,0 +1,168 @@
+From d30e2a02f87a439367259c9f29abc80b989dae09 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Thu, 4 Aug 2022 11:11:58 +0200
+Subject: [PATCH] resolve: introduce reference counting on DnsStream
+
+(cherry picked from commit b30bf55d5c9942f15f27a641c2c34bbb646ec981)
+
+Related: #2110544
+
+[msekleta: in order to protect against freeing the DnsStream by the
+callback we need to pin it by increasing the reference count. Reference
+counting for DnsStream was introduced in the b30bf55d5c as part of the
+much bigger change. We are very late in RHEL-7 release cycle and we want
+to keep code changes to a minimum, so let's backport just relevant part
+of that commit and leave everything else unchanged.]
+---
+ src/resolve/resolved-dns-stream.c      | 27 ++++++++++++++++++++------
+ src/resolve/resolved-dns-stream.h      |  6 +++++-
+ src/resolve/resolved-dns-transaction.c |  8 ++++----
+ src/resolve/resolved-manager.c         |  2 +-
+ 4 files changed, 31 insertions(+), 12 deletions(-)
+
+diff --git a/src/resolve/resolved-dns-stream.c b/src/resolve/resolved-dns-stream.c
+index f5faf154f2..1068a248ae 100644
+--- a/src/resolve/resolved-dns-stream.c
++++ b/src/resolve/resolved-dns-stream.c
+@@ -57,8 +57,8 @@ static int dns_stream_complete(DnsStream *s, int error) {
+ 
+         if (s->complete)
+                 s->complete(s, error);
+-        else
+-                dns_stream_free(s);
++        else /* the default action if no completion function is set is to close the stream */
++                dns_stream_unref(s);
+ 
+         return 0;
+ }
+@@ -324,10 +324,16 @@ static int on_stream_io(sd_event_source *es, int fd, uint32_t revents, void *use
+         return 0;
+ }
+ 
+-DnsStream *dns_stream_free(DnsStream *s) {
++DnsStream *dns_stream_unref(DnsStream *s) {
+         if (!s)
+                 return NULL;
+ 
++        assert(s->n_ref > 0);
++        s->n_ref--;
++
++        if (s->n_ref > 0)
++                return NULL;
++
+         dns_stream_stop(s);
+ 
+         if (s->manager) {
+@@ -340,14 +346,22 @@ DnsStream *dns_stream_free(DnsStream *s) {
+ 
+         free(s);
+ 
+-        return 0;
++        return NULL;
+ }
+ 
+-DEFINE_TRIVIAL_CLEANUP_FUNC(DnsStream*, dns_stream_free);
++DnsStream *dns_stream_ref(DnsStream *s) {
++        if (!s)
++                return NULL;
++
++        assert(s->n_ref > 0);
++        s->n_ref++;
++
++        return s;
++}
+ 
+ int dns_stream_new(Manager *m, DnsStream **ret, DnsProtocol protocol, int fd) {
+         static const int one = 1;
+-        _cleanup_(dns_stream_freep) DnsStream *s = NULL;
++        _cleanup_(dns_stream_unrefp) DnsStream *s = NULL;
+         int r;
+ 
+         assert(m);
+@@ -360,6 +374,7 @@ int dns_stream_new(Manager *m, DnsStream **ret, DnsProtocol protocol, int fd) {
+         if (!s)
+                 return -ENOMEM;
+ 
++        s->n_ref = 1;
+         s->fd = -1;
+         s->protocol = protocol;
+ 
+diff --git a/src/resolve/resolved-dns-stream.h b/src/resolve/resolved-dns-stream.h
+index 46eae31c60..28aee48205 100644
+--- a/src/resolve/resolved-dns-stream.h
++++ b/src/resolve/resolved-dns-stream.h
+@@ -31,6 +31,7 @@ typedef struct DnsStream DnsStream;
+ 
+ struct DnsStream {
+         Manager *manager;
++        int n_ref;
+ 
+         DnsProtocol protocol;
+ 
+@@ -59,6 +60,9 @@ struct DnsStream {
+ };
+ 
+ int dns_stream_new(Manager *m, DnsStream **s, DnsProtocol protocol, int fd);
+-DnsStream *dns_stream_free(DnsStream *s);
++DnsStream *dns_stream_unref(DnsStream *s);
++DnsStream *dns_stream_ref(DnsStream *s);
++
++DEFINE_TRIVIAL_CLEANUP_FUNC(DnsStream*, dns_stream_unref);
+ 
+ int dns_stream_write_packet(DnsStream *s, DnsPacket *p);
+diff --git a/src/resolve/resolved-dns-transaction.c b/src/resolve/resolved-dns-transaction.c
+index bc1a90db1b..6fa581b6a9 100644
+--- a/src/resolve/resolved-dns-transaction.c
++++ b/src/resolve/resolved-dns-transaction.c
+@@ -37,7 +37,7 @@ DnsTransaction* dns_transaction_free(DnsTransaction *t) {
+         dns_packet_unref(t->received);
+         dns_answer_unref(t->cached);
+ 
+-        dns_stream_free(t->stream);
++        dns_stream_unref(t->stream);
+ 
+         if (t->scope) {
+                 LIST_REMOVE(transactions_by_scope, t->scope->transactions, t);
+@@ -114,7 +114,7 @@ static void dns_transaction_stop(DnsTransaction *t) {
+         assert(t);
+ 
+         t->timeout_event_source = sd_event_source_unref(t->timeout_event_source);
+-        t->stream = dns_stream_free(t->stream);
++        t->stream = dns_stream_unref(t->stream);
+ }
+ 
+ static void dns_transaction_tentative(DnsTransaction *t, DnsPacket *p) {
+@@ -208,7 +208,7 @@ static int on_stream_complete(DnsStream *s, int error) {
+         t = s->transaction;
+         p = dns_packet_ref(s->read_packet);
+ 
+-        t->stream = dns_stream_free(t->stream);
++        t->stream = dns_stream_unref(t->stream);
+ 
+         if (error != 0) {
+                 dns_transaction_complete(t, DNS_TRANSACTION_RESOURCES);
+@@ -279,7 +279,7 @@ static int dns_transaction_open_tcp(DnsTransaction *t) {
+ 
+         r = dns_stream_write_packet(t->stream, t->sent);
+         if (r < 0) {
+-                t->stream = dns_stream_free(t->stream);
++                t->stream = dns_stream_unref(t->stream);
+                 return r;
+         }
+ 
+diff --git a/src/resolve/resolved-manager.c b/src/resolve/resolved-manager.c
+index 173ab8a148..aa7aa68cab 100644
+--- a/src/resolve/resolved-manager.c
++++ b/src/resolve/resolved-manager.c
+@@ -1531,7 +1531,7 @@ static int on_llmnr_stream_packet(DnsStream *s) {
+         } else
+                 log_debug("Invalid LLMNR TCP packet.");
+ 
+-        dns_stream_free(s);
++        dns_stream_unref(s);
+         return 0;
+ }
+ 
+-- 
+2.32.1 (Apple Git-133)
+
