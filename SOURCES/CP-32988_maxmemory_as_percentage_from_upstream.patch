@@ -1,0 +1,35 @@
+core: optionally, accept a percentage value for MemoryLimit= and related settings
+
+From: Lennart Poettering <lennart@poettering.net>
+
+If a percentage is used, it is taken relative to the installed RAM size. This
+should make it easier to write generic unit files that adapt to the local system.
+
+diff --git a/src/core/load-fragment.c b/src/core/load-fragment.c
+index da58bcc5c9..e4ae1b3d02 100644
+--- a/src/core/load-fragment.c
++++ b/src/core/load-fragment.c
+@@ -3031,11 +3031,19 @@ int config_parse_memory_limit(
+         }
+ 
+         assert_cc(sizeof(uint64_t) == sizeof(off_t));
+-
+-        r = parse_size(rvalue, 1024, &bytes);
+-        if (r < 0 || bytes < 1) {
+-                log_syntax(unit, LOG_ERR, filename, line, EINVAL, "Memory limit '%s' invalid. Ignoring.", rvalue);
++        r = parse_percent(rvalue);
++        if (r < 0) {
++            r = parse_size(rvalue, 1024, &bytes);
++            if (r < 0) {
++                log_syntax(unit, LOG_ERR, filename, line, r, "Memory limit '%s' invalid. Ignoring.", rvalue);
+                 return 0;
++            }
++        } else
++            bytes = (((physical_memory() / page_size()) * (uint64_t) r) / 100) * page_size();
++
++        if (bytes < 1) {
++            log_syntax(unit, LOG_ERR, filename, line, 0, "Memory limit '%s' too small. Ignoring.", rvalue);
++            return 0;
+         }
+ 
+         c->memory_limit = (uint64_t) bytes;

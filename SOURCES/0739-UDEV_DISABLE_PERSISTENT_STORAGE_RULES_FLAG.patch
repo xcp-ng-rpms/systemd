@@ -1,0 +1,40 @@
+From 542127ea96de4b0e22fbb0fc872d80406e068e36 Mon Sep 17 00:00:00 2001
+From: Rusty Bird <rustybird@openmailbox.org>
+Date: Fri, 15 Jul 2016 16:47:42 +0000
+Subject: [PATCH] rules: UDEV_DISABLE_PERSISTENT_STORAGE_RULES_FLAG property
+ (#3714)
+
+Sometimes, the persistent storage rules should be skipped for a subset
+of devices. For example, the Qubes operating system prevents dom0 from
+parsing untrusted block device content (such as filesystem metadata) by
+shipping a custom 60-persistent-storage.rules, patched to bail out early
+if the device name matches a hardcoded pattern.
+
+As a less brittle and more flexible alternative, this commit adds a line
+to the two relevant .rules files which makes them test the value of the
+UDEV_DISABLE_PERSISTENT_STORAGE_RULES_FLAG device property, modeled
+after the various DM_UDEV_DISABLE_*_RULES_FLAG properties.
+diff --git a/rules/60-persistent-storage-tape.rules b/rules/60-persistent-storage-tape.rules
+index f2eabd92a8..b604864ee8 100644
+--- a/rules/60-persistent-storage-tape.rules
++++ b/rules/60-persistent-storage-tape.rules
+@@ -3,6 +3,7 @@
+ # persistent storage links: /dev/tape/{by-id,by-path}
+ 
+ ACTION=="remove", GOTO="persistent_storage_tape_end"
++ENV{UDEV_DISABLE_PERSISTENT_STORAGE_RULES_FLAG}=="1", GOTO="persistent_storage_tape_end"
+ 
+ # type 8 devices are "Medium Changers"
+ SUBSYSTEM=="scsi_generic", SUBSYSTEMS=="scsi", ATTRS{type}=="8", IMPORT{program}="scsi_id --sg-version=3 --export --whitelisted -d $devnode", \
+diff --git a/rules/60-persistent-storage.rules b/rules/60-persistent-storage.rules
+index ba619633b7..1d3c14b051 100644
+--- a/rules/60-persistent-storage.rules
++++ b/rules/60-persistent-storage.rules
+@@ -7,6 +7,7 @@
+ ACTION=="change", SUBSYSTEM=="scsi", ENV{DEVTYPE}=="scsi_device", TEST=="block", ATTR{block/*/uevent}="change"
+ 
+ ACTION=="remove", GOTO="persistent_storage_end"
++ENV{UDEV_DISABLE_PERSISTENT_STORAGE_RULES_FLAG}=="1", GOTO="persistent_storage_end"
+ 
+ # enable in-kernel media-presence polling
+ ACTION=="add", SUBSYSTEM=="module", KERNEL=="block", ATTR{parameters/events_dfl_poll_msecs}=="0", ATTR{parameters/events_dfl_poll_msecs}="2000"
