@@ -8,25 +8,6 @@ Changed calling of LZ4 functions due to deprecation of the originals.
 Fixed typecasting of max_bytes to size_t in debuglog()
 
 Resolves: rhbz#1431687
-
-changes to .spec file:
-
-@@ -552,6 +553,7 @@ BuildRequires:  libblkid-devel
- BuildRequires:  xz-devel
- BuildRequires:  zlib-devel
- BuildRequires:  bzip2-devel
-+BuildRequires:  lz4-devel
- BuildRequires:  libidn-devel
- BuildRequires:  libcurl-devel
- BuildRequires:  kmod-devel
-@@ -742,6 +744,7 @@ CONFIGURE_OPTS=(
-     --enable-compat-libs
-     --disable-sysusers
-     --disable-ldconfig
-+    --enable-lz4
- %ifarch s390 s390x ppc %{power64} aarch64
-     --disable-lto
- %endif
 ---
  src/journal/compress.c     | 11 ++++++++---
  src/journal/compress.h     | 11 -----------
