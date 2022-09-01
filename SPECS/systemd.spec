@@ -893,6 +893,8 @@ Patch0850: 0850-acl-util-only-set-the-mask-if-not-present.patch
 Patch9000: 9000-resolved-pin-stream-while-calling-callbacks-for-it.patch
 Patch9001: 9001-resolve-introduce-reference-counting-on-DnsStream.patch
 
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
 BuildRequires:  libcap-devel
