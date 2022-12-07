@@ -1,6 +1,6 @@
-%global package_speccommit 17f8f6d405aeaa4e64f1fdc429d9b1904dd0e366
+%global package_speccommit 41fda6e8ef9f32b7cbd11753d5088c7b9b8e9995
 %global usver 219
-%global xsver 57.3
+%global xsver 57.4
 %global xsrel %{xsver}%{?xscount}%{?xshash}
 %global package_srccommit v219
 
@@ -643,14 +643,16 @@ Patch620: 0736-udev-call-poll-again-after-killing-the-spawned-proce.patch
 Patch621: 0737-udev-check-age-against-both-timeouts-to-prevent-inte.patch
 Patch622: 0738-avoid-possible-hang-if-our-child-process-hangs.patch
 Patch623: 0739-UDEV_DISABLE_PERSISTENT_STORAGE_RULES_FLAG.patch
-Patch624: CA-117731.patch
-Patch625: net-ifnames.patch
-Patch626: disable-journal.patch
-Patch627: journal-disable-kmsg.patch
-Patch628: disable-acpi-events.patch
-Patch629: allow-tag-nomatch.patch
-Patch630: fix-mtd_probe-build.patch
-Patch631: CP-32988_maxmemory_as_percentage_from_upstream.patch
+Patch624: 0001-time-util-Introduce-parse_sec_def_infinity.patch
+Patch625: 0001-core-add-CPUQuotaPeriodSec.patch
+Patch626: CA-117731.patch
+Patch627: net-ifnames.patch
+Patch628: disable-journal.patch
+Patch629: journal-disable-kmsg.patch
+Patch630: disable-acpi-events.patch
+Patch631: allow-tag-nomatch.patch
+Patch632: fix-mtd_probe-build.patch
+Patch633: CP-32988_maxmemory_as_percentage_from_upstream.patch
 # Preset policy is in rhel-release package
 # we are just disabling everything
 Source1: 99-default-disable.preset
@@ -1641,6 +1643,9 @@ fi
 %{?_cov_results_package}
 
 %changelog
+* Thu Oct 20 2022 Ross Lagerwall <ross.lagerwall@citrix.com> - 219-57.4
+- CP-40192: Backport support for CPUQuotaPeriodSec
+
 * Mon Feb 14 2022 Ross Lagerwall <ross.lagerwall@citrix.com> - 219-57.3
 - Maintenance: fix guilt apply failure
 - CA-334762: backport UDEV_DISABLE_PERSISTENT_STORAGE_RULES_FLAG
