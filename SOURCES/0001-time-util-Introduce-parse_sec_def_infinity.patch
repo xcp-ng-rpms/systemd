@@ -1,0 +1,71 @@
+From 7b61ce3c44ef5908e817009ce4f9d2a7a37722be Mon Sep 17 00:00:00 2001
+From: Filipe Brandenburger <filbranden@google.com>
+Date: Wed, 23 Jan 2019 19:48:54 -0800
+Subject: [PATCH] time-util: Introduce parse_sec_def_infinity
+
+This works like parse_sec() but defaults to USEC_INFINITY when passed an
+empty string or only whitespace.
+
+Also introduce config_parse_sec_def_infinity, which can be used to parse
+config options using this function.
+
+This is useful for time options that use "infinity" for default and that
+can be reset by unsetting them.
+
+Introduce a test case to ensure it works as expected.
+diff --git a/src/shared/conf-parser.c b/src/shared/conf-parser.c
+index 73e4d49ea1..c0357c3553 100644
+--- a/src/shared/conf-parser.c
++++ b/src/shared/conf-parser.c
+@@ -528,6 +528,7 @@ DEFINE_PARSER(unsigned, unsigned, safe_atou)
+ DEFINE_PARSER(double, double, safe_atod)
+ DEFINE_PARSER(nsec, nsec_t, parse_nsec)
+ DEFINE_PARSER(sec, usec_t, parse_sec)
++DEFINE_PARSER(sec_def_infinity, usec_t, parse_sec_def_infinity)
+ 
+ int config_parse_iec_size(const char* unit,
+                             const char *filename,
+diff --git a/src/shared/conf-parser.h b/src/shared/conf-parser.h
+index 7a2f855f9f..63c6366bbc 100644
+--- a/src/shared/conf-parser.h
++++ b/src/shared/conf-parser.h
+@@ -114,6 +114,7 @@ int config_parse_string(const char *unit, const char *filename, unsigned line, c
+ int config_parse_path(const char *unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+ int config_parse_strv(const char *unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+ int config_parse_sec(const char *unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
++int config_parse_sec_def_infinity(const char *unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+ int config_parse_nsec(const char *unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+ int config_parse_mode(const char *unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+ int config_parse_log_facility(const char *unit, const char *filename, unsigned line, const char *section, unsigned section_line, const char *lvalue, int ltype, const char *rvalue, void *data, void *userdata);
+diff --git a/src/shared/time-util.c b/src/shared/time-util.c
+index c001f52def..6ac16c0bf7 100644
+--- a/src/shared/time-util.c
++++ b/src/shared/time-util.c
+@@ -746,6 +746,15 @@ int parse_sec(const char *t, usec_t *usec) {
+         return parse_time(t, usec, USEC_PER_SEC);
+ }
+ 
++int parse_sec_def_infinity(const char *t, usec_t *ret) {
++        t += strspn(t, WHITESPACE);
++        if (isempty(t)) {
++                *ret = USEC_INFINITY;
++                return 0;
++        }
++        return parse_sec(t, ret);
++}
++
+ int parse_nsec(const char *t, nsec_t *nsec) {
+         static const struct {
+                 const char *suffix;
+diff --git a/src/shared/time-util.h b/src/shared/time-util.h
+index 32e90902a8..bec6a263a7 100644
+--- a/src/shared/time-util.h
++++ b/src/shared/time-util.h
+@@ -99,6 +99,7 @@ void dual_timestamp_deserialize(const char *value, dual_timestamp *t);
+ int parse_timestamp(const char *t, usec_t *usec);
+ 
+ int parse_sec(const char *t, usec_t *usec);
++int parse_sec_def_infinity(const char *t, usec_t *usec);
+ int parse_time(const char *t, usec_t *usec, usec_t default_unit);
+ int parse_nsec(const char *t, nsec_t *nsec);
+ 
