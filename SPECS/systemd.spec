@@ -1,6 +1,6 @@
-%global package_speccommit 41fda6e8ef9f32b7cbd11753d5088c7b9b8e9995
+%global package_speccommit c45860427a630d54a29c54b18ecfa252a156a3db
 %global usver 219
-%global xsver 57.4
+%global xsver 57.5
 %global xsrel %{xsver}%{?xscount}%{?xshash}
 %global package_srccommit v219
 
@@ -728,7 +728,7 @@ Requires(pre):  /usr/sbin/groupadd
 Requires:       dbus
 Requires:       %{name}-libs = %{version}-%{release}
 Requires:       kmod >= 18-4
-Requires:       redhat-release >= 7.0
+Requires:       system-release >= 7.0
 Requires:       diffutils
 
 Provides:       /bin/systemctl
@@ -1643,6 +1643,9 @@ fi
 %{?_cov_results_package}
 
 %changelog
+* Thu Mar 02 2023 Tim Smith <tim.smith@citrix.com> - 219-57.5
+- CP-42030: Amend system requires
+
 * Thu Oct 20 2022 Ross Lagerwall <ross.lagerwall@citrix.com> - 219-57.4
 - CP-40192: Backport support for CPUQuotaPeriodSec
 
