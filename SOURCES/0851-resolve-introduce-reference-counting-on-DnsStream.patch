@@ -1,4 +1,4 @@
-From d30e2a02f87a439367259c9f29abc80b989dae09 Mon Sep 17 00:00:00 2001
+From 47ef5ccd0edbff6610badc8c0f543f0e1d18bdc2 Mon Sep 17 00:00:00 2001
 From: Michal Sekletar <msekleta@redhat.com>
 Date: Thu, 4 Aug 2022 11:11:58 +0200
 Subject: [PATCH] resolve: introduce reference counting on DnsStream
@@ -21,10 +21,10 @@ of that commit and leave everything else unchanged.]
  4 files changed, 31 insertions(+), 12 deletions(-)
 
 diff --git a/src/resolve/resolved-dns-stream.c b/src/resolve/resolved-dns-stream.c
-index f5faf154f2..1068a248ae 100644
+index 7f47e7223a..8d898b4819 100644
 --- a/src/resolve/resolved-dns-stream.c
 +++ b/src/resolve/resolved-dns-stream.c
-@@ -57,8 +57,8 @@ static int dns_stream_complete(DnsStream *s, int error) {
+@@ -55,8 +55,8 @@ static int dns_stream_complete(DnsStream *s, int error) {
  
          if (s->complete)
                  s->complete(s, error);
@@ -35,7 +35,7 @@ index f5faf154f2..1068a248ae 100644
  
          return 0;
  }
-@@ -324,10 +324,16 @@ static int on_stream_io(sd_event_source *es, int fd, uint32_t revents, void *use
+@@ -322,10 +322,16 @@ static int on_stream_io(sd_event_source *es, int fd, uint32_t revents, void *use
          return 0;
  }
  
@@ -53,7 +53,7 @@ index f5faf154f2..1068a248ae 100644
          dns_stream_stop(s);
  
          if (s->manager) {
-@@ -340,14 +346,22 @@ DnsStream *dns_stream_free(DnsStream *s) {
+@@ -338,14 +344,22 @@ DnsStream *dns_stream_free(DnsStream *s) {
  
          free(s);
  
@@ -79,7 +79,7 @@ index f5faf154f2..1068a248ae 100644
          int r;
  
          assert(m);
-@@ -360,6 +374,7 @@ int dns_stream_new(Manager *m, DnsStream **ret, DnsProtocol protocol, int fd) {
+@@ -358,6 +372,7 @@ int dns_stream_new(Manager *m, DnsStream **ret, DnsProtocol protocol, int fd) {
          if (!s)
                  return -ENOMEM;
  
@@ -163,6 +163,3 @@ index 173ab8a148..aa7aa68cab 100644
          return 0;
  }
  
--- 
-2.32.1 (Apple Git-133)
-

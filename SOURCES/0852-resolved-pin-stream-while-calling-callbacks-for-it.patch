@@ -1,4 +1,4 @@
-From 5b9f33c30309345738eedc226f6a667968949044 Mon Sep 17 00:00:00 2001
+From 420ffdb2b6c0d445b2f911cddfbee0a0d94c013d Mon Sep 17 00:00:00 2001
 From: Lennart Poettering <lennart@poettering.net>
 Date: Tue, 4 Dec 2018 22:13:39 +0100
 Subject: [PATCH] resolved: pin stream while calling callbacks for it
@@ -16,7 +16,7 @@ Resolves: #2110544
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/src/resolve/resolved-dns-stream.c b/src/resolve/resolved-dns-stream.c
-index 7f47e7223a..f5faf154f2 100644
+index 8d898b4819..1068a248ae 100644
 --- a/src/resolve/resolved-dns-stream.c
 +++ b/src/resolve/resolved-dns-stream.c
 @@ -49,6 +49,8 @@ static int dns_stream_update_io(DnsStream *s) {
@@ -37,6 +37,3 @@ index 7f47e7223a..f5faf154f2 100644
          int r;
  
          assert(s);
--- 
-2.37.1
-

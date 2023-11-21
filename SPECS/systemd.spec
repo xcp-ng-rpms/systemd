@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        78%{?dist}.7
+Release:        78%{?dist}.8
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -889,11 +889,9 @@ Patch0847: 0847-strv-fix-buffer-size-calculation-in-strv_join_quoted.patch
 Patch0848: 0848-install-refactor-find_symlinks-and-don-t-search-for-.patch
 Patch0849: 0849-install-fix-a-potential-crash.patch
 Patch0850: 0850-acl-util-only-set-the-mask-if-not-present.patch
-
-Patch9000: 9000-resolved-pin-stream-while-calling-callbacks-for-it.patch
-Patch9001: 9001-resolve-introduce-reference-counting-on-DnsStream.patch
-
-Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
+Patch0851: 0851-resolve-introduce-reference-counting-on-DnsStream.patch
+Patch0852: 0852-resolved-pin-stream-while-calling-callbacks-for-it.patch
+Patch0853: 0853-fstab-generator-Chase-symlinks-where-possible-6293.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1871,6 +1869,9 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Tue Sep 26 2023 systemd maintenance team <systemd-maint@redhat.com> - 219-78.8
+- fstab-generator: Chase symlinks where possible (#6293) (RHEL-6223)
+
 * Thu Aug 04 2022 systemd maintenance team <systemd-maint@redhat.com> - 219-78.7
 - resolve: introduce reference counting on DnsStream (#2110544)
 
