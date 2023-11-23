@@ -7,7 +7,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        78%{?dist}.8
+Release:        78%{?dist}.9
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -892,6 +892,7 @@ Patch0850: 0850-acl-util-only-set-the-mask-if-not-present.patch
 Patch0851: 0851-resolve-introduce-reference-counting-on-DnsStream.patch
 Patch0852: 0852-resolved-pin-stream-while-calling-callbacks-for-it.patch
 Patch0853: 0853-fstab-generator-Chase-symlinks-where-possible-6293.patch
+Patch0854: 0854-Revert-fstab-generator-Chase-symlinks-where-possible.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
@@ -1869,6 +1870,9 @@ fi
 %{_mandir}/man8/systemd-resolved.*
 
 %changelog
+* Wed Nov 22 2023 systemd maintenance team <systemd-maint@redhat.com> - 219-78.9
+- Revert "fstab-generator: Chase symlinks where possible (#6293)" (RHEL-17164)
+
 * Tue Sep 26 2023 systemd maintenance team <systemd-maint@redhat.com> - 219-78.8
 - fstab-generator: Chase symlinks where possible (#6293) (RHEL-6223)
 

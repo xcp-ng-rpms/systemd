@@ -1,0 +1,147 @@
+From 3f4082478351da51d7c4c8907ec691238a384313 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Wed, 22 Nov 2023 20:40:31 +0100
+Subject: [PATCH] Revert "fstab-generator: Chase symlinks where possible
+ (#6293)"
+
+This reverts commit a4c51f1bb38f272fb9c3dbaa33f1f383639ce345.
+
+Resolves: RHEL-17164
+---
+ man/systemd-fstab-generator.xml       |  8 -----
+ man/systemd.mount.xml                 |  5 ++--
+ src/fstab-generator/fstab-generator.c | 42 +++++----------------------
+ 3 files changed, 10 insertions(+), 45 deletions(-)
+
+diff --git a/man/systemd-fstab-generator.xml b/man/systemd-fstab-generator.xml
+index 6f45c680cc..bdc2dc1d0e 100644
+--- a/man/systemd-fstab-generator.xml
++++ b/man/systemd-fstab-generator.xml
+@@ -71,14 +71,6 @@
+     for more information about special <filename>/etc/fstab</filename>
+     mount options this generator understands.</para>
+ 
+-    <para>One special topic is handling of symbolic links.  Historical init
+-    implementations supported symlinks in <filename>/etc/fstab</filename>.
+-    Because mount units will refuse mounts where the target is a symbolic link,
+-    this generator will resolve any symlinks as far as possible when processing
+-    <filename>/etc/fstab</filename> in order to enhance backwards compatibility.
+-    If a symlink target does not exist at the time that this generator runs, it
+-    is assumed that the symlink target is the final target of the mount.</para>
+-
+     <para><filename>systemd-fstab-generator</filename> implements
+     <citerefentry><refentrytitle>systemd.generator</refentrytitle><manvolnum>7</manvolnum></citerefentry>.</para>
+   </refsect1>
+diff --git a/man/systemd.mount.xml b/man/systemd.mount.xml
+index 5021db5584..1590c44cec 100644
+--- a/man/systemd.mount.xml
++++ b/man/systemd.mount.xml
+@@ -295,9 +295,8 @@
+ 
+       <varlistentry>
+         <term><varname>Where=</varname></term>
+-        <listitem><para>Takes an absolute path of a directory for the
+-        mount point; in particular, the destination cannot be a symbolic
+-        link.  If the mount point does not exist at the time of
++        <listitem><para>Takes an absolute path of a directory of the
++        mount point. If the mount point does not exist at the time of
+         mounting, it is created. This string must be reflected in the
+         unit filename. (See above.) This option is
+         mandatory.</para></listitem>
+diff --git a/src/fstab-generator/fstab-generator.c b/src/fstab-generator/fstab-generator.c
+index 91603b08f4..23b5457e43 100644
+--- a/src/fstab-generator/fstab-generator.c
++++ b/src/fstab-generator/fstab-generator.c
+@@ -240,7 +240,6 @@ static int write_idle_timeout(FILE *f, const char *where, const char *opts) {
+ static int add_mount(
+                 const char *what,
+                 const char *where,
+-                const char *original_where,
+                 const char *fstype,
+                 const char *opts,
+                 int passno,
+@@ -328,14 +327,12 @@ static int add_mount(
+         }
+ 
+         fprintf(f,
+-                 "\n"
++                "\n"
+                 "[Mount]\n"
+-                "What=%s\n",
+-                 what);
+-
+-        if (original_where)
+-                fprintf(f, "# Canonicalized from %s\n", original_where);
+-        fprintf(f, "Where=%s\n", where);
++                "What=%s\n"
++                "Where=%s\n",
++                what,
++                where);
+ 
+         if (!isempty(fstype) && !streq(fstype, "auto"))
+                 fprintf(f, "Type=%s\n", fstype);
+@@ -439,7 +436,7 @@ static int parse_fstab(bool initrd) {
+         }
+ 
+         while ((me = getmntent(f))) {
+-                _cleanup_free_ char *where = NULL, *what = NULL, *canonical_where = NULL;
++                _cleanup_free_ char *where = NULL, *what = NULL;
+                 bool noauto, nofail;
+                 int k;
+ 
+@@ -459,28 +456,8 @@ static int parse_fstab(bool initrd) {
+                 if (!where)
+                         return log_oom();
+ 
+-                if (is_path(where)) {
++                if (is_path(where))
+                         path_kill_slashes(where);
+-                        /* Follow symlinks here; see 5261ba901845c084de5a8fd06500ed09bfb0bd80 which makes sense for
+-                         * mount units, but causes problems since it historically worked to have symlinks in e.g.
+-                         * /etc/fstab. So we canonicalize here. Note that we use CHASE_NONEXISTENT to handle the case
+-                         * where a symlink refers to another mount target; this works assuming the sub-mountpoint
+-                         * target is the final directory.
+-                         */
+-                        r = chase_symlinks(where, initrd ? "/sysroot" : NULL,
+-                                           CHASE_PREFIX_ROOT | CHASE_NONEXISTENT,
+-                                           &canonical_where);
+-                        if (r < 0)
+-                                /* In this case for now we continue on as if it wasn't a symlink */
+-                                log_warning_errno(r, "Failed to read symlink target for %s: %m", where);
+-                        else {
+-                                if (streq(canonical_where, where))
+-                                        canonical_where = mfree(canonical_where);
+-                                else
+-                                        log_debug("Canonicalized what=%s where=%s to %s",
+-                                                  what, where, canonical_where);
+-                        }
+-                }
+ 
+                 noauto = fstab_test_yes_no_option(me->mnt_opts, "noauto\0" "auto\0");
+                 nofail = fstab_test_yes_no_option(me->mnt_opts, "nofail\0" "fail\0");
+@@ -505,8 +482,7 @@ static int parse_fstab(bool initrd) {
+                                 post = SPECIAL_LOCAL_FS_TARGET;
+ 
+                         k = add_mount(what,
+-                                      canonical_where ?: where,
+-                                      canonical_where ? where: NULL,
++                                      where,
+                                       me->mnt_type,
+                                       me->mnt_opts,
+                                       me->mnt_passno,
+@@ -550,7 +526,6 @@ static int add_sysroot_mount(void) {
+         log_debug("Found entry what=%s where=/sysroot type=%s", what, strna(arg_root_fstype));
+         return add_mount(what,
+                          "/sysroot",
+-                         NULL,
+                          arg_root_fstype,
+                          opts,
+                          1,
+@@ -608,7 +583,6 @@ static int add_sysroot_usr_mount(void) {
+         log_debug("Found entry what=%s where=/sysroot/usr type=%s", what, strna(arg_usr_fstype));
+         return add_mount(what,
+                          "/sysroot/usr",
+-                         NULL,
+                          arg_usr_fstype,
+                          opts,
+                          1,
