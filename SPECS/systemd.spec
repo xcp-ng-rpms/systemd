@@ -893,6 +893,7 @@ Patch0851: 0851-resolve-introduce-reference-counting-on-DnsStream.patch
 Patch0852: 0852-resolved-pin-stream-while-calling-callbacks-for-it.patch
 Patch0853: 0853-fstab-generator-Chase-symlinks-where-possible-6293.patch
 Patch0854: 0854-Revert-fstab-generator-Chase-symlinks-where-possible.patch
+Patch9999: 9999-Update-kernel-install-script-by-backporting-fedora-p.patch
 
 %global num_patches %{lua: c=0; for i,p in ipairs(patches) do c=c+1; end; print(c);}
 
