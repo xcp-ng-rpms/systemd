@@ -18,7 +18,33 @@ Release:        %{?xsrel}%{?dist}
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
 
-Source0: systemd-219.tar.gz
+Source0:        systemd-219.tar.gz
+
+# Preset policy is in rhel-release package
+# we are just disabling everything
+Source1:        99-default-disable.preset
+# Prevent accidental removal of the systemd package
+Source2:        yum-protect-systemd.conf
+# SysV convert script.
+Source3:        systemd-sysv-convert
+# ship /etc/rc.d/rc.local https://bugzilla.redhat.com/show_bug.cgi?id=968401
+Source4:        rc.local
+#https://bugzilla.redhat.com/show_bug.cgi?id=1032711
+Source5:        60-alias-kmsg.rules
+# Stop-gap, just to ensure things work fine with rsyslog without having to change the package right-away
+Source6:        listen.conf
+# Generating translations is sometimes broken, let's ship the translated policy files directly in sources
+Source7:        org.freedesktop.hostname1.policy
+Source8:        org.freedesktop.import1.policy
+Source9:        org.freedesktop.locale1.policy
+Source10:       org.freedesktop.login1.policy
+Source11:       org.freedesktop.machine1.policy
+Source12:       org.freedesktop.systemd1.policy
+Source13:       org.freedesktop.timedate1.policy
+Source14:       phys-port-name-gen
+Source15:       76-phys-port-name.rules
+Source16:       76-phys-port-name.conf
+
 Patch0001: 0001-kernel-install-add-fedora-specific-callouts-to-new-k.patch
 Patch0002: 0002-Revert-fsck-re-enable-fsck-l.patch
 Patch0003: 0003-sysctl-bring-back-etc-sysctl.conf.patch
@@ -653,30 +679,6 @@ Patch0631: disable-acpi-events.patch
 Patch0632: allow-tag-nomatch.patch
 Patch0633: fix-mtd_probe-build.patch
 Patch0634: CP-32988_maxmemory_as_percentage_from_upstream.patch
-# Preset policy is in rhel-release package
-# we are just disabling everything
-Source1: 99-default-disable.preset
-# Prevent accidental removal of the systemd package
-Source2: yum-protect-systemd.conf
-# SysV convert script.
-Source3: systemd-sysv-convert
-# ship /etc/rc.d/rc.local https://bugzilla.redhat.com/show_bug.cgi?id=968401
-Source4: rc.local
-#https://bugzilla.redhat.com/show_bug.cgi?id=1032711
-Source5: 60-alias-kmsg.rules
-# Stop-gap, just to ensure things work fine with rsyslog without having to change the package right-away
-Source6: listen.conf
-# Generating translations is sometimes broken, let's ship the translated policy files directly in sources
-Source7: org.freedesktop.hostname1.policy
-Source8: org.freedesktop.import1.policy
-Source9: org.freedesktop.locale1.policy
-Source10: org.freedesktop.login1.policy
-Source11: org.freedesktop.machine1.policy
-Source12: org.freedesktop.systemd1.policy
-Source13: org.freedesktop.timedate1.policy
-Source14: phys-port-name-gen
-Source15: 76-phys-port-name.rules
-Source16: 76-phys-port-name.conf
 
 BuildRequires:  libcap-devel
 BuildRequires:  tcp_wrappers-devel
