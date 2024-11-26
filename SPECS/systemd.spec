@@ -661,23 +661,38 @@ Patch0613: 0613-sd-journal-when-picking-up-a-new-file-compare-inode-.patch
 Patch0614: 0614-umount-always-use-MNT_FORCE-in-umount_all-7213.patch
 Patch0615: 0615-core-Implement-timeout-based-umount-remount-limit.patch
 Patch0616: 0616-core-Implement-sync_with_progress.patch
+
+# backports from systemd-219-62.el7_6.5
 Patch0617: 0670-Refuse-dbus-message-paths-longer-than-BUS_PATH_SIZE_.patch
 Patch0618: 0671-Allocate-temporary-strings-to-hold-dbus-paths-on-the.patch
 Patch0619: 0672-sd-bus-if-we-receive-an-invalid-dbus-message-ignore-.patch
+
+# backports from systemd-219-67.el7
 Patch0620: 0735-udev-check-if-the-spawned-PID-didn-t-exit-after-reap.patch
 Patch0621: 0736-udev-call-poll-again-after-killing-the-spawned-proce.patch
 Patch0622: 0737-udev-check-age-against-both-timeouts-to-prevent-inte.patch
 Patch0623: 0738-avoid-possible-hang-if-our-child-process-hangs.patch
+
+# upstream systemd backports
 Patch0624: 0739-UDEV_DISABLE_PERSISTENT_STORAGE_RULES_FLAG.patch
 Patch0625: 0001-time-util-Introduce-parse_sec_def_infinity.patch
 Patch0626: 0001-core-add-CPUQuotaPeriodSec.patch
+
+# XS patches
 Patch0627: CA-117731.patch
+# XS patch
 Patch0628: net-ifnames.patch
+# XS patch
 Patch0629: disable-journal.patch
+# XS patch
 Patch0630: journal-disable-kmsg.patch
+# XS patch
 Patch0631: disable-acpi-events.patch
+# upstream systemd backport
 Patch0632: allow-tag-nomatch.patch
+# XS patch
 Patch0633: fix-mtd_probe-build.patch
+# upstream systemd backport
 Patch0634: CP-32988_maxmemory_as_percentage_from_upstream.patch
 
 BuildRequires:  libcap-devel
