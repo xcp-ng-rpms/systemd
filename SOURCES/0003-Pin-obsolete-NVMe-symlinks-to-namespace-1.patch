@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bryan Gurney <bgurney@redhat.com>
+Date: Wed, 18 Sep 2024 15:03:59 -0400
+Subject: [PATCH] Pin obsolete NVMe symlinks to namespace 1
+
+In order to preserve backwards compatibility with legacy NVMe devices,
+create the obsolete symlinks, but only if they are associated with
+namespace ID 1.
+
+Signed-off-by: Bryan Gurney <bgurney@redhat.com>
+(cherry picked from commit 77d8f15262247514b3cecf640666742229d1511c)
+
+Applied changes to rules/60-persistent-storage.rules instead.
+
+Signed-off-by: Vincent Michel <vincent.michel@vates.tech>
+Signed-off-by: Tu Dinh <ngoc-tu.dinh@vates.tech>
+
+diff --git a/rules/60-persistent-storage.rules b/rules/60-persistent-storage.rules
+index 33e7e66124f3..115eeae45323 100644
+--- a/rules/60-persistent-storage.rules
++++ b/rules/60-persistent-storage.rules
+@@ -33,7 +33,7 @@ KERNEL=="nvme*[0-9]n*[0-9]", ENV{DEVTYPE}=="disk", ATTRS{model}=="?*", ENV{ID_MO
+ KERNEL=="nvme*[0-9]n*[0-9]", ENV{DEVTYPE}=="disk", ATTRS{nsid}=="?*", ENV{ID_NSID}="$attr{nsid}"
+ # obsolete symlink that might get overridden on adding a new nvme controller, kept for backward compatibility
+ KERNEL=="nvme*[0-9]n*[0-9]", ENV{DEVTYPE}=="disk", ENV{ID_MODEL}=="?*", ENV{ID_SERIAL_SHORT}=="?*", \
+-  ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}", OPTIONS="string_escape=replace"
++  ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}", ENV{ID_NSID}=="1", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}", OPTIONS="string_escape=replace"
+ KERNEL=="nvme*[0-9]n*[0-9]", ENV{DEVTYPE}=="disk", ENV{ID_MODEL}=="?*", ENV{ID_SERIAL_SHORT}=="?*", ENV{ID_NSID}=="?*",\
+   OPTIONS="string_escape=replace", ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}_$env{ID_NSID}", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}"
+ 
+@@ -42,7 +42,7 @@ KERNEL=="nvme*[0-9]n*[0-9]p*[0-9]", ENV{DEVTYPE}=="partition", ATTRS{model}=="?*
+ KERNEL=="nvme*[0-9]n*[0-9]p*[0-9]", ENV{DEVTYPE}=="partition", ATTRS{nsid}=="?*", ENV{ID_NSID}="$attr{nsid}"
+ # obsolete symlink that might get overridden on adding a new nvme controller, kept for backward compatibility
+ KERNEL=="nvme*[0-9]n*[0-9]p*[0-9]", ENV{DEVTYPE}=="partition", ENV{ID_MODEL}=="?*", ENV{ID_SERIAL_SHORT}=="?*", \
+-  ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}-part%n", OPTIONS="string_escape=replace"
++  ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}", ENV{ID_NSID}=="1", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}-part%n", OPTIONS="string_escape=replace"
+ KERNEL=="nvme*[0-9]n*[0-9]p*[0-9]", ENV{DEVTYPE}=="partition", ENV{ID_MODEL}=="?*", ENV{ID_SERIAL_SHORT}=="?*",  ENV{ID_NSID}=="?*",\
+   OPTIONS="string_escape=replace", ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}_$env{ID_NSID}", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}-part%n"
+ 

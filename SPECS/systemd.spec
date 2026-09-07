@@ -13,7 +13,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        219
-Release:        %{?xsrel}%{?dist}
+Release:        %{?xsrel}.1%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        A System and Service Manager
@@ -677,6 +677,12 @@ Source13: org.freedesktop.timedate1.policy
 Source14: phys-port-name-gen
 Source15: 76-phys-port-name.rules
 Source16: 76-phys-port-name.conf
+
+# XCP-ng patches
+# NVMe NSID-based naming fix
+Patch1000: 0001-rules-Add-MODEL_ID-for-NVMe-device-7037.patch
+Patch1001: 0002-udev-rules-fix-nvme-symlink-creation-on-namespace-ch.patch
+Patch1002: 0003-Pin-obsolete-NVMe-symlinks-to-namespace-1.patch
 
 BuildRequires:  libcap-devel
 BuildRequires:  tcp_wrappers-devel
@@ -1643,6 +1649,9 @@ fi
 %{?_cov_results_package}
 
 %changelog
+* Tue Sep 08 2026 Tu Dinh <ngoc-tu.dinh@vates.tech> - 219-57.5.1
+- Pin obsolete NVMe symlinks to namespace 1
+
 * Thu Mar 02 2023 Tim Smith <tim.smith@citrix.com> - 219-57.5
 - CP-42030: Amend system requires
 
